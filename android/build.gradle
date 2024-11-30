@@ -6,16 +6,39 @@ buildscript {
         targetSdkVersion = 34
         ndkVersion = "26.1.10909125"
         kotlinVersion = "1.9.24"
+        RNMapboxMapsImpl = "mapbox"
     }
+
     repositories {
         google()
         mavenCentral()
     }
+
     dependencies {
         classpath("com.android.tools.build:gradle")
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
     }
 }
+
+allprojects {
+        repositories {
+                google()
+                mavenCentral()
+                maven {
+                    url 'https://api.mapbox.com/downloads/v2/releases/maven'
+                    authentication {
+                        basic(BasicAuthentication)
+                    }
+                    credentials {
+                        // Do not change the username below.
+                        // This should always be `mapbox` (not your username).
+                        username = 'mapbox'
+                        // Use the secret token you generated in the last step.
+                        password = 'set api key here'
+                    }
+                }
+            }
+    }
 
 apply plugin: "com.facebook.react.rootproject"
