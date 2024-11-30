@@ -1,4 +1,4 @@
-const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
+const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config');
 
 /**
  * Metro configuration
@@ -6,6 +6,23 @@ const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
  *
  * @type {import('metro-config').MetroConfig}
  */
-const config = {};
+const defaultConfig = getDefaultConfig(__dirname);
 
-module.exports = mergeConfig(getDefaultConfig(__dirname), config);
+const customConfig = {
+    resolver: {
+        extraNodeModules: {
+            '@component': `${__dirname}/src/components`,
+            '@type': `${__dirname}/src/types`,
+            '@navigation': `${__dirname}/src/navigation`,
+            '@screen': `${__dirname}/src/screens`,
+            '@hook': `${__dirname}/src/hooks`,
+            '@asset': `${__dirname}/src/assets`,
+            '@context': `${__dirname}/src/contexts`,
+            '@helper': `${__dirname}/src/helpers`,
+            '@api': `${__dirname}/src/api`,
+            '@root': `${__dirname}/src`,
+        },
+    },
+};
+
+module.exports = mergeConfig(defaultConfig, customConfig);
