@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, Dimensions, Platform } from 'react-native';
 import { HeartIcon, HomeIcon, MagnifyingGlassIcon, UserCircleIcon } from 'react-native-heroicons/outline';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { BottomTabParamList } from "../types/navigator.type";
@@ -10,35 +10,51 @@ import NotificationScreen from '../screens/NotificationScreen';
 import SettingScreen from '../screens/SettingScreen';
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
+const { width } = Dimensions.get('window');
+const TAB_WIDTH = width / 4;
+const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 80 : 60;
 
 const CustomTabBarIcon = ({ icon: Icon, label, focused }) => {
     return (
-        <View style={[styles.tabItemContainer, focused && styles.focusedTab]}>
-            <Icon color={focused ? '#1e1e1e' : '#8e8e93'} size={24} />
-            <Text style={[styles.tabLabel, focused && styles.focusedTabLabel]}>{label}</Text>
+        <View style={[styles.tabItemContainer]}>
+            <Icon 
+                color={focused ? '#000' : '#9ca3af'} 
+                size={24} 
+                strokeWidth={focused ? 2 : 1.5}
+            />
+            <Text style={[
+                styles.tabLabel, 
+                focused && styles.focusedTabLabel
+            ]}>
+                {label}
+            </Text>
+            {focused && <View style={styles.indicator} />}
         </View>
     );
 };
 
 const Tabs = () => {
     const insets = useSafeAreaInsets();
+    
     return (
         <Tab.Navigator
             screenOptions={{
                 headerShown: false,
                 tabBarShowLabel: false,
-                tabBarStyle: { paddingBottom: insets.bottom, ...styles.tabBar },
-                tabBarLabelStyle: styles.tabBarLabel,
-                tabBarActiveTintColor: "#1e1e1e",
+                tabBarStyle: {
+                    ...styles.tabBar,
+                    height: TAB_BAR_HEIGHT + insets.bottom,
+                    paddingBottom: insets.bottom,
+                },
             }}
         >
             <Tab.Screen
-                name='HomeScreen'
+                name="HomeScreen"
                 component={HomeScreen}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <CustomTabBarIcon icon={HomeIcon} label='Buddy' focused={focused} />
-                    )
+                    ),
                 }}
             />
             <Tab.Screen
@@ -69,36 +85,39 @@ const Tabs = () => {
                 }}
             />
         </Tab.Navigator>
-    )
-}
+    );
+};
 
 const styles = StyleSheet.create({
     tabBar: {
-        height: 70,
-        backgroundColor: '#f4f4f5',
-    },
-    tabBarLabel: {
-        fontSize: 12,
-        marginBottom: 4,
+        backgroundColor: '#ffffff',
+        borderTopWidth: 1,
+        borderTopColor: '#f4f4f5',
+        paddingTop: 8,
     },
     tabItemContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-        height: '100%',
-        width: '100%',
-    },
-    focusedTab: {
-        borderTopWidth: 4,
-        borderTopColor: '#FF6F61',
+        width: TAB_WIDTH,
+        position: 'relative',
     },
     tabLabel: {
-        fontSize: 13,
-        marginTop: 2,
-        color: '#8e8e93',
+        fontSize: 12,
+        marginTop: 4,
+        color: '#9ca3af',
     },
     focusedTabLabel: {
-        color: '#1e1e1e',
+        color: '#000',
+        fontWeight: '500',
     },
+    indicator: {
+        position: 'absolute',
+        top: -11,
+        width: 20,
+        height: 3,
+        backgroundColor: '#000',
+        borderRadius: 2,
+    }
 });
 
 export default Tabs;
