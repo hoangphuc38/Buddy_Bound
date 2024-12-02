@@ -4,6 +4,8 @@ import { RootStackParamList } from '../types/navigator.type';
 import React, { useContext } from 'react';
 import Tabs from './BottomTab';
 import WelcomeScreen from '../screens/WelcomeScreen';
+import LocationBuddyScreen from '../screens/LocationBuddyScreen';
+import LocationGroupScreen from '../screens/LocationGroupScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -21,6 +23,8 @@ const Navigator = () => {
             <Stack.Navigator screenOptions={{ headerShown: false }}>
                 <Stack.Screen name='Tabs' component={Tabs} />
                 <Stack.Screen name='Welcome' component={WelcomeScreen} />
+                <Stack.Screen name='LocationBuddy' component={LocationBuddyScreen} />
+                <Stack.Screen name='LocationGroup' component={LocationGroupScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     )

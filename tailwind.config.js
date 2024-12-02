@@ -17,6 +17,18 @@ module.exports = {
         nunitoSemiBold: ['NunitoSans-SemiBold'],
         nunitoSemiBoldItalic: ['NunitoSans-SemiBoldItalic'],
       },
+
+      fontSize: {
+        header: "24px",
+        title: "18px",
+        normal: "16px",
+        small: "11px"
+      },
+
+      colors: {
+        main: "#2C7CC1",
+        secondary: "#FF6600"
+      }
     },
   },
   plugins: [],
