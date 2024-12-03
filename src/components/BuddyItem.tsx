@@ -3,6 +3,7 @@ import { Image, Text, TouchableOpacity, View } from 'react-native';
 
 interface IBuddyItem {
     press: () => void;
+    horizontal?: boolean;
     item: Buddy;
 }
 
@@ -12,14 +13,26 @@ export type Buddy = {
     // avatar: any;
 };
 
-const BuddyItem = ({ press, item }: IBuddyItem) => {
-    return (
-        <TouchableOpacity onPress={press} className='flex items-center mr-4 gap-1'>
-            <Image source={require("../assets/images/avatar.jpg")}
-                style={{ height: 60, width: 60, borderRadius: 30 }} />
-            <Text className='text-small color-black'>{item.name}</Text>
-        </TouchableOpacity>
-    );
+const BuddyItem = ({ press, horizontal, item }: IBuddyItem) => {
+    if (horizontal) {
+        return (
+            <TouchableOpacity onPress={press} className='flex flex-row items-center mb-4 gap-[20px]'>
+                <Image source={require("../assets/images/avatar.jpg")}
+                    style={{ height: 60, width: 60, borderRadius: 30 }} />
+                <Text className='text-normal text-main'>{item.name}</Text>
+            </TouchableOpacity>
+        )
+    }
+    else {
+        return (
+            <TouchableOpacity onPress={press} className='flex items-center mr-4 gap-1'>
+                <Image source={require("../assets/images/avatar.jpg")}
+                    style={{ height: 60, width: 60, borderRadius: 30 }} />
+                <Text className='text-small color-black'>{item.name}</Text>
+            </TouchableOpacity>
+        );
+    }
+
 }
 
 export default BuddyItem;
