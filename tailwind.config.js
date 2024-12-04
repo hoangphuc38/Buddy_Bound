@@ -7,21 +7,22 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        nunitoBlack: ['NunitoSans-Black'],
-        nunitoBold: ['NunitoSans-Bold'],
-        nunitoBoldItalic: ['NunitoSans-BoldItalic'],
-        nunitoItalic: ['NunitoSans-Italic'],
-        nunitoLight: ['NunitoSans-Light'],
-        nunitoMedium: ['NunitoSans-Medium'],
-        nunitoRegular: ['NunitoSans-Regular'],
-        nunitoSemiBold: ['NunitoSans-SemiBold'],
-        nunitoSemiBoldItalic: ['NunitoSans-SemiBoldItalic'],
+        nunitoBlack: ['Nunito-Black'],
+        nunitoBold: ['Nunito-Bold.ttf'],
+        nunitoBoldItalic: ['Nunito-BoldItalic'],
+        nunitoItalic: ['Nunito-Italic'],
+        nunitoLight: ['Nunito-Light'],
+        nunitoMedium: ['Nunito-Medium'],
+        nunitoRegular: ['Nunito-Regular'],
+        nunitoSemiBold: ['Nunito-SemiBold'],
+        nunitoSemiBoldItalic: ['Nunito-SemiBoldItalic'],
       },
 
       fontSize: {
         header: "24px",
         title: "18px",
         normal: "16px",
+        medium: "14px",
         small: "11px"
       },
 

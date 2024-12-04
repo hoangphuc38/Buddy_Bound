@@ -1,4 +1,4 @@
-import { FlatList, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { TabsScreenProps } from '../types/navigator.type';
 import React, { useState } from 'react';
 import BuddyItem, { Buddy } from '../components/BuddyItem';
@@ -24,7 +24,7 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
         { id: 2, name: 'Company' },
     ];
 
-    const [allBuddy, setAllBuddy] = useState<boolean>(true);
+    const [allBuddy, setAllBuddy] = useState<boolean>(false);
     const [allGroup, setAllGroup] = useState<boolean>(false);
 
     const HandleClickBuddy = (item: Buddy) => {

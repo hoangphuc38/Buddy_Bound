@@ -6,6 +6,8 @@ import Tabs from './BottomTab';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import LocationBuddyScreen from '../screens/LocationBuddyScreen';
 import LocationGroupScreen from '../screens/LocationGroupScreen';
+import NewPostScreen from '../screens/NewPostScreen';
+import PostOfGroupScreen from '../screens/PostOfGroup';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -25,6 +27,8 @@ const Navigator = () => {
                 <Stack.Screen name='Welcome' component={WelcomeScreen} />
                 <Stack.Screen name='LocationBuddy' component={LocationBuddyScreen} />
                 <Stack.Screen name='LocationGroup' component={LocationGroupScreen} />
+                <Stack.Screen name='NewPost' component={NewPostScreen} />
+                <Stack.Screen name='PostOfGroup' component={PostOfGroupScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     )

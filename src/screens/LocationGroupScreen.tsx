@@ -11,6 +11,7 @@ const LocationGroupScreen = ({
     route,
     navigation,
 }: LocationGroupScreenProps & { route: RouteProp<RootStackParamList, 'LocationGroup'> }) => {
+    const { groupID } = route.params;
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
     const buttonAnimations = [
@@ -130,7 +131,7 @@ const LocationGroupScreen = ({
                             bottom: 150,
                             right: 12
                         }]}>
-                            <TouchableOpacity
+                            <TouchableOpacity onPress={() => navigation.push('PostOfGroup', { groupID: groupID })}
                                 className='bg-main w-[40px] h-[40px] rounded-full items-center justify-center'
                             >
                                 <NewspaperIcon size={20} color="white" />
@@ -143,6 +144,7 @@ const LocationGroupScreen = ({
                             right: 12
                         }]}>
                             <TouchableOpacity
+                                onPress={() => navigation.push('NewPost')}
                                 className='bg-secondary w-[40px] h-[40px] rounded-full items-center justify-center'
                             >
                                 <FontAwesomeIcon icon={faPen} size={17} color="white" />
