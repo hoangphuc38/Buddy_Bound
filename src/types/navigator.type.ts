@@ -8,6 +8,7 @@ export type RootStackParamList = {
     LocationGroup: { groupID: number }
     NewPost: undefined
     PostOfGroup: { groupID: number }
+    PostDetail: { postID: number }
     //Declare new screen with needed parameters
 }
 
@@ -18,6 +19,7 @@ export type LocationBuddyScreenProps = NativeStackScreenProps<RootStackParamList
 export type LocationGroupScreenProps = NativeStackScreenProps<RootStackParamList, 'LocationGroup'>
 export type NewPostScreenProps = NativeStackScreenProps<RootStackParamList, 'NewPost'>
 export type PostOfGroupProps = NativeStackScreenProps<RootStackParamList, 'PostOfGroup'>
+export type PostDetailProps = NativeStackScreenProps<RootStackParamList, 'PostDetail'>
 //Continue when declare new screens
 
 

@@ -32,7 +32,6 @@ const PostGroupItem = ({ press, item }: IPostGroupItem) => {
                     </View>
                     <Text className="text-white text-[9px]">tại {item.location}</Text>
                 </View>
-
             </View>
         </TouchableOpacity>
     )

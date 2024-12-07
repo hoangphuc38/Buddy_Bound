@@ -78,7 +78,21 @@ const mockData = {
             name: "Bóng bánh Cúi Tuần",
             avatar: "https://th.bing.com/th/id/OIP.q9yYNDBRdV_xmX8PCsFyJgHaEK?rs=1&pid=ImgDetMain",
         },
-    ]
+    ],
+
+    detailPost: {
+        content: "Thành cổ Quảng Trị nhá ae",
+        user: {
+            id: 2,
+            name: "Lê Văn Phú",
+            avatar: "https://th.bing.com/th/id/OIP.klxNCgcMlcIo20ExtOdjVQHaHZ?rs=1&pid=ImgDetMain",
+        },
+        image: "https://th.bing.com/th/id/OIP.A7LNsvY__62dingWGyfRyAHaFj?rs=1&pid=ImgDetMain",
+        location: "Quảng Trị",
+        time: 4,
+        totalComment: 10,
+        firstUserComment: "Lê Võ Duy Khiêm"
+    }
 }
 
 export default mockData

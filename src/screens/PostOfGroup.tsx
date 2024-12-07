@@ -30,7 +30,7 @@ const PostOfGroupScreen = ({
                     renderItem={({ item }) => (
                         <PostGroupItem
                             item={item}
-                            press={() => { }}
+                            press={() => { navigation.push('PostDetail', { postID: item.id }) }}
                         />
                     )}
                     showsVerticalScrollIndicator={false}

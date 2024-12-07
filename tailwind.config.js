@@ -29,7 +29,8 @@ module.exports = {
       colors: {
         main: "#2C7CC1",
         secondary: "#FF6600",
-        backButton: "rgba(44, 124, 193, 0.2)"
+        backButton: "rgba(44, 124, 193, 0.2)",
+        contentPost: "rgba(124, 121, 121, 0.8)"
       }
     },
   },

@@ -8,6 +8,7 @@ import LocationBuddyScreen from '../screens/LocationBuddyScreen';
 import LocationGroupScreen from '../screens/LocationGroupScreen';
 import NewPostScreen from '../screens/NewPostScreen';
 import PostOfGroupScreen from '../screens/PostOfGroup';
+import PostDetailScreen from '../screens/PostDetailScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -29,6 +30,13 @@ const Navigator = () => {
                 <Stack.Screen name='LocationGroup' component={LocationGroupScreen} />
                 <Stack.Screen name='NewPost' component={NewPostScreen} />
                 <Stack.Screen name='PostOfGroup' component={PostOfGroupScreen} />
+                <Stack.Screen name='PostDetail' component={PostDetailScreen}
+                    options={{
+                        gestureEnabled: true,
+                        gestureDirection: 'vertical',
+                        animation: 'slide_from_bottom',
+                    }}
+                />
             </Stack.Navigator>
         </NavigationContainer>
     )
