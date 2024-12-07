@@ -8,21 +8,10 @@ import { Modal } from '../components/Modal';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import SearchBar from '../components/SearchBar';
+import mockData from '../mock/mockData';
 
 const HomeScreen = ({ navigation }: TabsScreenProps) => {
-    const data: Buddy[] = [
-        { id: 1, name: 'Mom' },
-        { id: 2, name: 'Boss' },
-        { id: 3, name: 'Mom' },
-        { id: 4, name: 'Boss' },
-        { id: 5, name: 'Mom' },
-        { id: 6, name: 'Boss' },
-    ];
-
-    const dataGroup: Group[] = [
-        { id: 1, name: 'Family' },
-        { id: 2, name: 'Company' },
-    ];
+    const { buddies, groups } = mockData;
 
     const [allBuddy, setAllBuddy] = useState<boolean>(false);
     const [allGroup, setAllGroup] = useState<boolean>(false);
@@ -52,7 +41,7 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
                 </View>
 
                 <View className='mb-4'>
-                    <FlatList data={data}
+                    <FlatList data={buddies}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item }) => (
                             <BuddyItem
@@ -73,7 +62,7 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
                 </View>
 
                 <View className='mb-4'>
-                    <FlatList data={dataGroup}
+                    <FlatList data={groups}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item }) => (
                             <GroupItem
@@ -87,7 +76,7 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
             </View>
 
             <Modal isOpen={allBuddy}>
-                <View className='bg-white w-full h-[70%] p-4 rounded-xl'>
+                <View className='bg-white w-full h-[80%] p-4 rounded-xl'>
                     <View className='flex flex-row justify-center items-center mb-4'>
                         <Text className='font-nunitoBold text-[20px] text-center text-main font-bold'>Buddies</Text>
                         <TouchableOpacity
@@ -102,7 +91,7 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
                         placeholder='Search your buddy ...'
                         onSearch={(text) => console.log(text)} />
 
-                    <FlatList data={data}
+                    <FlatList data={buddies}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item }) => (
                             <BuddyItem
@@ -117,7 +106,7 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
             </Modal>
 
             <Modal isOpen={allGroup}>
-                <View className='bg-white w-full h-[70%] p-4 rounded-xl'>
+                <View className='bg-white w-full h-[80%] p-4 rounded-xl'>
                     <View className='flex flex-row justify-center items-center mb-4'>
                         <Text className='font-nunitoBold text-[20px] text-center text-main font-bold'>Groups</Text>
                         <TouchableOpacity
@@ -132,7 +121,7 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
                         placeholder='Search your group ...'
                         onSearch={(text) => console.log(text)} />
 
-                    <FlatList data={dataGroup}
+                    <FlatList data={groups}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item }) => (
                             <GroupItem
