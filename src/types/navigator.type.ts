@@ -5,6 +5,7 @@ export type RootStackParamList = {
     SignIn: undefined;
     Tabs: undefined;
     LogIn: undefined;
+    Register: undefined;
     //Declare new screen with needed parameters
 }
 
@@ -12,6 +13,7 @@ export type WelcomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Wel
 export type SignInScreenProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
 export type TabsScreenProps = NativeStackScreenProps<RootStackParamList, 'Tabs'>;
 export type LogInScreenProps = NativeStackScreenProps<RootStackParamList, 'LogIn'>;
+export type RegisterScreenProps = NativeStackScreenProps<RootStackParamList, 'Register'>;
 //Continue when declare new screens
 
 

@@ -9,6 +9,7 @@ import React, {useContext} from 'react';
 import Tabs from './BottomTab';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import LoginScreen from '../screens/LoginScreen';
+import RegisterScreen from '../screens/RegisterScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -24,7 +25,7 @@ const Navigator = () => {
   return (
     <NavigationContainer theme={theme}>
       <Stack.Navigator screenOptions={{headerShown: false}}>
-        <Stack.Screen name="LogIn" component={LoginScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="Tabs" component={Tabs} />
       </Stack.Navigator>
     </NavigationContainer>

@@ -96,7 +96,7 @@ const LoginScreen = ({navigation}: LogInScreenProps) => {
               style={{
                 textAlign: 'center',
                 color: '#fff',
-                fontSize: 18,
+                fontSize: 17,
                 fontWeight: 700,
               }}>
               Login
