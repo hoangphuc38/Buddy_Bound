@@ -110,9 +110,9 @@ const ForgetPassScreen = ({navigation}: ForgetPassScreenProps) => {
             {currentData.showPrevious && (
               <TouchableOpacity style={styles.btnPrev} onPress={handlePrevious}>
                 <View style={styles.btnContent}>
-                <View style={{height: 14, width: 15}}>
-                  <Image source={preIcon} style={styles.img} />
-                </View>
+                  <View style={{height: 14, width: 15}}>
+                    <Image source={preIcon} style={styles.img} />
+                  </View>
                   <Text style={styles.btnText}>Previous</Text>
                 </View>
               </TouchableOpacity>
@@ -123,11 +123,22 @@ const ForgetPassScreen = ({navigation}: ForgetPassScreenProps) => {
                   {currentData.showDone ? 'Done' : 'Next'}
                 </Text>
                 <View style={{height: 14, width: 15}}>
-                  <Image source={currentData.showDone ? checkIcon : nextIcon} style={styles.img} />
+                  <Image
+                    source={currentData.showDone ? checkIcon : nextIcon}
+                    style={styles.img}
+                  />
                 </View>
               </View>
             </TouchableOpacity>
           </View>
+        </View>
+        <View style={{flexDirection: 'row', gap: 5, marginTop: 20}}>
+          <Text style={{color: 'rgba(0, 0, 0, 0.6)', fontWeight: 500}}>
+            Don't have account?
+          </Text>
+          <TouchableOpacity>
+            <Text style={{color: '#2C7CC1', fontWeight: 700}}>SignUp</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>
@@ -189,7 +200,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 1
+    flex: 1,
   },
   btnPrev: {
     flex: 1,
