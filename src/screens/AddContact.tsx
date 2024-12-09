@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
+  FlatList,
 } from 'react-native';
 import {AddContactScreenProps} from '../types/navigator.type';
 import {useState} from 'react';
@@ -17,6 +18,7 @@ const mockData = {
       id: 1,
       name: 'John Doe',
       email: 'johndoe@example.com',
+      phone: '0961826917',
       role: 'Parent',
       location: {
         latitude: 37.7749,
@@ -28,6 +30,7 @@ const mockData = {
       id: 2,
       name: 'Jane Smith',
       email: 'janesmith@example.com',
+      phone: '0905564414',
       role: 'Child',
       location: {
         latitude: 34.0522,
@@ -69,10 +72,43 @@ const mockData = {
 };
 
 const AddContactScreen = ({navigation}: AddContactScreenProps) => {
+  const [addedUsers, setAddedUsers] = useState<number[]>([]);
+
   const handleSearch = (query: string) => {
     console.log('Searching for:', query);
     // Thực hiện logic tìm kiếm tại đây (gọi API, lọc danh sách, ...)
   };
+
+  const handleToggleAdd = (userId: number) => {
+    setAddedUsers(prev =>
+      prev.includes(userId)
+        ? prev.filter(id => id !== userId)
+        : [...prev, userId],
+    );
+  };
+
+  const Item = ({item}: {item: (typeof mockData.users)[0]}) => {
+    const isAdded = addedUsers.includes(item.id);
+    return (
+      <View style={styles.userItem}>
+        <View style={{flexDirection: 'row', gap: 5}}>
+          <View style={styles.avtContainer}>
+            <Image source={{uri: item.profileImage}} style={styles.img} />
+          </View>
+          <View style={styles.userInfo}>
+            <Text style={styles.userName}>{item.name}</Text>
+            <Text style={styles.userPhone}>{item.phone}</Text>
+          </View>
+        </View>
+        <TouchableOpacity
+          style={[styles.addButton, isAdded ? styles.added : styles.notAdded]}
+          onPress={() => handleToggleAdd(item.id)}>
+          <Text style={styles.addButtonText}>{isAdded ? 'Added' : 'Add'}</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Add your Buddy</Text>
@@ -90,7 +126,12 @@ const AddContactScreen = ({navigation}: AddContactScreenProps) => {
           </Text>
         </View>
         <Search placeholder="Search..." onSearch={handleSearch}></Search>
-        <View style={styles.userList}></View>
+        <FlatList
+          data={mockData.users}
+          renderItem={Item}
+          keyExtractor={item => item.id.toString()}
+          style={styles.userList}
+        />
       </View>
     </SafeAreaView>
   );
@@ -110,9 +151,17 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     marginTop: 15,
   },
+  avtContainer: {
+    height: 50,
+    width: 50,
+    borderWidth: 2,
+    borderColor: '#2C7CC1',
+    borderRadius: '50%',
+  },
   img: {
     height: '100%',
     width: '100%',
+    borderRadius: 50,
     resizeMode: 'contain',
   },
   content: {
@@ -124,5 +173,38 @@ const styles = StyleSheet.create({
   },
   userList: {
     marginTop: 15,
+    width: '100%',
   },
+  userItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  userInfo: {
+    justifyContent: 'space-between',
+    paddingVertical: 3,
+  },
+  addButton: {
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+  },
+  addButtonText: {
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  notAdded: {
+    backgroundColor: '#125B9A',
+  },
+  added: {
+    backgroundColor: '#FF6600',
+  },
+  userName: {
+    fontWeight: 600,
+    fontSize: 16,
+  },
+  userPhone: {
+    color: 'rgba(0, 0, 0, 0.37)',
+  }
 });
