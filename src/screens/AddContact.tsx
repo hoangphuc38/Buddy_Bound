@@ -9,16 +9,89 @@ import {
 import {AddContactScreenProps} from '../types/navigator.type';
 import {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import Search from '../components/search';
 
-const back = require('../assets/images/back-vector.png');
-const nextIcon = require('../assets/images/next-icon.png');
-const preIcon = require('../assets/images/previous-icon.png');
-const checkIcon = require('../assets/images/check-icon.png');
+const mockData = {
+  users: [
+    {
+      id: 1,
+      name: 'John Doe',
+      email: 'johndoe@example.com',
+      role: 'Parent',
+      location: {
+        latitude: 37.7749,
+        longitude: -122.4194,
+      },
+      profileImage: 'https://randomuser.me/api/portraits/men/1.jpg',
+    },
+    {
+      id: 2,
+      name: 'Jane Smith',
+      email: 'janesmith@example.com',
+      role: 'Child',
+      location: {
+        latitude: 34.0522,
+        longitude: -118.2437,
+      },
+      profileImage: 'https://randomuser.me/api/portraits/women/2.jpg',
+    },
+  ],
+  groups: [
+    {
+      id: 1,
+      name: 'Family Group',
+      type: 'Family',
+      members: [1, 2],
+      createdAt: '2024-11-01T12:00:00Z',
+    },
+  ],
+  notifications: [
+    {
+      id: 1,
+      title: 'SOS Alert',
+      message: 'Jane sent an SOS from 34.0522, -118.2437',
+      timestamp: '2024-11-25T14:00:00Z',
+      type: 'SOS',
+    },
+  ],
+  safeZones: [
+    {
+      id: 1,
+      name: 'Home',
+      radius: 500, // in meters
+      center: {
+        latitude: 37.7749,
+        longitude: -122.4194,
+      },
+      createdBy: 1,
+    },
+  ],
+};
 
 const AddContactScreen = ({navigation}: AddContactScreenProps) => {
+  const handleSearch = (query: string) => {
+    console.log('Searching for:', query);
+    // Thực hiện logic tìm kiếm tại đây (gọi API, lọc danh sách, ...)
+  };
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Add your Buddy</Text>
+      <View style={styles.content}>
+        <View style={{width: '100%'}}>
+          <Text
+            style={{
+              textAlign: 'left',
+              color: '#2C7CC1',
+              fontSize: 17,
+              fontWeight: 500,
+              marginBottom: 5,
+            }}>
+            Find your buddy in your contact
+          </Text>
+        </View>
+        <Search placeholder="Search..." onSearch={handleSearch}></Search>
+        <View style={styles.userList}></View>
+      </View>
     </SafeAreaView>
   );
 };
@@ -37,83 +110,19 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     marginTop: 15,
   },
-  backBtnBackground: {
-    height: 35,
-    width: 35,
-    backgroundColor: 'rgba(44, 124, 193, 0.2)',
-    borderRadius: '50%',
-    marginTop: 70,
-    position: 'absolute',
-    left: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   img: {
     height: '100%',
     width: '100%',
     resizeMode: 'contain',
   },
-  backVector: {
-    height: 17,
-    width: 10,
-  },
   content: {
-    marginTop: 70,
+    marginTop: 25,
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-  },
-  imgContainer: {
-    marginTop: 10,
-    height: 195,
-    width: 195,
-  },
-  textInput: {
-    backgroundColor: 'rgba(44, 124, 193, 0.2)',
     paddingHorizontal: 20,
-    borderRadius: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
   },
-  form: {
-    width: '100%',
-    paddingHorizontal: 36,
-    gap: 8,
-  },
-  btnNext: {
-    backgroundColor: '#125B9A',
-    borderRadius: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-  },
-  btnPrev: {
-    flex: 1,
-    backgroundColor: '#125B9A',
-    borderRadius: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  btnContainer: {
-    marginTop: 10,
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    width: '100%',
-    alignItems: 'center',
-    gap: 10,
-  },
-  inputStyle: {
-    fontSize: 14,
-    fontWeight: 600,
-    color: '#2C7CC1',
-    height: 50,
-  },
-  btnText: {color: '#fff', fontSize: 16, fontWeight: '600'},
-  btnContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 5,
-    paddingVertical: 15,
+  userList: {
+    marginTop: 15,
   },
 });
