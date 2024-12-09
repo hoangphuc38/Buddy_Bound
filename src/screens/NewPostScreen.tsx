@@ -89,22 +89,23 @@ const NewPostScreen = ({
 
             <TextInput
                 placeholder='Write your status ... (30 characters)'
-                className='text-medium text-black h-[150px] px-4 mb-3'
+                className='text-medium text-black h-auto px-4 mb-3'
                 textAlignVertical='top'
                 placeholderTextColor="#7C7979"
+                multiline
             />
             {
                 isImage &&
                 <View className='w-full flex-row justify-center mb-5 px-4'>
                     {imageList.map((item, index) => {
                         return (
-                            <View key={index} className='mr-4'>
-                                <View className=''>
-                                    <Image source={{ uri: item.uri }} style={{ width: 170, height: 170 }} />
+                            <View key={index} className='mx-4 w-full'>
+                                <View>
+                                    <Image source={{ uri: item.uri }} style={{ width: "100%", height: 200 }} />
                                 </View>
                                 <TouchableOpacity
                                     onPress={() => handleRemoveImage(item.fileName)}
-                                    className='rounded-full p-1 absolute top-0 right-0 bg-black'>
+                                    className='rounded-full p-1 absolute top-2 right-2 bg-black'>
                                     <XMarkIcon size={16} color='white' />
                                 </TouchableOpacity>
                             </View>
@@ -133,11 +134,11 @@ const NewPostScreen = ({
             <Modal isOpen={openOption}>
                 <View className='bg-white w-full px-4 py-8 rounded-xl justify-center'>
                     <TouchableOpacity onPress={HandleEveryone}
-                        className="border border-main px-2 py-2 rounded-[8px] mb-5">
+                        className="px-2 py-2 mb-5">
                         <Text className="text-main text-normal">Everyone</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={HandleLimitBuddy}
-                        className="border border-main px-2 py-2 rounded-[8px] flex flex-row justify-between items-center">
+                        className="px-2 py-2 flex flex-row justify-between items-center">
                         <Text className="text-main text-normal">Limited Buddies</Text>
                         <FontAwesomeIcon icon={faAngleRight} size={14} color="#2C7CC1" />
                     </TouchableOpacity>

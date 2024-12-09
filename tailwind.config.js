@@ -19,7 +19,7 @@ module.exports = {
       },
 
       fontSize: {
-        header: "24px",
+        header: "22px",
         title: "18px",
         normal: "16px",
         medium: "14px",
@@ -30,7 +30,8 @@ module.exports = {
         main: "#2C7CC1",
         secondary: "#FF6600",
         backButton: "rgba(44, 124, 193, 0.2)",
-        contentPost: "rgba(124, 121, 121, 0.8)"
+        contentPost: "rgba(124, 121, 121, 0.8)",
+        placeHolder: "#7C7979"
       }
     },
   },

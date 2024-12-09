@@ -15,12 +15,12 @@ const PostOfGroupScreen = ({
     return (
         <View className="flex flex-1 px-4 mt-2">
             <View className='flex flex-row justify-center items-center mb-5'>
-                <Text className='font-nunitoBold text-header text-center text-main font-bold'>Posts of Group</Text>
+                <Text className='font-nunitoBold text-header text-center text-main font-bold'>Group Posts</Text>
                 <TouchableOpacity
                     onPress={() => navigation.pop()}
                     className='absolute left-0 top-0 bg-backButton w-[33px] h-[33px] rounded-full items-center justify-center'
                 >
-                    <FontAwesomeIcon icon={faAngleLeft} size={17} />
+                    <FontAwesomeIcon icon={faAngleLeft} size={17} color="#2C7CC1" />
                 </TouchableOpacity>
             </View>
 
