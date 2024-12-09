@@ -12,6 +12,8 @@ import {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Search from '../components/search';
 
+const nextIcon = require('../assets/images/next-icon.png');
+
 const mockData = {
   users: [
     {
@@ -133,6 +135,16 @@ const AddContactScreen = ({navigation}: AddContactScreenProps) => {
           style={styles.userList}
         />
       </View>
+      <View style={styles.continueBtn}>
+        <TouchableOpacity style={styles.btnNext}>
+          <View style={styles.btnContent}>
+            <Text style={styles.btnText}>Continue</Text>
+            <View style={{height: 14, width: 15}}>
+              <Image source={nextIcon} style={styles.img} />
+            </View>
+          </View>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
@@ -174,6 +186,7 @@ const styles = StyleSheet.create({
   userList: {
     marginTop: 15,
     width: '100%',
+    paddingHorizontal: 10,
   },
   userItem: {
     flexDirection: 'row',
@@ -206,5 +219,26 @@ const styles = StyleSheet.create({
   },
   userPhone: {
     color: 'rgba(0, 0, 0, 0.37)',
-  }
+  },
+  continueBtn: {
+    position: 'absolute',
+    bottom: 100,
+    width: '100%',
+    paddingHorizontal: 30,
+  },
+  btnNext: {
+    backgroundColor: '#125B9A',
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+  },
+  btnContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    paddingVertical: 15,
+  },
+  btnText: {color: '#fff', fontSize: 18, fontWeight: '600'},
 });
