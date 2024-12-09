@@ -11,6 +11,7 @@ import WelcomeScreen from '../screens/WelcomeScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import ForgetPassScreen from '../screens/ForgetPassScreen';
+import AddContactScreen from '../screens/AddContact';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -26,7 +27,7 @@ const Navigator = () => {
   return (
     <NavigationContainer theme={theme}>
       <Stack.Navigator screenOptions={{headerShown: false}}>
-        <Stack.Screen name="ForgetPass" component={ForgetPassScreen} />
+        <Stack.Screen name="AddContact" component={AddContactScreen} />
         <Stack.Screen name="Tabs" component={Tabs} />
       </Stack.Navigator>
     </NavigationContainer>
