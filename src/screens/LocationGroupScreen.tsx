@@ -176,7 +176,7 @@ const LocationGroupScreen = ({
             <BottomSheet ref={sheetRef} height="90%">
                 <View className="h-full px-4 relative bg-white">
                     <View className='flex flex-row justify-center items-center mb-4'>
-                        <Text className='font-nunitoBold text-header text-center text-main font-bold'>Group Member</Text>
+                        <Text className='font-nunitoBold text-headerTitle text-center text-main font-bold'>Group Member</Text>
                     </View>
                     <View className="mb-4">
                         <FlatList data={groupMembers.slice(0, 3)}

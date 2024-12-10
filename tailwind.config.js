@@ -19,7 +19,8 @@ module.exports = {
       },
 
       fontSize: {
-        header: "22px",
+        header: "24px",
+        headerTitle: "22px",
         title: "18px",
         normal: "16px",
         medium: "14px",
@@ -31,7 +32,8 @@ module.exports = {
         secondary: "#FF6600",
         backButton: "rgba(44, 124, 193, 0.2)",
         contentPost: "rgba(124, 121, 121, 0.8)",
-        placeHolder: "#7C7979"
+        placeHolder: "#7C7979",
+        tooltip: "rgba(255, 255, 255, 0.68)"
       }
     },
   },

@@ -90,7 +90,7 @@ const mockData = {
         image: "https://th.bing.com/th/id/OIP.A7LNsvY__62dingWGyfRyAHaFj?rs=1&pid=ImgDetMain",
         location: "Quảng Trị",
         time: 4,
-        totalComment: 10,
+        totalComment: 2,
         firstUserComment: "Lê Võ Duy Khiêm"
     },
 
@@ -138,6 +138,36 @@ const mockData = {
             avatar: "https://th.bing.com/th/id/OIP.I0-4e0wGmsTCe3ORw9lBQwAAAA?rs=1&pid=ImgDetMain",
             relationship: "Friend",
         },
+    ],
+
+    comments: [
+        {
+            id: 1,
+            name: "Lê Võ Duy Khiêm",
+            avatar: "https://cdn.tuoitre.vn/471584752817336320/2023/10/15/base64-1697371188123490553865.png",
+            content: "Chỉ biết ước :vv",
+        },
+        {
+            id: 2,
+            name: "Hoàng Phúc",
+            avatar: "https://th.bing.com/th/id/OIP.Ypl_sg1NvXelL9QzJ1lKagHaHa?rs=1&pid=ImgDetMain",
+            content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        }
+    ],
+
+    memorablePlaces: [
+        {
+            id: 1,
+            name: "Trường THPT Trần Hưng Đạo"
+        },
+        {
+            id: 2,
+            name: "Hồ bơi Hùng Vương"
+        },
+        {
+            id: 3,
+            name: "Nhà văn hóa sinh viên"
+        }
     ]
 }
 

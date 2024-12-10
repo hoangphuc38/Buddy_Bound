@@ -29,7 +29,7 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
     return (
         <View className="flex flex-1 px-4 mt-2">
             <View className='flex flex-row justify-center items-center mb-4'>
-                <Text className='font-nunitoBold text-header text-center text-main font-bold'>Your Buddy</Text>
+                <Text className='font-nunitoBold text-headerTitle text-center text-main font-bold'>Your Buddy</Text>
             </View>
 
             <View className='flex mb-2'>

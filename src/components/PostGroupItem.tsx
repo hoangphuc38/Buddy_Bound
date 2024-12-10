@@ -26,7 +26,7 @@ const PostGroupItem = ({ press, item }: IPostGroupItem) => {
                 imageStyle={{ borderRadius: 5 }}
             >
                 <LinearGradient
-                    colors={['rgba(0, 0, 0, 0.7)', 'rgba(0, 0, 0, 0.0)']}
+                    colors={['rgba(0, 0, 0, 0.4)', 'rgba(0, 0, 0, 0.0)']}
                     style={styles.gradient}
                 />
                 <View className="absolute top-2 left-2 flex-row gap-2">

@@ -9,6 +9,8 @@ import LocationGroupScreen from '../screens/LocationGroupScreen';
 import NewPostScreen from '../screens/NewPostScreen';
 import PostOfGroupScreen from '../screens/PostOfGroup';
 import PostDetailScreen from '../screens/PostDetailScreen';
+import MemorablePlaceScreen from '../screens/MemorablePlaceScreen';
+import NewMemorablePlaceScreen from '../screens/NewMemorablePlaceScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -37,6 +39,8 @@ const Navigator = () => {
                         animation: 'slide_from_bottom',
                     }}
                 />
+                <Stack.Screen name='MemorablePlaces' component={MemorablePlaceScreen} />
+                <Stack.Screen name='NewMemorable' component={NewMemorablePlaceScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     )

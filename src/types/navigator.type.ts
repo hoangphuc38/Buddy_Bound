@@ -9,6 +9,8 @@ export type RootStackParamList = {
     NewPost: undefined
     PostOfGroup: { groupID: number }
     PostDetail: { postID: number }
+    MemorablePlaces: undefined
+    NewMemorable: undefined
     //Declare new screen with needed parameters
 }
 
@@ -20,6 +22,8 @@ export type LocationGroupScreenProps = NativeStackScreenProps<RootStackParamList
 export type NewPostScreenProps = NativeStackScreenProps<RootStackParamList, 'NewPost'>
 export type PostOfGroupProps = NativeStackScreenProps<RootStackParamList, 'PostOfGroup'>
 export type PostDetailProps = NativeStackScreenProps<RootStackParamList, 'PostDetail'>
+export type MemorablePlacesProps = NativeStackScreenProps<RootStackParamList, 'MemorablePlaces'>
+export type NewMemorableProps = NativeStackScreenProps<RootStackParamList, 'NewMemorable'>
 //Continue when declare new screens
 
 
