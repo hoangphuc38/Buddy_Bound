@@ -30,19 +30,19 @@ const CommentInput: React.FC<SearchBarProps> = ({
 
     return (
         <View
-            className='flex-row items-center bg-backButton rounded-[10px] px-2'
+            className='flex-row items-center bg-[#F5F5F5] rounded-[20px] px-4'
             style={containerStyle}
         >
             <TextInput
                 value={searchText}
                 onChangeText={setSearchText}
                 placeholder={placeholder}
-                className='flex-1 mr-2 text-gray-700'
+                className='flex-1 mr-1 text-[#535862]'
                 style={inputStyle}
                 multiline
                 onSubmitEditing={handleSearch}
                 clearButtonMode='while-editing'
-                placeholderTextColor="#2C7CC1"
+                placeholderTextColor="#A4A7AE"
             />
 
             <TouchableOpacity onPress={handleSearch}>

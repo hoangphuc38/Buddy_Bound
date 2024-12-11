@@ -13,12 +13,12 @@ const MemorablePlaceScreen = ({
     const { memorablePlaces } = mockData;
 
     return (
-        <View className="flex flex-1 mt-2">
-            <View className='flex flex-row justify-center items-center px-4 mb-[40px]'>
-                <Text className='font-nunitoBold text-headerTitle text-center text-main font-bold'>Memorable Places</Text>
+        <View className="flex flex-1 mt-4">
+            <View className='flex flex-row justify-center items-center px-5 mb-[40px]'>
+                <Text className='font-nunitoBold text-[20px] text-center text-black font-regular'>Memorable Places</Text>
                 <TouchableOpacity
                     onPress={() => navigation.pop()}
-                    className='absolute left-4 top-0 bg-backButton w-[33px] h-[33px] rounded-full items-center justify-center'
+                    className='absolute left-4 top-0 w-[33px] h-[33px] rounded-full items-center justify-center'
                 >
                     <FontAwesomeIcon icon={faAngleLeft} size={17} />
                 </TouchableOpacity>
