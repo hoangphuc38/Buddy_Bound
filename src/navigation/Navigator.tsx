@@ -4,6 +4,7 @@ import { RootStackParamList } from '../types/navigator.type';
 import React, { useContext } from 'react';
 import Tabs from './BottomTab';
 import WelcomeScreen from '../screens/WelcomeScreen';
+import PermissionsScreen from '../screens/PermissionsScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -21,6 +22,7 @@ const Navigator = () => {
             <Stack.Navigator screenOptions={{ headerShown: false }}>
                 <Stack.Screen name='Tabs' component={Tabs} />
                 <Stack.Screen name='Welcome' component={WelcomeScreen} />
+                <Stack.Screen name='Permissions' component={PermissionsScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     )
