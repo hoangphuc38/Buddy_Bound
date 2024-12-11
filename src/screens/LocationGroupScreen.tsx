@@ -173,7 +173,9 @@ const LocationGroupScreen = ({
                     </Animated.View>
                 </TouchableOpacity>
             </View>
-            <BottomSheet ref={sheetRef} height="90%">
+            <BottomSheet
+                style={{ backgroundColor: 'white' }}
+                ref={sheetRef} height="90%">
                 <View className="h-full px-4 relative bg-white">
                     <View className='flex flex-row justify-center items-center mb-4'>
                         <Text className='font-nunitoBold text-headerTitle text-center text-main font-bold'>Group Member</Text>

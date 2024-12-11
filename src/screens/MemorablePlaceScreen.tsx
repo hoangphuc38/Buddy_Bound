@@ -15,12 +15,12 @@ const MemorablePlaceScreen = ({
     return (
         <View className="flex flex-1 mt-4">
             <View className='flex flex-row justify-center items-center px-5 mb-[40px]'>
-                <Text className='font-nunitoBold text-[20px] text-center text-black font-regular'>Memorable Places</Text>
+                <Text className='font-nunitoBold text-[20px] text-center text-black font-medium'>Memorable Places</Text>
                 <TouchableOpacity
                     onPress={() => navigation.pop()}
                     className='absolute left-4 top-0 w-[33px] h-[33px] rounded-full items-center justify-center'
                 >
-                    <FontAwesomeIcon icon={faAngleLeft} size={17} />
+                    <FontAwesomeIcon color="" icon={faAngleLeft} size={17} />
                 </TouchableOpacity>
             </View>
 
