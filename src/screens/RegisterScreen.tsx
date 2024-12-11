@@ -148,14 +148,14 @@ const RegisterScreen = ({navigation}: RegisterScreenProps) => {
           <Image source={google} style={styles.img}></Image>
         </TouchableOpacity>
         {/* login */}
-        <View style={{flexDirection: 'row', gap: 5}}>
-            <Text style={{color: 'rgba(0, 0, 0, 0.6)', fontWeight: 500}}>
-              Already have an account?
-            </Text>
-            <TouchableOpacity>
-              <Text style={{color: '#2C7CC1', fontWeight: 700}}>Login</Text>
-            </TouchableOpacity>
-          </View>
+        <View style={{flexDirection: 'row', gap: 5, marginTop: 80}}>
+          <Text style={{color: 'rgba(0, 0, 0, 0.6)', fontWeight: 500}}>
+            Already have an account?
+          </Text>
+          <TouchableOpacity>
+            <Text style={{color: '#2C7CC1', fontWeight: 700}}>Login</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );

@@ -132,14 +132,21 @@ const ForgetPassScreen = ({navigation}: ForgetPassScreenProps) => {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={{flexDirection: 'row', gap: 5, marginTop: 20}}>
-          <Text style={{color: 'rgba(0, 0, 0, 0.6)', fontWeight: 500}}>
-            Don't have account?
-          </Text>
-          <TouchableOpacity>
-            <Text style={{color: '#2C7CC1', fontWeight: 700}}>SignUp</Text>
-          </TouchableOpacity>
-        </View>
+      </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          gap: 5,
+          position: 'absolute',
+          bottom: 50,
+          alignSelf: 'center',
+        }}>
+        <Text style={{color: 'rgba(0, 0, 0, 0.6)', fontWeight: 500}}>
+          Don't have account?
+        </Text>
+        <TouchableOpacity>
+          <Text style={{color: '#2C7CC1', fontWeight: 700}}>SignUp</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
