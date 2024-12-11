@@ -1,13 +1,14 @@
-import { FlatList, Image, ImageBackground, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { FlatList, Image, ImageBackground, NativeSyntheticEvent, Text, TextInput, TextInputChangeEventData, TouchableOpacity, View } from "react-native"
 import { NewMemorableProps, RootStackParamList } from "../types/navigator.type"
 import { RouteProp } from "@react-navigation/native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import { faBuilding, faHouse, faLocationDot, faSchoolFlag } from "@fortawesome/free-solid-svg-icons";
 import SearchBar from "../components/SearchBar";
 import mockData from "../mock/mockData";
 import MemorableItem from "../components/MemorableItem";
 import BottomSheet, { BottomSheetMethods } from "@devvie/bottom-sheet";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import CustomButton, { ButtonProps } from "../components/CustomButton";
 
 const NewMemorablePlaceScreen = ({
     route,
@@ -16,11 +17,46 @@ const NewMemorablePlaceScreen = ({
     const { memorablePlaces } = mockData;
     const sheetRef = useRef<BottomSheetMethods>(null);
     const sheetRefLocationNote = useRef<BottomSheetMethods>(null);
+    const sheetRefSave = useRef<BottomSheetMethods>(null);
+    const [locationName, setLocationName] = useState<string>("");
 
     const HandleLocationNote = () => {
         sheetRef.current?.close();
         sheetRefLocationNote.current?.open();
     }
+
+    const HandleSaveLocation = () => {
+        sheetRefLocationNote.current?.close();
+        sheetRefSave.current?.open();
+    }
+
+    const HandleLocationEdit = () => {
+        sheetRefSave.current?.close();
+        sheetRefLocationNote.current?.open();
+    }
+
+    const HandleTextChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
+        const text = e.nativeEvent.text;
+        setLocationName(text);
+    }
+
+    const [buttons, setButtons] = useState<ButtonProps[]>([
+        {
+            id: '1',
+            name: 'Home',
+            icon: <FontAwesomeIcon icon={faHouse} />
+        },
+        {
+            id: '2',
+            name: 'School',
+            icon: <FontAwesomeIcon icon={faSchoolFlag} />
+        },
+        {
+            id: '3',
+            name: 'Workplace',
+            icon: <FontAwesomeIcon icon={faBuilding} />
+        },
+    ]);
 
     return (
         <>
@@ -74,13 +110,58 @@ const NewMemorablePlaceScreen = ({
             </BottomSheet>
             <BottomSheet ref={sheetRefLocationNote} height="40%">
                 <View className="h-full px-4 pb-2">
-                    <View className="mb-5">
+                    <View className="mb-2">
                         <Text className="text-main text-normal font-bold">Choose your location type</Text>
+                    </View>
+                    <View className='mb-4'>
+                        <FlatList data={buttons}
+                            keyExtractor={(item, index) => index.toString()}
+                            renderItem={({ item }) => (
+                                <CustomButton
+                                    item={item}
+                                    press={() => { }}
+                                />
+                            )}
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                        />
+                    </View>
+                    <Text className="text-main font-bold text-normal mb-2">Location Name:</Text>
+                    <TextInput
+                        className='text-medium text-main h-auto px-4 mb-3 bg-backButton rounded-[10px]'
+                        placeholderTextColor="#2C7CC1"
+                        onChange={HandleTextChange}
+                    />
+                    <TouchableOpacity onPress={HandleSaveLocation}
+                        className='mt-2 bg-main px-10 py-2 rounded-[10px] items-center justify-center mb-2'>
+                        <Text className='font-bold text-white text-normal'>Save</Text>
+                    </TouchableOpacity>
+                </View>
+            </BottomSheet>
+            <BottomSheet ref={sheetRefSave} height="30%">
+                <View className="h-full px-4 pb-2">
+                    <View className="mb-5">
+                        <Text className="text-main text-title font-bold mb-1">{locationName}</Text>
+                        <Text className="text-[13px]">Đường Hàn Thuyên, khu phố 6, Linh Trung, Thủ Đức</Text>
+                    </View>
+                    <View className="flex flex-row justify-between space-x-3">
+                        <TouchableOpacity onPress={HandleLocationEdit}
+                            className="flex-1 flex-row items-center border-2 border-main pr-[25px] py-1 rounded-[8px]">
+                            <Image source={require("../assets/images/location-note-icon.png")}
+                                style={{ width: 35, height: 35, marginLeft: 6 }}
+                            />
+                            <Text className="text-[15px] text-main font-bold">Edit</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity className="flex-1 flex-row items-center justify-center border-2 border-main pr-[25px] py-1 rounded-[8px]">
+                            <Image source={require("../assets/images/start-post-icon.png")}
+                                style={{ width: 35, height: 37 }}
+                            />
+                            <Text className="text-[15px] text-main font-bold">Start a Post</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </BottomSheet>
         </>
-
     )
 }
 
