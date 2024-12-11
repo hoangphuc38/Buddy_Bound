@@ -19,12 +19,13 @@ const NewRelationshipScreen = ({navigation}: NewRelationshipScreenProps) => {
   const [isFamilyActive, setIsFamilyActive] = useState(false);
   const [isFriendActive, setIsFriendActive] = useState(false);
 
-  const animationValue = useRef(new Animated.Value(0)).current; // Giá trị animation
+  const animationValueFamily = useRef(new Animated.Value(0)).current; // Giá trị animation
+  const animationValueFriend = useRef(new Animated.Value(0)).current;
 
-  const toggleDropdown = () => {
+  const toggleDropdownFamily = () => {
     if (isFamilyActive) {
       // Trượt lên (ẩn dropdown)
-      Animated.timing(animationValue, {
+      Animated.timing(animationValueFamily, {
         toValue: 0,
         duration: 500, // Thời gian hiệu ứng
         useNativeDriver: false, // Không dùng native driver vì thay đổi layout
@@ -32,9 +33,28 @@ const NewRelationshipScreen = ({navigation}: NewRelationshipScreenProps) => {
     } else {
       // Trượt xuống (hiện dropdown)
       setIsFamilyActive(true);
-      Animated.timing(animationValue, {
+      Animated.timing(animationValueFamily, {
         toValue: 100, // Chiều cao tối đa của dropdown
-        duration: 300,
+        duration: 500,
+        useNativeDriver: false,
+      }).start();
+    }
+  };
+
+  const toggleDropdownFriend = () => {
+    if (isFriendActive) {
+      // Trượt lên (ẩn dropdown)
+      Animated.timing(animationValueFriend, {
+        toValue: 0,
+        duration: 500, // Thời gian hiệu ứng
+        useNativeDriver: false, // Không dùng native driver vì thay đổi layout
+      }).start(() => setIsFriendActive(false));
+    } else {
+      // Trượt xuống (hiện dropdown)
+      setIsFriendActive(true);
+      Animated.timing(animationValueFriend, {
+        toValue: 100, // Chiều cao tối đa của dropdown
+        duration: 500,
         useNativeDriver: false,
       }).start();
     }
@@ -59,7 +79,7 @@ const NewRelationshipScreen = ({navigation}: NewRelationshipScreenProps) => {
               {backgroundColor: isFamilyActive ? '#2C91E7' : '#fff'},
               {borderColor: isFamilyActive ? '#2C91E7' : '#cdcdcd'},
             ]}
-            onPress={toggleDropdown}>
+            onPress={toggleDropdownFamily}>
             <View style={styles.cbbTitle}>
               <View style={styles.cbbIcon}>
                 <Image
@@ -86,7 +106,8 @@ const NewRelationshipScreen = ({navigation}: NewRelationshipScreenProps) => {
                 ]}></Image>
             </View>
           </TouchableOpacity>
-          <Animated.View style={[styles.cbbOptions, {height: animationValue}]}>
+          <Animated.View
+            style={[styles.cbbOptions, {height: animationValueFamily}]}>
             <TouchableOpacity style={styles.cbbItem}>
               <Text style={styles.itemText}>Parent-Child</Text>
             </TouchableOpacity>
@@ -100,23 +121,23 @@ const NewRelationshipScreen = ({navigation}: NewRelationshipScreenProps) => {
           <TouchableOpacity
             style={[
               styles.cbbBtn,
-              {backgroundColor: isFamilyActive ? '#2C91E7' : '#fff'},
-              {borderColor: isFamilyActive ? '#2C91E7' : '#cdcdcd'},
+              {backgroundColor: isFriendActive ? '#2C91E7' : '#fff'},
+              {borderColor: isFriendActive ? '#2C91E7' : '#cdcdcd'},
             ]}
-            onPress={toggleDropdown}>
+            onPress={toggleDropdownFriend}>
             <View style={styles.cbbTitle}>
               <View style={styles.cbbIcon}>
                 <Image
                   source={group}
                   style={[
                     styles.img,
-                    {tintColor: isFamilyActive ? '#fff' : '#423D3D'},
+                    {tintColor: isFriendActive ? '#fff' : '#423D3D'},
                   ]}></Image>
               </View>
               <Text
                 style={[
                   styles.cbbText,
-                  {color: isFamilyActive ? '#fff' : '#423D3D'},
+                  {color: isFriendActive ? '#fff' : '#423D3D'},
                 ]}>
                 Friend
               </Text>
@@ -126,11 +147,12 @@ const NewRelationshipScreen = ({navigation}: NewRelationshipScreenProps) => {
                 source={chevronDown}
                 style={[
                   styles.img,
-                  {tintColor: isFamilyActive ? '#fff' : '#423D3D'},
+                  {tintColor: isFriendActive ? '#fff' : '#423D3D'},
                 ]}></Image>
             </View>
           </TouchableOpacity>
-          <Animated.View style={[styles.cbbOptions, {height: animationValue}]}>
+          <Animated.View
+            style={[styles.cbbOptions, {height: animationValueFriend}]}>
             <TouchableOpacity style={styles.cbbItem}>
               <Text style={styles.itemText}>Parent-Child</Text>
             </TouchableOpacity>
