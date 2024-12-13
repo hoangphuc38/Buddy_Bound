@@ -146,12 +146,14 @@ const mockData = {
             name: "Lê Võ Duy Khiêm",
             avatar: "https://cdn.tuoitre.vn/471584752817336320/2023/10/15/base64-1697371188123490553865.png",
             content: "Chỉ biết ước :vv",
+            time: new Date(2024, 11, 13, 3, 58),
         },
         {
             id: 2,
             name: "Hoàng Phúc",
             avatar: "https://th.bing.com/th/id/OIP.Ypl_sg1NvXelL9QzJ1lKagHaHa?rs=1&pid=ImgDetMain",
             content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            time: new Date(2024, 12, 13, 3, 58),
         }
     ],
 
@@ -167,6 +169,42 @@ const mockData = {
         {
             id: 3,
             name: "Nhà văn hóa sinh viên"
+        }
+    ],
+
+    postMarkers: [
+        {
+            latitude: 0,
+            longtitutude: 1,
+            name: "Hoàng Phúc",
+            avatar: "https://th.bing.com/th/id/OIP.Ypl_sg1NvXelL9QzJ1lKagHaHa?rs=1&pid=ImgDetMain",
+            postId: 1,
+            timePost: "2024-12-13T10:00:00",
+        },
+        {
+            latitude: 0,
+            longtitutude: 1,
+            name: "Lê Võ Duy Khiêm",
+            avatar: "https://cdn.tuoitre.vn/471584752817336320/2023/10/15/base64-1697371188123490553865.png",
+            postId: 2,
+            timePost: "2024-12-10T10:00:00",
+        }
+    ],
+
+    userMarkers: [
+        {
+            latitude: 0,
+            longtitutude: 1,
+            name: "Hoàng Phúc",
+            avatar: "https://th.bing.com/th/id/OIP.Ypl_sg1NvXelL9QzJ1lKagHaHa?rs=1&pid=ImgDetMain",
+            totalPost: 1,
+        },
+        {
+            latitude: 0,
+            longtitutude: 1,
+            name: "Lê Văn Phú",
+            avatar: "https://th.bing.com/th/id/OIP.klxNCgcMlcIo20ExtOdjVQHaHZ?rs=1&pid=ImgDetMain",
+            totalPost: 0
         }
     ]
 }

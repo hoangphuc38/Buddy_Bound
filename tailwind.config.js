@@ -29,11 +29,13 @@ module.exports = {
 
       colors: {
         main: "#535862",
+        primary: "#2C7CC1",
         secondary: "#FF6600",
         backButton: "rgba(44, 124, 193, 0.2)",
         contentPost: "rgba(124, 121, 121, 0.8)",
         placeHolder: "#7C7979",
         tooltip: "rgba(255, 255, 255, 0.68)",
+        markerbg: "rgba(255, 255, 255, 0.9)",
         inputbg: "#E9EAEB"
       }
     },

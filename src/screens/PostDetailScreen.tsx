@@ -72,7 +72,7 @@ const PostDetailScreen = ({
 
 
             </View>
-            <BottomSheet ref={sheetRef} height="90%">
+            <BottomSheet ref={sheetRef} height="100%" style={{ backgroundColor: "white" }}>
                 <View className="h-full px-4 pb-[30px] bg-white">
                     <FlatList data={comments}
                         keyExtractor={(item, index) => index.toString()}
