@@ -28,10 +28,7 @@ const Navigator = () => {
   return (
     <NavigationContainer theme={theme}>
       <Stack.Navigator screenOptions={{headerShown: false}}>
-        <Stack.Screen
-          name="NewRelationship"
-          component={NewRelationshipScreen}
-        />
+        <Stack.Screen name="AddContact" component={AddContactScreen} />
         <Stack.Screen name="Tabs" component={Tabs} />
       </Stack.Navigator>
     </NavigationContainer>

@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
+  Modal,
 } from 'react-native';
 import {AddContactScreenProps} from '../types/navigator.type';
 import {useState} from 'react';
@@ -75,18 +76,38 @@ const mockData = {
 
 const AddContactScreen = ({navigation}: AddContactScreenProps) => {
   const [addedUsers, setAddedUsers] = useState<number[]>([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<
+    (typeof mockData.users)[0] | null
+  >(null);
+  const [relationship, setRelationship] = useState(''); // Trạng thái radio chính
+  const [parentChild, setParentChild] = useState(''); // Trạng thái Parent/Child
 
   const handleSearch = (query: string) => {
     console.log('Searching for:', query);
     // Thực hiện logic tìm kiếm tại đây (gọi API, lọc danh sách, ...)
   };
 
-  const handleToggleAdd = (userId: number) => {
-    setAddedUsers(prev =>
-      prev.includes(userId)
-        ? prev.filter(id => id !== userId)
-        : [...prev, userId],
-    );
+  const handleToggleAdd = (user: (typeof mockData.users)[0]) => {
+    if (addedUsers.includes(user.id)) {
+      // Loại người dùng ra khỏi danh sách nếu đã được thêm
+      setAddedUsers(prev => prev.filter(id => id !== user.id));
+    } else {
+      // Hiển thị modal để thêm người dùng mới
+      setSelectedUser(user);
+      setModalVisible(true);
+    }
+  };
+
+  const handleSend = () => {
+    if (selectedUser) {
+      setAddedUsers(prev => [...prev, selectedUser.id]);
+    }
+    setModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setModalVisible(false);
   };
 
   const Item = ({item}: {item: (typeof mockData.users)[0]}) => {
@@ -104,7 +125,7 @@ const AddContactScreen = ({navigation}: AddContactScreenProps) => {
         </View>
         <TouchableOpacity
           style={[styles.addButton, isAdded ? styles.added : styles.notAdded]}
-          onPress={() => handleToggleAdd(item.id)}>
+          onPress={() => handleToggleAdd(item)}>
           <Text style={styles.addButtonText}>{isAdded ? 'Added' : 'Add'}</Text>
         </TouchableOpacity>
       </View>
@@ -145,6 +166,163 @@ const AddContactScreen = ({navigation}: AddContactScreenProps) => {
           </View>
         </TouchableOpacity>
       </View>
+      {/* Modal */}
+      {selectedUser && (
+        <Modal
+          style={styles.modalContainer}
+          animationType="slide"
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}>
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Relationship Request</Text>
+              <Text style={styles.modalText}>
+                Hi {selectedUser.name}, i want to set relationship with you as
+              </Text>
+              <View style={styles.radioBtnContainer}>
+                {/* Friend */}
+                <TouchableOpacity
+                  style={styles.radioContainer}
+                  onPress={() => setRelationship('Friend')}>
+                  <View
+                    style={[
+                      styles.radioCircle,
+                      {
+                        backgroundColor:
+                          relationship === 'Friend' ? '#125B9A' : '#d9d9d9',
+                      },
+                    ]}></View>
+                  <Text
+                    style={[
+                      styles.radioLabel,
+                      {
+                        color: relationship === 'Friend' ? '#125B9A' : '#000',
+                      },
+                    ]}>
+                    Friend
+                  </Text>
+                </TouchableOpacity>
+
+                {/* Family (Others) */}
+                <TouchableOpacity
+                  style={styles.radioContainer}
+                  onPress={() => setRelationship('FamilyOthers')}>
+                  <View
+                    style={[
+                      styles.radioCircle,
+                      {
+                        backgroundColor:
+                          relationship === 'FamilyOthers'
+                            ? '#125B9A'
+                            : '#d9d9d9',
+                      },
+                    ]}></View>
+                  <Text
+                    style={[
+                      styles.radioLabel,
+                      {
+                        color:
+                          relationship === 'FamilyOthers' ? '#125B9A' : '#000',
+                      },
+                    ]}>
+                    Family (Others)
+                  </Text>
+                </TouchableOpacity>
+
+                {/* Family (Parent-Child) */}
+                <TouchableOpacity
+                  style={styles.radioContainer}
+                  onPress={() => setRelationship('ParentChild')}>
+                  <View
+                    style={[
+                      styles.radioCircle,
+                      {
+                        backgroundColor:
+                          relationship === 'ParentChild'
+                            ? '#125B9A'
+                            : '#d9d9d9',
+                      },
+                    ]}></View>
+                  <Text style={styles.radioLabel}>Family (Parent-Child)</Text>
+                </TouchableOpacity>
+
+                {/* Sub-options for Parent-Child */}
+                {relationship === 'ParentChild' && (
+                  <View style={styles.subRadioContainer}>
+                    <Text style={styles.modalText}>For detail, you are:</Text>
+                    {/* Parent */}
+                    <View style={styles.subRadioOption}>
+                      <TouchableOpacity
+                        style={styles.radioContainer}
+                        onPress={() => setParentChild('Parent')}>
+                        <View
+                          style={[
+                            styles.radioCircle,
+                            {
+                              backgroundColor:
+                                parentChild === 'Parent'
+                                  ? '#125B9A'
+                                  : '#d9d9d9',
+                            },
+                          ]}></View>
+                        <Text
+                          style={[
+                            styles.radioLabel,
+                            {
+                              color:
+                                parentChild === 'Parent' ? '#125B9A' : '#000',
+                            },
+                          ]}>
+                          Parent
+                        </Text>
+                      </TouchableOpacity>
+
+                      {/* Child */}
+                      <TouchableOpacity
+                        style={styles.radioContainer}
+                        onPress={() => setParentChild('Child')}>
+                        <View
+                          style={[
+                            styles.radioCircle,
+                            {
+                              backgroundColor:
+                                parentChild === 'Child' ? '#125B9A' : '#d9d9d9',
+                            },
+                          ]}></View>
+                        <Text
+                          style={[
+                            styles.radioLabel,
+                            {
+                              color:
+                                parentChild === 'Child' ? '#125B9A' : '#000',
+                            },
+                          ]}>
+                          Child
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                )}
+              </View>
+              <View style={styles.modalActions}>
+                <TouchableOpacity
+                  style={[styles.modalButton, {backgroundColor: '#125B9A'}]}
+                  onPress={handleSend}>
+                  <Text style={styles.modalButtonText}>Send</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.modalButton,
+                    {backgroundColor: 'rgba(0, 0, 0, 0.6)'},
+                  ]}
+                  onPress={handleCancel}>
+                  <Text style={styles.modalButtonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
     </SafeAreaView>
   );
 };
@@ -222,7 +400,7 @@ const styles = StyleSheet.create({
   },
   continueBtn: {
     position: 'absolute',
-    bottom: 100,
+    bottom: 40,
     width: '100%',
     paddingHorizontal: 30,
   },
@@ -241,4 +419,74 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   btnText: {color: '#fff', fontSize: 18, fontWeight: '600'},
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Màu nền đen với độ mờ 0.5
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    width: '100%',
+    flex: 1,
+    position: 'absolute',
+    backgroundColor: 'rgba(0, 0, 0, 0.37)',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 19,
+    paddingVertical: 20,
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: 500,
+    color: '#125B9A',
+  },
+  modalText: {
+    fontSize: 16,
+    fontWeight: 500,
+  },
+  modalButton: {
+    borderRadius: 5,
+    height: 45,
+    justifyContent: 'center',
+    paddingHorizontal: 145,
+  },
+  modalActions: {
+    gap: 10,
+  },
+  modalButtonText: {
+    fontSize: 16,
+    fontWeight: 500,
+    color: '#fff',
+  },
+  radioBtnContainer: {
+    alignSelf: 'flex-start',
+    gap: 5,
+    marginTop: 5,
+    marginBottom: 20,
+  },
+  radioContainer: {
+    flexDirection: 'row',
+    gap: 4,
+    alignItems: 'center',
+  },
+  radioCircle: {
+    height: 15,
+    width: 15,
+    borderRadius: 50,
+  },
+  radioLabel: {
+    fontSize: 16,
+  },
+  subRadioContainer: {
+    marginTop: 5,
+    gap: 10,
+  },
+  subRadioOption: {
+    flexDirection: 'row',
+    gap: 50,
+    alignItems: 'center',
+  },
 });
