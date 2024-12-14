@@ -35,7 +35,7 @@ allprojects {
                         // This should always be `mapbox` (not your username).
                         username = 'mapbox'
                         // Use the secret token you generated in the last step.
-                        password = 'set api key here'
+                        password = project.properties['MAPBOX_DOWNLOADS_TOKEN'] ?: ""
                     }
                 }
             }
