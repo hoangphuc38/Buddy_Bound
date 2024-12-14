@@ -1,0 +1,41 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/NunitoSans_10pt-Black.ttf",
+      "sha1": "b5920e7324121e9dc2a4d65cbedac76a07cc0e82"
+    },
+    {
+      "path": "src/assets/fonts/NunitoSans_10pt-Bold.ttf",
+      "sha1": "1a43f6ab652eb0c71cd0d748bd8d4bf360903fe1"
+    },
+    {
+      "path": "src/assets/fonts/NunitoSans_10pt-BoldItalic.ttf",
+      "sha1": "10b9a1894ae213dd9bf6a744cf91deb035dfe79b"
+    },
+    {
+      "path": "src/assets/fonts/NunitoSans_10pt-Italic.ttf",
+      "sha1": "00c1cc40c8dba5d484702ad17f83d525b33955d3"
+    },
+    {
+      "path": "src/assets/fonts/NunitoSans_10pt-Light.ttf",
+      "sha1": "32f3cecd9b6c0f67c1a6bec6886e2b8f160617f1"
+    },
+    {
+      "path": "src/assets/fonts/NunitoSans_10pt-Medium.ttf",
+      "sha1": "947e59a8d3586d17a5f8698ae2f371e580411cdb"
+    },
+    {
+      "path": "src/assets/fonts/NunitoSans_10pt-Regular.ttf",
+      "sha1": "c4bc36919dfa9ee086b71d7b2796fafc22249b97"
+    },
+    {
+      "path": "src/assets/fonts/NunitoSans_10pt-SemiBold.ttf",
+      "sha1": "0ec94b38226fe45cb85bad4cb5f884512bae6eb7"
+    },
+    {
+      "path": "src/assets/fonts/NunitoSans_10pt-SemiBoldItalic.ttf",
+      "sha1": "16890643d41d8cb28d9b3df3ae584dacb102e188"
+    }
+  ]
+}

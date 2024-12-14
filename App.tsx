@@ -8,7 +8,6 @@ const App = () => {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Navigator />
     </GestureHandlerRootView>
-
   );
 };
 
