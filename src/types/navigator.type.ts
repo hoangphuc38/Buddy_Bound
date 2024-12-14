@@ -1,4 +1,4 @@
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 export type RootStackParamList = {
     Welcome: undefined;
@@ -10,6 +10,13 @@ export type RootStackParamList = {
     AddContact: undefined;
     NewRelationship: undefined;
     SetNewRelationship: undefined;
+    LocationBuddy: { userID: number }
+    LocationGroup: { groupID: number }
+    NewPost: undefined
+    PostOfGroup: { groupID: number }
+    PostDetail: { postID: number }
+    MemorablePlaces: undefined
+    NewMemorable: undefined
     //Declare new screen with needed parameters
 }
 
@@ -22,6 +29,13 @@ export type ForgetPassScreenProps = NativeStackScreenProps<RootStackParamList, '
 export type AddContactScreenProps = NativeStackScreenProps<RootStackParamList, 'AddContact'>;
 export type NewRelationshipScreenProps = NativeStackScreenProps<RootStackParamList, 'NewRelationship'>;
 export type SetNewRelationshipScreenProps = NativeStackScreenProps<RootStackParamList, 'SetNewRelationship'>;
+export type LocationBuddyScreenProps = NativeStackScreenProps<RootStackParamList, 'LocationBuddy'>
+export type LocationGroupScreenProps = NativeStackScreenProps<RootStackParamList, 'LocationGroup'>
+export type NewPostScreenProps = NativeStackScreenProps<RootStackParamList, 'NewPost'>
+export type PostOfGroupProps = NativeStackScreenProps<RootStackParamList, 'PostOfGroup'>
+export type PostDetailProps = NativeStackScreenProps<RootStackParamList, 'PostDetail'>
+export type MemorablePlacesProps = NativeStackScreenProps<RootStackParamList, 'MemorablePlaces'>
+export type NewMemorableProps = NativeStackScreenProps<RootStackParamList, 'NewMemorable'>
 //Continue when declare new screens
 
 
