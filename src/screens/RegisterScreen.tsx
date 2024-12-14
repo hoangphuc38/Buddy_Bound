@@ -20,8 +20,10 @@ const google = require('../assets/images/google-icon.png');
 const RegisterScreen = ({navigation}: RegisterScreenProps) => {
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity style={styles.backBtnBackground}>
-        <Image source={back} style={styles.backVector}></Image>
+      <TouchableOpacity
+        style={styles.backBtnBackground}
+        onPress={() => navigation.pop()}>
+        <Image source={back} style={styles.backVector} />
       </TouchableOpacity>
       <View style={styles.contentContainer}>
         <View
@@ -37,7 +39,7 @@ const RegisterScreen = ({navigation}: RegisterScreenProps) => {
             Register
           </Text>
           <View style={{height: 50, width: 40}}>
-            <Image source={register} style={styles.img}></Image>
+            <Image source={register} style={styles.img} />
           </View>
         </View>
         {/* form đăng ký */}
@@ -45,7 +47,7 @@ const RegisterScreen = ({navigation}: RegisterScreenProps) => {
           {/* username */}
           <View style={styles.textInput}>
             <View style={{height: 13, width: 13}}>
-              <Image source={user} style={styles.icon}></Image>
+              <Image source={user} style={styles.icon} />
             </View>
             <View style={styles.textInputContainer}>
               <TextInput
@@ -57,13 +59,14 @@ const RegisterScreen = ({navigation}: RegisterScreenProps) => {
                   fontWeight: 600,
                   color: '#2C7CC1',
                   height: 50,
-                }}></TextInput>
+                }}
+              />
             </View>
           </View>
           {/* email */}
           <View style={styles.textInput}>
             <View style={{height: 13, width: 13}}>
-              <Image source={email} style={styles.icon}></Image>
+              <Image source={email} style={styles.icon} />
             </View>
             <View style={styles.textInputContainer}>
               <TextInput
@@ -75,13 +78,14 @@ const RegisterScreen = ({navigation}: RegisterScreenProps) => {
                   fontWeight: 600,
                   color: '#2C7CC1',
                   height: 50,
-                }}></TextInput>
+                }}
+              />
             </View>
           </View>
           {/* password */}
           <View style={styles.textInput}>
             <View style={{height: 13, width: 13}}>
-              <Image source={pasword} style={styles.icon}></Image>
+              <Image source={pasword} style={styles.icon} />
             </View>
             <View style={styles.textInputContainer}>
               <TextInput
@@ -94,13 +98,14 @@ const RegisterScreen = ({navigation}: RegisterScreenProps) => {
                   fontWeight: 600,
                   color: '#2C7CC1',
                   height: 50,
-                }}></TextInput>
+                }}
+              />
             </View>
           </View>
           {/* confirm pass */}
           <View style={styles.textInput}>
             <View style={{height: 13, width: 13}}>
-              <Image source={pasword} style={styles.icon}></Image>
+              <Image source={pasword} style={styles.icon} />
             </View>
             <View style={styles.textInputContainer}>
               <TextInput
@@ -113,7 +118,8 @@ const RegisterScreen = ({navigation}: RegisterScreenProps) => {
                   fontWeight: 600,
                   color: '#2C7CC1',
                   height: 50,
-                }}></TextInput>
+                }}
+              />
             </View>
           </View>
           {/* nút signUP */}
@@ -137,15 +143,15 @@ const RegisterScreen = ({navigation}: RegisterScreenProps) => {
             justifyContent: 'space-between',
             marginTop: 60,
           }}>
-          <View style={styles.dash}></View>
+          <View style={styles.dash} />
           <Text style={{marginLeft: 5, marginRight: 5, fontWeight: 500}}>
             Or Continue With
           </Text>
-          <View style={styles.dash}></View>
+          <View style={styles.dash} />
         </View>
         {/* google */}
         <TouchableOpacity style={styles.googleSignInBtn}>
-          <Image source={google} style={styles.img}></Image>
+          <Image source={google} style={styles.img} />
         </TouchableOpacity>
         {/* login */}
         <View style={{flexDirection: 'row', gap: 5, marginTop: 80}}>

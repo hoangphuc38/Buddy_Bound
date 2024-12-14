@@ -1,12 +1,15 @@
 import 'react-native-gesture-handler';
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import Navigator from './src/navigation/Navigator';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { AuthProvider } from './src/contexts/auth-context';
 
 const App = () => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <Navigator />
+      <AuthProvider>
+        <Navigator />
+      </AuthProvider>
     </GestureHandlerRootView>
   );
 };

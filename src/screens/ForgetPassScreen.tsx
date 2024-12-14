@@ -62,8 +62,10 @@ const ForgetPassScreen = ({navigation}: ForgetPassScreenProps) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity style={styles.backBtnBackground}>
-        <Image source={back} style={styles.backVector}></Image>
+      <TouchableOpacity
+        style={styles.backBtnBackground}
+        onPress={() => navigation.pop()}>
+        <Image source={back} style={styles.backVector} />
       </TouchableOpacity>
       <View style={styles.content}>
         {/* tiêu đề */}
@@ -72,7 +74,7 @@ const ForgetPassScreen = ({navigation}: ForgetPassScreenProps) => {
         </Text>
         {/* ảnh */}
         <View style={styles.imgContainer}>
-          <Image style={styles.img} source={currentData.image}></Image>
+          <Image style={styles.img} source={currentData.image} />
         </View>
         {/* nhập liệu */}
         <View style={styles.form}>
@@ -144,8 +146,8 @@ const ForgetPassScreen = ({navigation}: ForgetPassScreenProps) => {
         <Text style={{color: 'rgba(0, 0, 0, 0.6)', fontWeight: 500}}>
           Don't have account?
         </Text>
-        <TouchableOpacity>
-          <Text style={{color: '#2C7CC1', fontWeight: 700}}>SignUp</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+          <Text style={{color: '#2C7CC1', fontWeight: 700}}>Sign Up</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

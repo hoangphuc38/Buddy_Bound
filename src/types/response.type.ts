@@ -1,9 +1,10 @@
 export type TErrorResponse = {
-    title: string;
-    status: string;
+  title: string;
+  status: string;
 };
 
 export type TSuccessResponse<T> = {
-    message: string;
-    data: T;
+  message: string;
+  status: string;
+  data: T;
 };

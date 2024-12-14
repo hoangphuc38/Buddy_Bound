@@ -5,7 +5,7 @@ import {
 } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../types/navigator.type';
-import React, {useContext} from 'react';
+import React from 'react';
 import Tabs from './BottomTab';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import LoginScreen from '../screens/LoginScreen';
@@ -33,29 +33,41 @@ const theme: Theme = {
 };
 
 const Navigator = () => {
-    return (
-        <NavigationContainer theme={theme}>
-            <Stack.Navigator screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="Tabs" component={Tabs} />
-                <Stack.Screen name="Welcome" component={WelcomeScreen} />
-                <Stack.Screen name="LocationBuddy" component={LocationBuddyScreen} />
-                <Stack.Screen name="LocationGroup" component={LocationGroupScreen} />
-                <Stack.Screen name="NewPost" component={NewPostScreen} />
-                <Stack.Screen name="PostOfGroup" component={PostOfGroupScreen} />
-                <Stack.Screen name="PostDetail" component={PostDetailScreen}
-                    options={{
-                        gestureEnabled: true,
-                        gestureDirection: 'vertical',
-                        animation: 'slide_from_bottom',
-                    }}
-                />
-                <Stack.Screen name="MemorablePlaces" component={MemorablePlaceScreen} />
-                <Stack.Screen name="NewMemorable" component={NewMemorablePlaceScreen} />
-                <Stack.Screen name="SetNewRelationship" component={SetNewRelationshipScreen} />
-                <Stack.Screen name="Tabs" component={Tabs} />
-            </Stack.Navigator>
-        </NavigationContainer>
-    );
+  return (
+    <NavigationContainer theme={theme}>
+      <Stack.Navigator screenOptions={{headerShown: false}}>
+        <Stack.Screen name="Welcome" component={WelcomeScreen} />
+        <Stack.Screen name="LogIn" component={LoginScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen name="ForgetPass" component={ForgetPassScreen} />
+        <Stack.Screen name="AddContact" component={AddContactScreen} />
+        <Stack.Screen
+          name="NewRelationship"
+          component={NewRelationshipScreen}
+        />
+        <Stack.Screen
+          name="SetNewRelationship"
+          component={SetNewRelationshipScreen}
+        />
+        <Stack.Screen name="Tabs" component={Tabs} />
+        <Stack.Screen name="LocationBuddy" component={LocationBuddyScreen} />
+        <Stack.Screen name="LocationGroup" component={LocationGroupScreen} />
+        <Stack.Screen name="NewPost" component={NewPostScreen} />
+        <Stack.Screen name="PostOfGroup" component={PostOfGroupScreen} />
+        <Stack.Screen
+          name="PostDetail"
+          component={PostDetailScreen}
+          options={{
+            gestureEnabled: true,
+            gestureDirection: 'vertical',
+            animation: 'slide_from_bottom',
+          }}
+        />
+        <Stack.Screen name="MemorablePlaces" component={MemorablePlaceScreen} />
+        <Stack.Screen name="NewMemorable" component={NewMemorablePlaceScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
 };
 
 export default Navigator;

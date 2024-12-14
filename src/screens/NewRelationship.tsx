@@ -9,6 +9,7 @@ import {
 import {NewRelationshipScreenProps} from '../types/navigator.type';
 import {useState, useRef} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import React from 'react';
 
 const back = require('../assets/images/back-vector.png');
 const home = require('../assets/images/home-icon.png');
@@ -63,7 +64,7 @@ const NewRelationshipScreen = ({navigation}: NewRelationshipScreenProps) => {
   return (
     <SafeAreaView style={styles.container}>
       <TouchableOpacity style={styles.backBtnBackground}>
-        <Image source={back} style={styles.backVector}></Image>
+        <Image source={back} style={styles.backVector} />
       </TouchableOpacity>
       <View style={styles.content}>
         <Text style={{fontSize: 24, fontWeight: 600, color: '#2C7CC1'}}>
@@ -87,7 +88,7 @@ const NewRelationshipScreen = ({navigation}: NewRelationshipScreenProps) => {
                   style={[
                     styles.img,
                     {tintColor: isFamilyActive ? '#fff' : '#423D3D'},
-                  ]}></Image>
+                  ]} />
               </View>
               <Text
                 style={[
@@ -103,7 +104,7 @@ const NewRelationshipScreen = ({navigation}: NewRelationshipScreenProps) => {
                 style={[
                   styles.img,
                   {tintColor: isFamilyActive ? '#fff' : '#423D3D'},
-                ]}></Image>
+                ]} />
             </View>
           </TouchableOpacity>
           <Animated.View
@@ -132,7 +133,7 @@ const NewRelationshipScreen = ({navigation}: NewRelationshipScreenProps) => {
                   style={[
                     styles.img,
                     {tintColor: isFriendActive ? '#fff' : '#423D3D'},
-                  ]}></Image>
+                  ]} />
               </View>
               <Text
                 style={[
@@ -148,7 +149,7 @@ const NewRelationshipScreen = ({navigation}: NewRelationshipScreenProps) => {
                 style={[
                   styles.img,
                   {tintColor: isFriendActive ? '#fff' : '#423D3D'},
-                ]}></Image>
+                ]} />
             </View>
           </TouchableOpacity>
           <Animated.View

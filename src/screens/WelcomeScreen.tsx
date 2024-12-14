@@ -17,10 +17,12 @@ const WelcomeScreen = ({navigation}: WelcomeScreenProps) => {
         </Text>
       </View>
       <View style={styles.imgContainer}>
-        <Image style={styles.img} source={welcomeImg}></Image>
+        <Image style={styles.img} source={welcomeImg} />
       </View>
       <View style={styles.butContainer}>
-        <TouchableOpacity style={styles.btnGo}>
+        <TouchableOpacity
+          style={styles.btnGo}
+          onPress={() => navigation.push('LogIn')}>
           <Text style={{color: '#fff', fontSize: 16, fontWeight: 600}}>
             GET STARTED
           </Text>

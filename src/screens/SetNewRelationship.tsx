@@ -25,13 +25,13 @@ const SetNewRelationshipScreen = ({
   return (
     <SafeAreaView style={styles.container}>
       <TouchableOpacity style={styles.backBtnBackground}>
-        <Image source={back} style={styles.backVector}></Image>
+        <Image source={back} style={styles.backVector} />
       </TouchableOpacity>
       <View style={styles.content}>
         <Text style={{fontSize: 24, fontWeight: 600, color: '#2C7CC1'}}>
           New Relationship
         </Text>
-        <View style={styles.qrImageContainer}></View>
+        <View style={styles.qrImageContainer} />
       </View>
     </SafeAreaView>
   );

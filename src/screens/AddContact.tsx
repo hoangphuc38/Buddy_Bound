@@ -148,7 +148,7 @@ const AddContactScreen = ({navigation}: AddContactScreenProps) => {
             Find your buddy in your contact
           </Text>
         </View>
-        <Search placeholder="Search..." onSearch={handleSearch}></Search>
+        <Search placeholder="Search..." onSearch={handleSearch} />
         <FlatList
           data={mockData.users}
           renderItem={Item}
@@ -191,7 +191,7 @@ const AddContactScreen = ({navigation}: AddContactScreenProps) => {
                         backgroundColor:
                           relationship === 'Friend' ? '#125B9A' : '#d9d9d9',
                       },
-                    ]}></View>
+                    ]} />
                   <Text
                     style={[
                       styles.radioLabel,
@@ -216,7 +216,7 @@ const AddContactScreen = ({navigation}: AddContactScreenProps) => {
                             ? '#125B9A'
                             : '#d9d9d9',
                       },
-                    ]}></View>
+                    ]} />
                   <Text
                     style={[
                       styles.radioLabel,
@@ -242,7 +242,7 @@ const AddContactScreen = ({navigation}: AddContactScreenProps) => {
                             ? '#125B9A'
                             : '#d9d9d9',
                       },
-                    ]}></View>
+                    ]} />
                   <Text style={styles.radioLabel}>Family (Parent-Child)</Text>
                 </TouchableOpacity>
 
@@ -264,7 +264,7 @@ const AddContactScreen = ({navigation}: AddContactScreenProps) => {
                                   ? '#125B9A'
                                   : '#d9d9d9',
                             },
-                          ]}></View>
+                          ]} />
                         <Text
                           style={[
                             styles.radioLabel,
@@ -288,7 +288,7 @@ const AddContactScreen = ({navigation}: AddContactScreenProps) => {
                               backgroundColor:
                                 parentChild === 'Child' ? '#125B9A' : '#d9d9d9',
                             },
-                          ]}></View>
+                          ]} />
                         <Text
                           style={[
                             styles.radioLabel,

@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     color: '#125B9A',
-    height: 45
+    height: 45,
   },
   searchButton: {
     padding: 5,
