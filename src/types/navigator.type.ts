@@ -9,6 +9,7 @@ export type RootStackParamList = {
     ForgetPass: undefined;
     AddContact: undefined;
     NewRelationship: undefined;
+    SetNewRelationship: undefined;
     //Declare new screen with needed parameters
 }
 
@@ -20,6 +21,7 @@ export type RegisterScreenProps = NativeStackScreenProps<RootStackParamList, 'Re
 export type ForgetPassScreenProps = NativeStackScreenProps<RootStackParamList, 'ForgetPass'>;
 export type AddContactScreenProps = NativeStackScreenProps<RootStackParamList, 'AddContact'>;
 export type NewRelationshipScreenProps = NativeStackScreenProps<RootStackParamList, 'NewRelationship'>;
+export type SetNewRelationshipScreenProps = NativeStackScreenProps<RootStackParamList, 'SetNewRelationship'>;
 //Continue when declare new screens
 
 

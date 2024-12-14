@@ -13,6 +13,7 @@ import RegisterScreen from '../screens/RegisterScreen';
 import ForgetPassScreen from '../screens/ForgetPassScreen';
 import AddContactScreen from '../screens/AddContact';
 import NewRelationshipScreen from '../screens/NewRelationship';
+import SetNewRelationshipScreen from '../screens/SetNewRelationship';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -28,7 +29,7 @@ const Navigator = () => {
   return (
     <NavigationContainer theme={theme}>
       <Stack.Navigator screenOptions={{headerShown: false}}>
-        <Stack.Screen name="AddContact" component={AddContactScreen} />
+        <Stack.Screen name="SetNewRelationship" component={SetNewRelationshipScreen} />
         <Stack.Screen name="Tabs" component={Tabs} />
       </Stack.Navigator>
     </NavigationContainer>
