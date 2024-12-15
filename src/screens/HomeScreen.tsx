@@ -33,7 +33,7 @@ const HomeScreen = ({navigation}: TabsScreenProps) => {
       <View className="flex flex-1 px-4 mt-2">
         <View className="flex mb-2">
           <View className="flex flex-row justify-between items-center mb-4">
-            <Text className="font-nunitoBold text-title text-main font-medium">
+            <Text className="font-interMedium text-xl">
               Buddies
             </Text>
             <TouchableOpacity onPress={() => setAllBuddy(!allBuddy)}>

@@ -58,6 +58,13 @@
 		<string>NunitoSans_10pt-Regular.ttf</string>
 		<string>NunitoSans_10pt-SemiBold.ttf</string>
 		<string>NunitoSans_10pt-SemiBoldItalic.ttf</string>
+		<string>Inter_18pt-Black.ttf</string>
+		<string>Inter_18pt-Bold.ttf</string>
+		<string>Inter_18pt-ExtraBold.ttf</string>
+		<string>Inter_18pt-ExtraLight.ttf</string>
+		<string>Inter_18pt-Light.ttf</string>
+		<string>Inter_18pt-Medium.ttf</string>
+		<string>Inter_18pt-Regular.ttf</string>
 	</array>
 </dict>
 </plist>
