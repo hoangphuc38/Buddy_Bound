@@ -8,6 +8,7 @@ import {RootStackParamList} from '../types/navigator.type';
 import React from 'react';
 import Tabs from './BottomTab';
 import WelcomeScreen from '../screens/WelcomeScreen';
+import PermissionsScreen from '../screens/PermissionsScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import ForgetPassScreen from '../screens/ForgetPassScreen';
@@ -36,6 +37,7 @@ const Navigator = () => {
   return (
     <NavigationContainer theme={theme}>
       <Stack.Navigator screenOptions={{headerShown: false}}>
+        <Stack.Screen name="Tabs" component={Tabs} />
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="LogIn" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
@@ -49,11 +51,11 @@ const Navigator = () => {
           name="SetNewRelationship"
           component={SetNewRelationshipScreen}
         />
-        <Stack.Screen name="Tabs" component={Tabs} />
         <Stack.Screen name="LocationBuddy" component={LocationBuddyScreen} />
         <Stack.Screen name="LocationGroup" component={LocationGroupScreen} />
         <Stack.Screen name="NewPost" component={NewPostScreen} />
         <Stack.Screen name="PostOfGroup" component={PostOfGroupScreen} />
+        <Stack.Screen name="PermissionScreen" component={PermissionsScreen} />
         <Stack.Screen
           name="PostDetail"
           component={PostDetailScreen}

@@ -16,6 +16,7 @@ export type RootStackParamList = {
   PostDetail: {postID: number};
   MemorablePlaces: undefined;
   NewMemorable: undefined;
+  PermissionScreen: undefined;
   //Declare new screen with needed parameters
 };
 
@@ -79,11 +80,18 @@ export type NewMemorableProps = NativeStackScreenProps<
   RootStackParamList,
   'NewMemorable'
 >;
+export type PermissionScreenProps = NativeStackScreenProps<RootStackParamList, 'PermissionScreen'>
 //Continue when declare new screens
 
 export type BottomTabParamList = {
-  HomeScreen: undefined;
-  RelationshipScreen: undefined;
-  NotificationScreen: undefined;
-  SettingScreen: undefined;
+    HomeScreen: undefined;
+    RelationshipScreen: undefined;
+    NotificationScreen: undefined;
+    SettingScreen: undefined;
 };
+
+export type HomeScreenProps = NativeStackScreenProps<BottomTabParamList, 'HomeScreen'>
+export type RelationshipScreenProps = NativeStackScreenProps<BottomTabParamList, 'RelationshipScreen'>
+export type NotificationScreen = NativeStackScreenProps<BottomTabParamList, 'NotificationScreen'>
+export type SettingScreen = NativeStackScreenProps<BottomTabParamList, 'SettingScreen'>
+
