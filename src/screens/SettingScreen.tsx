@@ -1,7 +1,8 @@
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import { TabsScreenProps } from "../types/navigator.type";
+import { TabsScreenProps } from '../types/navigator.type';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faUserShield, faClockRotateLeft } from '@fortawesome/free-solid-svg-icons';
+import React from 'react';
 
 const SettingScreen = ({ navigation }: TabsScreenProps) => {
     return (
@@ -9,10 +10,10 @@ const SettingScreen = ({ navigation }: TabsScreenProps) => {
              <Text style={styles.title}>Settings Management</Text>
 
             <ScrollView contentContainerStyle={styles.settingsContainer}>
-                <TouchableOpacity style={styles.settingOption} onPress={() => navigation.navigate('Permissions')}>
+                <TouchableOpacity style={styles.settingOption} onPress={() => navigation.push('PermissionScreen')}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                         <View style={[styles.logo, {backgroundColor: '#00aa00' }]}>
-                            <FontAwesomeIcon icon={faUserShield} size={15} color='white'/>
+                            <FontAwesomeIcon icon={faUserShield} size={15} color="white"/>
                         </View>
                         <Text style={styles.optionText}>Permission</Text>
                     </View>
@@ -21,7 +22,7 @@ const SettingScreen = ({ navigation }: TabsScreenProps) => {
                 <TouchableOpacity style={styles.settingOption}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                         <View style={[styles.logo, {backgroundColor: '#ff6600' }]}>
-                            <FontAwesomeIcon icon={faClockRotateLeft} size={15} color='white'/>
+                            <FontAwesomeIcon icon={faClockRotateLeft} size={15} color="white"/>
                         </View>
                         <Text style={styles.optionText}>Your location history</Text>
                     </View>
@@ -30,7 +31,7 @@ const SettingScreen = ({ navigation }: TabsScreenProps) => {
                 <TouchableOpacity style={styles.settingOption}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                         <View style={[styles.logo, {backgroundColor: '#ff6600' }]}>
-                            <FontAwesomeIcon icon={faClockRotateLeft} size={15} color='white'/>
+                            <FontAwesomeIcon icon={faClockRotateLeft} size={15} color="white"/>
                         </View>
                         <Text style={styles.optionText}>Album storage</Text>
                     </View>
@@ -39,7 +40,7 @@ const SettingScreen = ({ navigation }: TabsScreenProps) => {
                 <TouchableOpacity style={styles.settingOption}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                         <View style={[styles.logo, {backgroundColor: '#ff6600' }]}>
-                            <FontAwesomeIcon icon={faClockRotateLeft} size={15} color='white'/>
+                            <FontAwesomeIcon icon={faClockRotateLeft} size={15} color="white"/>
                         </View>
                         <Text style={styles.optionText}>Memorable Destinations</Text>
                     </View>
@@ -50,8 +51,8 @@ const SettingScreen = ({ navigation }: TabsScreenProps) => {
                 <Text style={styles.logoutText}>Log out</Text>
             </TouchableOpacity>
         </View>
-    )
-}
+    );
+};
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -75,7 +76,7 @@ const styles = StyleSheet.create({
     margin: 0,
     borderRadius: 90,
     flexDirection: 'row',
-    justifyContent: 'center', 
+    justifyContent: 'center',
     alignItems: 'center',
   },
   settingOption: {

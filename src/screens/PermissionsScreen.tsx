@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Switch, ScrollView } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faLocationDot , faClockRotateLeft, faPhoneSquare} from '@fortawesome/free-solid-svg-icons';
+import { PermissionScreenProps } from '../types/navigator.type';
 
-const PermissionsScreen = () => {
+const PermissionsScreen = ({ notification }: PermissionScreenProps) => {
   const [locationPermission, setLocationPermission] = useState(false);
   const [contactsPermission, setContactsPermission] = useState(false);
   const [locationHistoryTracking, setLocationHistoryTracking] = useState(false);
@@ -16,7 +17,7 @@ const PermissionsScreen = () => {
         <View style={styles.permissionRow}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                 <View style={[styles.logo, {backgroundColor: '#752d84' }]}>
-                    <FontAwesomeIcon icon={faLocationDot} size={15} color='white'/>
+                    <FontAwesomeIcon icon={faLocationDot} size={15} color="white"/>
                 </View>
                 <View>
                     <Text style={styles.permissionText}>Location to everyone</Text>
@@ -34,7 +35,7 @@ const PermissionsScreen = () => {
         <View style={styles.permissionRow}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                 <View style={[styles.logo, {backgroundColor: '#00aa00' }]}>
-                    <FontAwesomeIcon icon={faPhoneSquare} size={15} color='white'/>
+                    <FontAwesomeIcon icon={faPhoneSquare} size={15} color="white"/>
                 </View>
             <Text style={styles.permissionText}>Contacts Permission</Text>
             </View>
@@ -49,7 +50,7 @@ const PermissionsScreen = () => {
         <View style={styles.permissionRow}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                 <View style={[styles.logo, {backgroundColor: '#125b9a' }]}>
-                    <FontAwesomeIcon icon={faClockRotateLeft} size={15} color='white'/>
+                    <FontAwesomeIcon icon={faClockRotateLeft} size={15} color="white"/>
                 </View>
                 <Text style={styles.permissionText}>Location History Tracking</Text>
             </View>
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
     margin: 0,
     borderRadius: 90,
     flexDirection: 'row',
-    justifyContent: 'center', 
+    justifyContent: 'center',
     alignItems: 'center',
   },
   title: {
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#125b9a',
     fontWeight: 300,
-  }
+  },
 });
 
 export default PermissionsScreen;
