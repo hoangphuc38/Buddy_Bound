@@ -1,0 +1,78 @@
+[
+      {
+        "id": 1,
+        "sender": {
+          "email": "john.doe@example.com",
+          "password": "password123",
+          "fullName": "John Doe",
+          "avatar": "https://i.guim.co.uk/img/media/67944850a1b5ebd6a0fba9e3528d448ebe360c60/359_0_2469_1482/master/2469.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=03f3e07a7f367f36a738f1ad8132b3bb",
+          "gender": true,
+          "birthday": "1990-05-12"
+        },
+        "isRead": false,
+        "notificationType": "COMMENT",
+        "referenceId": 101,
+        "createdAt": "2024-12-01T10:00:00Z",
+        "updatedAt": "2024-12-01T10:00:00Z",
+        "postTitle": "Exciting News!",
+        "message": "John commented on your post.",
+        "commentContent": "Great update, thanks for sharing!"
+      },
+      {
+        "id": 2,
+        "sender": {
+          "email": "jane.smith@example.com",
+          "password": "securepass456",
+          "fullName": "Jane Smith",
+          "avatar": "https://i.guim.co.uk/img/media/67944850a1b5ebd6a0fba9e3528d448ebe360c60/359_0_2469_1482/master/2469.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=03f3e07a7f367f36a738f1ad8132b3bb",
+          "gender": false,
+          "birthday": "1988-11-25"
+        },
+        "isRead": true,
+        "isAccepted": true,
+        "notificationType": "RELATIONSHIP_REQUEST",
+        "referenceId": 202,
+        "createdAt": "2024-11-29T15:30:00Z",
+        "updatedAt": "2024-11-30T09:45:00Z",
+        "message": "Jane accepted your relationship request.",
+        "relationshipType": "CloseFriend"
+      },
+      {
+        "id": 3,
+        "sender": {
+          "email": "alice.brown@example.com",
+          "password": "alicepass789",
+          "fullName": "Alice Brown",
+          "avatar": "https://i.guim.co.uk/img/media/67944850a1b5ebd6a0fba9e3528d448ebe360c60/359_0_2469_1482/master/2469.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=03f3e07a7f367f36a738f1ad8132b3bb",
+          "gender": false,
+          "birthday": "1995-03-10"
+        },
+        "isRead": false,
+        "notificationType": "GROUP_POST",
+        "referenceId": 303,
+        "createdAt": "2024-12-02T08:20:00Z",
+        "updatedAt": "2024-12-02T08:20:00Z",
+        "groupAvatar": "https://example.com/groups/travel.png",
+        "groupName": "Travel Enthusiasts",
+        "message": "Alice posted in the group Travel Enthusiasts."
+      },
+      {
+        "id": 4,
+        "sender": {
+          "email": "michael.jones@example.com",
+          "password": "mike1234",
+          "fullName": "Michael Jones",
+          "avatar": "https://i.guim.co.uk/img/media/67944850a1b5ebd6a0fba9e3528d448ebe360c60/359_0_2469_1482/master/2469.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=03f3e07a7f367f36a738f1ad8132b3bb",
+          "gender": true,
+          "birthday": "1985-07-18"
+        },
+        "isRead": false,
+        "notificationType": "GROUP_INVITATION",
+        "referenceId": 404,
+        "createdAt": "2024-12-03T14:50:00Z",
+        "updatedAt": "2024-12-03T14:50:00Z",
+        "groupAvatar": "https://example.com/groups/fitness.png",
+        "groupName": "Fitness Champs",
+        "message": "Michael invited you to join the group Fitness Champs."
+      }
+    ]

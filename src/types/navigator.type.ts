@@ -17,6 +17,10 @@ export type RootStackParamList = {
   MemorablePlaces: undefined;
   NewMemorable: undefined;
   PermissionScreen: undefined;
+  LocationHistoryScreen: undefined;
+  AlbumStorageScreen: undefined;
+  AlbumDetailsScreen: undefined;
+  NewGroupScreen: undefined;
   //Declare new screen with needed parameters
 };
 
@@ -81,6 +85,10 @@ export type NewMemorableProps = NativeStackScreenProps<
   'NewMemorable'
 >;
 export type PermissionScreenProps = NativeStackScreenProps<RootStackParamList, 'PermissionScreen'>
+export type LocationHistoryScreenProps = NativeStackScreenProps<RootStackParamList, 'LocationHistoryScreen'>
+export type AlbumStorageScreenProps = NativeStackScreenProps<RootStackParamList, 'AlbumStorageScreen'>
+export type AlbumDetailsScreenProps = NativeStackScreenProps<RootStackParamList, 'AlbumDetailsScreen'>
+export type NewGroupScreenProps = NativeStackScreenProps<RootStackParamList, 'NewGroupScreen'>
 //Continue when declare new screens
 
 export type BottomTabParamList = {

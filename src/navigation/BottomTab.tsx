@@ -1,10 +1,15 @@
 import React from 'react';
 import {View, StyleSheet, Text, Dimensions, Platform} from 'react-native';
 import {
+  BellIcon,
+  Cog6ToothIcon,
+  GlobeAsiaAustraliaIcon,
   HeartIcon,
   HomeIcon,
   MagnifyingGlassIcon,
   UserCircleIcon,
+  UserGroupIcon,
+  UsersIcon,
 } from 'react-native-heroicons/outline';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {BottomTabParamList} from '../types/navigator.type';
@@ -23,7 +28,7 @@ const CustomTabBarIcon = ({icon: Icon, label, focused}) => {
   return (
     <View style={[styles.tabItemContainer]}>
       <Icon
-        color={focused ? '#000' : '#9ca3af'}
+        color={focused ? '#2C91E7' : '#9ca3af'}
         size={24}
         strokeWidth={focused ? 2 : 1.5}
       />
@@ -54,7 +59,7 @@ const Tabs = () => {
         component={HomeScreen}
         options={{
           tabBarIcon: ({focused}) => (
-            <CustomTabBarIcon icon={HomeIcon} label="Buddy" focused={focused} />
+            <CustomTabBarIcon icon={GlobeAsiaAustraliaIcon} label="Buddies" focused={focused} />
           ),
         }}
       />
@@ -64,7 +69,7 @@ const Tabs = () => {
         options={{
           tabBarIcon: ({focused}) => (
             <CustomTabBarIcon
-              icon={MagnifyingGlassIcon}
+              icon={UserGroupIcon}
               label="Relationship"
               focused={focused}
             />
@@ -77,7 +82,7 @@ const Tabs = () => {
         options={{
           tabBarIcon: ({focused}) => (
             <CustomTabBarIcon
-              icon={HeartIcon}
+              icon={BellIcon}
               label="Notification"
               focused={focused}
             />
@@ -90,7 +95,7 @@ const Tabs = () => {
         options={{
           tabBarIcon: ({focused}) => (
             <CustomTabBarIcon
-              icon={UserCircleIcon}
+              icon={Cog6ToothIcon}
               label="Setting"
               focused={focused}
             />
@@ -120,7 +125,7 @@ const styles = StyleSheet.create({
     color: '#9ca3af',
   },
   focusedTabLabel: {
-    color: '#000',
+    color: '#2C91E7',
     fontWeight: '500',
   },
   indicator: {
@@ -128,7 +133,7 @@ const styles = StyleSheet.create({
     top: -11,
     width: 20,
     height: 3,
-    backgroundColor: '#000',
+    backgroundColor: '#2C91E7',
     borderRadius: 2,
   },
 });
