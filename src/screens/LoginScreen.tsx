@@ -26,23 +26,30 @@ const LoginScreen = ({navigation}: LogInScreenProps) => {
   const { signIn } = useAuth();
 
   const handleLogin = async () => {
-    const { account, access_token, refresh_token } = await AuthApi.login({ email: emailValue as string, password: passwordValue as string });
-    const { user } = account;
-    if (access_token && refresh_token && user) {
-        setEmailValue('');
-        setPasswordValue('');
-        signIn('Bearer ' + refresh_token);
+    try {
+        const { account, access_token, refresh_token } = await AuthApi.login({
+            email: emailValue as string,
+            password: passwordValue as string,
+        });
 
-        const options: ToastOptions = {
-            title: 'Login',
-            message: 'Login successfully!',
-            preset: 'done',
-            backgroundColor: '#e2e8f0',
-        };
-        toast(options);
-        navigation.push('Tabs');
+        const { user } = account;
+        if (access_token && refresh_token && user) {
+            setEmailValue('');
+            setPasswordValue('');
+            signIn(`Bearer ${refresh_token}`);
+
+            const options: ToastOptions = {
+              title: 'Login',
+              message: 'Login successfully!',
+              preset: 'done',
+              backgroundColor: '#e2e8f0',
+            };
+            toast(options);
+        }
+    } catch (error) {
+        console.error('Login failed:', error);
     }
-  };
+};
 
   const {
     value: emailValue,

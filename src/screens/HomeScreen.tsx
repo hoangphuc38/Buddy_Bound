@@ -24,18 +24,17 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
   useEffect(() => {
     const fetch = async () => {
       try {
-        const response = await GroupApi.getBuddies();
-        console.log("check: ", response);
-        //setBuddies(data.buddies);
-        //setGroups(data.families);
+        const { data } = await GroupApi.getBuddies();
+        setBuddies(data.buddies);
+        setGroups(data.families);
       }
       catch (error) {
-        console.log("err: ", error);
+        console.log('errsss: ', error);
       }
-    }
+    };
 
     fetch();
-  }, [])
+  }, []);
 
   const HandleClickBuddy = (item: TBuddy) => {
     navigation.push('LocationBuddy', { userID: item.id });
