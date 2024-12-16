@@ -17,7 +17,7 @@ const NotificationScreen = ({navigation}: TabsScreenProps) => {
   };
 
   useEffect(() => {
-    console.log(items);
+    // console.log(items);
     handleFetch();
   }, [fetched]);
 
