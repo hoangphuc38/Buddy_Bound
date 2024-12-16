@@ -3,8 +3,8 @@ import {
   Theme,
   DefaultTheme,
 } from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../types/navigator.type';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../types/navigator.type';
 import React from 'react';
 import Tabs from './BottomTab';
 import WelcomeScreen from '../screens/WelcomeScreen';
@@ -36,12 +36,12 @@ const theme: Theme = {
 const Navigator = () => {
   return (
     <NavigationContainer theme={theme}>
-      <Stack.Navigator screenOptions={{headerShown: false}}>
-        <Stack.Screen name="Tabs" component={Tabs} />
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="LogIn" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="ForgetPass" component={ForgetPassScreen} />
+        <Stack.Screen name="Tabs" component={Tabs} />
         <Stack.Screen name="AddContact" component={AddContactScreen} />
         <Stack.Screen
           name="NewRelationship"

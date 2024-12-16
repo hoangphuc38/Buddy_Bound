@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosInstance } from 'axios';
 import { getData, storeData } from './asyncStorage';
 import { ToastOptions, toast } from '@baronha/ting';
 
-export const BASE_ENDPOINT = 'http://172.17.0.1:8080/api/v1';
+export const BASE_ENDPOINT = 'https://buddybound-app-790723374073.asia-southeast1.run.app/api/v1';
 const URL_LOGIN = '/auth/login';
 
 class Http {
@@ -43,8 +43,10 @@ class Http {
             this.instance.interceptors.response.use(
                 (response) => {
                     const { url } = response.config;
+                    console.log("url: ", url);
                     if (url === URL_LOGIN) {
                         const { data } = response.data;
+                        console.log("response: ", response);
                         const { accessToken, user } = data;
                         this.accessToken = 'Bearer ' + accessToken;
                         this.instance.defaults.headers.common.Authorization = this.accessToken;
