@@ -1,35 +1,54 @@
-import {FlatList, Text, TouchableOpacity, View} from 'react-native';
-import {TabsScreenProps} from '../types/navigator.type';
-import React, {useState} from 'react';
-import BuddyItem, {Buddy} from '../components/BuddyItem';
-import {ChevronRightIcon} from 'react-native-heroicons/outline';
-import GroupItem, {Group} from '../components/GroupItem';
-import {Modal} from '../components/Modal';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faXmark} from '@fortawesome/free-solid-svg-icons';
+import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { TabsScreenProps } from '../types/navigator.type';
+import React, { useEffect, useState } from 'react';
+import BuddyItem from '../components/BuddyItem';
+import { ChevronRightIcon } from 'react-native-heroicons/outline';
+import GroupItem from '../components/GroupItem';
+import { Modal } from '../components/Modal';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import SearchBar from '../components/SearchBar';
 import mockData from '../mock/mockData';
 import Header from '../components/Header';
+import { TBuddy, TFamily } from '../types/group.type';
+import { GroupApi } from '../api/group.api';
 
-const HomeScreen = ({navigation}: TabsScreenProps) => {
-  const {buddies, groups} = mockData;
+const HomeScreen = ({ navigation }: TabsScreenProps) => {
+  //const {buddies, groups} = mockData;
 
   const [allBuddy, setAllBuddy] = useState<boolean>(false);
   const [allGroup, setAllGroup] = useState<boolean>(false);
+  const [buddies, setBuddies] = useState<TBuddy[]>([]);
+  const [groups, setGroups] = useState<TFamily[]>([]);
 
-  const HandleClickBuddy = (item: Buddy) => {
-    navigation.push('LocationBuddy', {userID: item.id});
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        const { data } = await GroupApi.getBuddies();
+        setBuddies(data.buddies);
+        setGroups(data.families);
+      }
+      catch (error) {
+        console.log('errsss: ', error);
+      }
+    };
+
+    fetch();
+  }, []);
+
+  const HandleClickBuddy = (item: TBuddy) => {
+    navigation.push('LocationBuddy', { userID: item.id });
     setAllBuddy(!allBuddy);
   };
 
-  const HandleClickGroup = (item: Group) => {
-    navigation.push('LocationGroup', {groupID: item.id});
+  const HandleClickGroup = (item: TFamily) => {
+    navigation.push('LocationGroup', { groupID: item.id });
     setAllBuddy(!allBuddy);
   };
 
   return (
     <>
-      <Header title="Your buddy" onPrimaryAction={() => {}} />
+      <Header title="Your buddy" onPrimaryAction={() => { }} />
       <View className="flex flex-1 px-4 mt-2">
         <View className="flex mb-2">
           <View className="flex flex-row justify-between items-center mb-4">
@@ -45,11 +64,11 @@ const HomeScreen = ({navigation}: TabsScreenProps) => {
             <FlatList
               data={buddies}
               keyExtractor={(item, index) => index.toString()}
-              renderItem={({item}) => (
+              renderItem={({ item }) => (
                 <BuddyItem
                   item={item}
                   press={() => {
-                    navigation.push('LocationBuddy', {userID: item.id});
+                    navigation.push('LocationBuddy', { userID: item.id });
                   }}
                 />
               )}
@@ -71,11 +90,11 @@ const HomeScreen = ({navigation}: TabsScreenProps) => {
             <FlatList
               data={groups}
               keyExtractor={(item, index) => index.toString()}
-              renderItem={({item}) => (
+              renderItem={({ item }) => (
                 <GroupItem
                   item={item}
                   press={() => {
-                    navigation.push('LocationGroup', {groupID: item.id});
+                    navigation.push('LocationGroup', { groupID: item.id });
                   }}
                 />
               )}
@@ -98,7 +117,7 @@ const HomeScreen = ({navigation}: TabsScreenProps) => {
             </View>
 
             <SearchBar
-              containerStyle={{marginBottom: 20}}
+              containerStyle={{ marginBottom: 20 }}
               placeholder="Search your buddy ..."
               onSearch={text => console.log(text)}
             />
@@ -106,7 +125,7 @@ const HomeScreen = ({navigation}: TabsScreenProps) => {
             <FlatList
               data={buddies}
               keyExtractor={(item, index) => index.toString()}
-              renderItem={({item}) => (
+              renderItem={({ item }) => (
                 <BuddyItem
                   horizontal
                   item={item}
@@ -132,7 +151,7 @@ const HomeScreen = ({navigation}: TabsScreenProps) => {
             </View>
 
             <SearchBar
-              containerStyle={{marginBottom: 20}}
+              containerStyle={{ marginBottom: 20 }}
               placeholder="Search your group ..."
               onSearch={text => console.log(text)}
             />
@@ -140,7 +159,7 @@ const HomeScreen = ({navigation}: TabsScreenProps) => {
             <FlatList
               data={groups}
               keyExtractor={(item, index) => index.toString()}
-              renderItem={({item}) => (
+              renderItem={({ item }) => (
                 <GroupItem item={item} press={() => HandleClickGroup(item)} />
               )}
               showsVerticalScrollIndicator={false}
