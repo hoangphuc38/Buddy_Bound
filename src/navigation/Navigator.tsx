@@ -3,9 +3,9 @@ import {
   Theme,
   DefaultTheme,
 } from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../types/navigator.type';
-import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../types/navigator.type';
+import React, { useEffect, useState } from 'react';
 import Tabs from './BottomTab';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import PermissionsScreen from '../screens/PermissionsScreen';
@@ -27,6 +27,7 @@ import AlbumStorage from '../screens/AlbumStorage';
 import AlbumDetailsScreen from '../screens/AlbumDetailsScreen';
 import HistoryLocation from '../screens/HistoryLocation';
 import ChatScreen from '../screens/ChatScreen';
+import { useAuth } from '../contexts/auth-context';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -39,15 +40,26 @@ const theme: Theme = {
 };
 
 const Navigator = () => {
+  const { token } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const initializeApp = async () => {
+      await new Promise(resolve => setTimeout(resolve, 300));
+      setIsLoading(false);
+    };
+    initializeApp();
+  }, [token]);
+
+  if (isLoading) {
+    return null;
+  }
   return (
     <NavigationContainer theme={theme}>
       <Stack.Navigator screenOptions={{headerShown: false}}>
-        <Stack.Screen name="Tabs" component={Tabs} />
-        <Stack.Screen name="Welcome" component={WelcomeScreen} />
-        <Stack.Screen name="LogIn" component={LoginScreen} />
-        <Stack.Screen name="Register" component={RegisterScreen} />
-        <Stack.Screen name="ForgetPass" component={ForgetPassScreen} />
-        <Stack.Screen name="AddContact" component={AddContactScreen} />
+        {token !== null ?
+          <>
+          <Stack.Screen name="Tabs" component={Tabs} />
         <Stack.Screen
           name="NewRelationship"
           component={NewRelationshipScreen}
@@ -77,6 +89,16 @@ const Navigator = () => {
         />
         <Stack.Screen name="MemorablePlaces" component={MemorablePlaceScreen} />
         <Stack.Screen name="NewMemorable" component={NewMemorablePlaceScreen} />
+          </>
+          :
+          <>
+            <Stack.Screen name="Welcome" component={WelcomeScreen} />
+            <Stack.Screen name="LogIn" component={LoginScreen} />
+            <Stack.Screen name="Register" component={RegisterScreen} />
+            <Stack.Screen name="ForgetPass" component={ForgetPassScreen} />
+            <Stack.Screen name="AddContact" component={AddContactScreen} />
+          </>
+        }
       </Stack.Navigator>
     </NavigationContainer>
   );

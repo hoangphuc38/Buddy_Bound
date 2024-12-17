@@ -6,27 +6,27 @@ const welcomeImg = require('../assets/images/welcome-img.png');
 
 const WelcomeScreen = ({navigation}: WelcomeScreenProps) => {
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={{marginTop: 30}}>
-        <Text style={styles.title}>Welcome to Buddy Bound</Text>
+    <SafeAreaView className="bg-white flex flex-1 flex-col items-center space-y-4 my-4">
+      <View >
+        <Text className="font-interBold text-xl text-[#125B9A]">Welcome to Buddy Bound</Text>
       </View>
-      <View style={{marginTop: 15, alignItems: 'center'}}>
-        <Text>Buddy Bound helps connect families and friends</Text>
-        <Text>
+      <View className="flex flex-col items-center justify-center space-y-1">
+        <Text className="font-interRegular text-sky-700">Buddy Bound helps connect families and friends</Text>
+        <Text className="text-center font-interRegular leading-5 text-sky-700">
           By prodviding real-time location updates and useful features
         </Text>
       </View>
-      <View style={styles.imgContainer}>
-        <Image style={styles.img} source={welcomeImg} />
+      <View className="flex items-center justify-center w-full">
+        <Image resizeMode="contain" className="w-full h-[75%]"  source={welcomeImg} />
       </View>
-      <View style={styles.butContainer}>
+      <View className="flex items-center">
         <TouchableOpacity
-          style={styles.btnGo}
-          onPress={() => navigation.push('LogIn')}>
-          <Text style={{color: '#fff', fontSize: 16, fontWeight: 600}}>
-            GET STARTED
-          </Text>
-        </TouchableOpacity>
+            className="bg-[#125B9A] px-20 py-4 rounded-full"
+            onPress={() => navigation.push('LogIn')}>
+            <Text className="font-interBold text-white">
+              GET STARTED
+            </Text>
+          </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
