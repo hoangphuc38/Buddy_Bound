@@ -16,10 +16,10 @@ module.exports = {
           '@context': './src/contexts',
           '@helper': './src/helpers',
           '@api': './src/api',
-          '@root': './src'
-        }
-      }
+          '@root': './src',
+        },
+      },
     ],
     'react-native-reanimated/plugin',
-  ]
+  ],
 };
