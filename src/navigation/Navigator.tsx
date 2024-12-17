@@ -26,6 +26,7 @@ import NewGroupScreen from '../screens/NewGroupScreen';
 import AlbumStorage from '../screens/AlbumStorage';
 import AlbumDetailsScreen from '../screens/AlbumDetailsScreen';
 import HistoryLocation from '../screens/HistoryLocation';
+import ChatScreen from '../screens/ChatScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -64,6 +65,7 @@ const Navigator = () => {
         <Stack.Screen name="NewGroupScreen" component={NewGroupScreen} />
         <Stack.Screen name="AlbumStorageScreen" component={AlbumStorage} />
         <Stack.Screen name="AlbumDetailsScreen" component={AlbumDetailsScreen} />
+        <Stack.Screen name="ChatScreen" component={ChatScreen} />
         <Stack.Screen
           name="PostDetail"
           component={PostDetailScreen}

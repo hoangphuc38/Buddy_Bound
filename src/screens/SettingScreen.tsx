@@ -29,7 +29,7 @@ const SettingScreen = ({ navigation }: TabsScreenProps) => {
       {
         Icon: Location,
         text: 'Memorable destinations',
-        onClick: () => navigation.push('MemorablePlaces'),
+        onClick: () => navigation.push('ChatScreen'),
       },
     ];
     return (
