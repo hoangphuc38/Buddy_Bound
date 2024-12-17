@@ -8,15 +8,6 @@ import {
 } from 'react-native';
 import {PostDetailProps, RootStackParamList} from '../types/navigator.type';
 import {RouteProp} from '@react-navigation/native';
-import {
-  GestureHandlerRootView,
-  PanGestureHandler,
-} from 'react-native-gesture-handler';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-} from 'react-native-reanimated';
 import mockData from '../mock/mockData';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faXmark} from '@fortawesome/free-solid-svg-icons';
@@ -55,7 +46,7 @@ const PostDetailScreen = ({
           />
           <View className="absolute inset-x-0 bottom-3 items-center">
             <View className="bg-contentPost px-4 py-2 rounded-[20px]">
-              <Text className="text-white text-medium text-center font-bold">
+              <Text className="text-white text-medium text-center font-interBold">
                 {detailPost.content}
               </Text>
             </View>
@@ -75,14 +66,14 @@ const PostDetailScreen = ({
           />
           <View className="flex flex-col justify-center">
             <View className="flex flex-row">
-              <Text className="font-bold text-white text-[13px] mr-2">
+              <Text className="font-interBold text-white text-[13px] mr-2">
                 {detailPost.user.name}
               </Text>
-              <Text className="font-bold text-white text-[13px]">
+              <Text className="font-interBold text-white text-[13px]">
                 {detailPost.time}h
               </Text>
             </View>
-            <Text className="text-white text-[9px]">
+            <Text className="font-interLight text-white text-[9px]">
               tại {detailPost.location}
             </Text>
           </View>
@@ -98,9 +89,15 @@ const PostDetailScreen = ({
         </TouchableOpacity>
 
         <View className="absolute inset-x-0 bottom-3">
-          <Text className="font-bold text-white text-[8px] text-center">
-            {detailPost.firstUserComment} has recently commented this post
-          </Text>
+          <View className="flex">
+            <Text className="font-interBold text-white text-[10px] text-center">
+              {detailPost.firstUserComment}
+            </Text>
+            <Text className="font-interRegular text-white text-[10px] text-center">
+              has recently commented this post
+            </Text>
+          </View>
+
         </View>
       </View>
       <BottomSheet

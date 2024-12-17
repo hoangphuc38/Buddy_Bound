@@ -179,7 +179,7 @@ const LocationGroupScreen = ({
                   right: 12,
                 },
               ]}>
-              <TouchableOpacity className="bg-main w-[40px] h-[40px] rounded-full items-center justify-center">
+              <TouchableOpacity onPress={() => navigation.push('ChatScreen')} className="bg-primary w-[40px] h-[40px] rounded-full items-center justify-center">
                 <FontAwesomeIcon icon={faMessage} size={17} color="white" />
               </TouchableOpacity>
             </Animated.View>
@@ -195,7 +195,7 @@ const LocationGroupScreen = ({
               ]}>
               <TouchableOpacity
                 onPress={() => sheetRef.current?.open()}
-                className="bg-main w-[40px] h-[40px] rounded-full items-center justify-center">
+                className="bg-primary w-[40px] h-[40px] rounded-full items-center justify-center">
                 <FontAwesomeIcon icon={faPeopleGroup} size={20} color="white" />
               </TouchableOpacity>
             </Animated.View>
@@ -213,7 +213,7 @@ const LocationGroupScreen = ({
                 onPress={() =>
                   navigation.push('PostOfGroup', {groupID: groupID})
                 }
-                className="bg-main w-[40px] h-[40px] rounded-full items-center justify-center">
+                className="bg-primary w-[40px] h-[40px] rounded-full items-center justify-center">
                 <NewspaperIcon size={20} color="white" />
               </TouchableOpacity>
             </Animated.View>

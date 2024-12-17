@@ -44,8 +44,8 @@ const ChatHeader = () => {
 
 const Message = () => {
     return (
-        
-    )
-}
+       <View/>
+    );
+};
 
 export default ChatScreen;
