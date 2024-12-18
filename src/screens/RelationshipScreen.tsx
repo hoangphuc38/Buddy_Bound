@@ -2,6 +2,7 @@ import {FlatList, Image, Text, TouchableOpacity, View} from 'react-native';
 import {TabsScreenProps} from '../types/navigator.type';
 import {useAuth} from '../contexts/auth-context';
 import SearchBar from '../components/SearchBar';
+import {useState} from 'react';
 
 const menu = require('../assets/images/menu.png');
 const addUserGroup = require('../assets/images/add-user-group.png');
@@ -18,8 +19,8 @@ const mockData = [
     id: 2,
     name: 'Mary Brown',
     phone: '555-666-7777',
-    role: 'Family',
-    family: 'Parent',
+    role: 'Parent',
+    family: 'Family',
     avt: 'https://via.placeholder.com/150/FF0000/FFFFFF?text=Mary',
   },
   {
@@ -42,16 +43,16 @@ const mockData = [
     id: 5,
     name: 'David Black',
     phone: '111-222-3333',
-    role: 'Family',
-    family: 'Child',
+    role: 'Child',
+    family: 'Family',
     avt: 'https://via.placeholder.com/150/800080/FFFFFF?text=David',
   },
   {
     id: 6,
     name: 'Emily Gray',
     phone: '888-999-0000',
-    role: 'Family',
-    family: 'Others',
+    role: 'Others',
+    family: 'Family',
     avt: 'https://via.placeholder.com/150/FFFF00/FFFFFF?text=Emily',
   },
   {
@@ -82,8 +83,8 @@ const mockData = [
     id: 10,
     name: 'Isabella Violet',
     phone: '333-444-5555',
-    role: 'Family',
-    family: 'Parent',
+    role: 'Parent',
+    family: 'Family',
     avt: 'https://via.placeholder.com/150/9400D3/FFFFFF?text=Isabella',
   },
 ];
@@ -91,14 +92,30 @@ const mockData = [
 const RelationshipScreen = ({navigation}: TabsScreenProps) => {
   const {signOut} = useAuth();
   const handleSearch = () => {};
+
   const friendData = mockData.filter(
     user =>
       user.role === 'Close Friend' ||
       user.role === 'Colleague' ||
       user.role === 'Acquaintance',
   );
+  const familyData = mockData.filter(user => user.family === 'Family');
 
-  const renderItem = ({ item }: { item: typeof mockData[0] }) => (
+  const [activeTag, setActiveTag] = useState('friend');
+
+  //xử lý chuyển tag
+  const handleChangeFriendTag = () => {
+    if (activeTag == 'family') {
+      setActiveTag('friend');
+    }
+  };
+  const handleChangeFamilyTag = () => {
+    if (activeTag == 'friend') {
+      setActiveTag('family');
+    }
+  };
+
+  const renderItem = ({item}: {item: (typeof mockData)[0]}) => (
     <TouchableOpacity className="w-full rounded-lg px-[13] py-[9] justify-between items-center flex-row">
       <View className="items-center flex-row gap-[10]">
         <Image
@@ -132,28 +149,54 @@ const RelationshipScreen = ({navigation}: TabsScreenProps) => {
             resizeMode="contain"></Image>
         </TouchableOpacity>
       </View>
+      {/* family and friend tag */}
       <View className="mt-[20] w-full p-[4] bg-[#D3E8F4] rounded-lg flex-row">
-        <TouchableOpacity className="w-[50%] h-[40] items-center justify-center rounded-lg bg-[#2C91E7]">
-          <Text className="text-center font-interRegular text-base font-bold text-[#fff]">
+        <TouchableOpacity
+          onPress={handleChangeFriendTag}
+          className={`w-[50%] h-[40] items-center justify-center rounded-lg ${
+            activeTag === 'friend' ? 'bg-[#2C91E7]' : ''
+          }`}>
+          <Text
+            className={`text-center font-interRegular text-base font-bold ${
+              activeTag === 'friend' ? 'text-[#fff]' : 'text-[#125B9A]'
+            } `}>
             Friend
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity className="w-[50%] h-[40] items-center justify-center rounded-lg bg-[transparent]">
-          <Text className="text-center font-interRegular text-base font-bold text-[#125B9A]">
-            Friend
+        <TouchableOpacity
+          onPress={handleChangeFamilyTag}
+          className={`w-[50%] h-[40] items-center justify-center rounded-lg ${
+            activeTag === 'family' ? 'bg-[#2C91E7]' : ''
+          }`}>
+          <Text
+            className={`text-center font-interRegular text-base font-bold ${
+              activeTag === 'family' ? 'text-[#fff]' : 'text-[#125B9A]'
+            } `}>
+            Family
           </Text>
         </TouchableOpacity>
       </View>
       <View className="mt-[35] w-full">
         <SearchBar placeholder="Search" onSearch={handleSearch}></SearchBar>
       </View>
-      <View className="mt-[20] w-full">
-        <FlatList
-          data={friendData}
-          keyExtractor={item => item.id.toString()}
-          renderItem={renderItem}
-          showsVerticalScrollIndicator={false}></FlatList>
-      </View>
+      {/* friend list */}
+      {activeTag === 'friend' ? (
+        <View className="mt-[20] w-full">
+          <FlatList
+            data={friendData}
+            keyExtractor={item => item.id.toString()}
+            renderItem={renderItem}
+            showsVerticalScrollIndicator={false}></FlatList>
+        </View>
+      ) : (
+        <View className="mt-[20] w-full">
+          <FlatList
+            data={familyData}
+            keyExtractor={item => item.id.toString()}
+            renderItem={renderItem}
+            showsVerticalScrollIndicator={false}></FlatList>
+        </View>
+      )}
     </View>
   );
 };
