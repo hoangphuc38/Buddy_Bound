@@ -1,12 +1,118 @@
-import {Image, Text, TouchableOpacity, View} from 'react-native';
+import {FlatList, Image, Text, TouchableOpacity, View} from 'react-native';
 import {TabsScreenProps} from '../types/navigator.type';
 import {useAuth} from '../contexts/auth-context';
+import SearchBar from '../components/SearchBar';
 
 const menu = require('../assets/images/menu.png');
 const addUserGroup = require('../assets/images/add-user-group.png');
+const mockData = [
+  {
+    id: 1,
+    name: 'John Doe',
+    phone: '123-456-7890',
+    role: 'Close Friend',
+    family: null,
+    avt: 'https://via.placeholder.com/150/0000FF/FFFFFF?text=John',
+  },
+  {
+    id: 2,
+    name: 'Mary Brown',
+    phone: '555-666-7777',
+    role: 'Family',
+    family: 'Parent',
+    avt: 'https://via.placeholder.com/150/FF0000/FFFFFF?text=Mary',
+  },
+  {
+    id: 3,
+    name: 'William Green',
+    phone: '987-654-3210',
+    role: 'Colleague',
+    family: null,
+    avt: 'https://via.placeholder.com/150/00FF00/FFFFFF?text=William',
+  },
+  {
+    id: 4,
+    name: 'Sophia White',
+    phone: '444-555-6666',
+    role: 'Acquaintance',
+    family: null,
+    avt: 'https://via.placeholder.com/150/FFA500/FFFFFF?text=Sophia',
+  },
+  {
+    id: 5,
+    name: 'David Black',
+    phone: '111-222-3333',
+    role: 'Family',
+    family: 'Child',
+    avt: 'https://via.placeholder.com/150/800080/FFFFFF?text=David',
+  },
+  {
+    id: 6,
+    name: 'Emily Gray',
+    phone: '888-999-0000',
+    role: 'Family',
+    family: 'Others',
+    avt: 'https://via.placeholder.com/150/FFFF00/FFFFFF?text=Emily',
+  },
+  {
+    id: 7,
+    name: 'Michael Blue',
+    phone: '777-888-9999',
+    role: 'Close Friend',
+    family: null,
+    avt: 'https://via.placeholder.com/150/0000FF/FFFFFF?text=Michael',
+  },
+  {
+    id: 8,
+    name: 'Olivia Pink',
+    phone: '222-333-4444',
+    role: 'Colleague',
+    family: null,
+    avt: 'https://via.placeholder.com/150/FF69B4/FFFFFF?text=Olivia',
+  },
+  {
+    id: 9,
+    name: 'Ethan Brown',
+    phone: '666-777-8888',
+    role: 'Acquaintance',
+    family: null,
+    avt: 'https://via.placeholder.com/150/A52A2A/FFFFFF?text=Ethan',
+  },
+  {
+    id: 10,
+    name: 'Isabella Violet',
+    phone: '333-444-5555',
+    role: 'Family',
+    family: 'Parent',
+    avt: 'https://via.placeholder.com/150/9400D3/FFFFFF?text=Isabella',
+  },
+];
 
 const RelationshipScreen = ({navigation}: TabsScreenProps) => {
   const {signOut} = useAuth();
+  const handleSearch = () => {};
+  const friendData = mockData.filter(
+    user =>
+      user.role === 'Close Friend' ||
+      user.role === 'Colleague' ||
+      user.role === 'Acquaintance',
+  );
+
+  const renderItem = ({ item }: { item: typeof mockData[0] }) => (
+    <TouchableOpacity className="w-full rounded-lg px-[13] py-[9] justify-between items-center flex-row">
+      <View className="items-center flex-row gap-[10]">
+        <Image
+          source={{uri: item.avt}}
+          className="w-[55] h-[55] border-[#2C7CC1] rounded-full"></Image>
+        <View>
+          <Text className="font-interBold">{item.name}</Text>
+          <Text className="">{item.phone}</Text>
+        </View>
+      </View>
+      <Text className="text-[#FF6600] font-interBold">{item.role}</Text>
+    </TouchableOpacity>
+  );
+
   return (
     <View className=" pl-5 pr-5 flex items-center">
       <View className="w-full mt-3 justify-between items-center flex-row">
@@ -25,6 +131,28 @@ const RelationshipScreen = ({navigation}: TabsScreenProps) => {
             className="w-[15] h-[15]"
             resizeMode="contain"></Image>
         </TouchableOpacity>
+      </View>
+      <View className="mt-[20] w-full p-[4] bg-[#D3E8F4] rounded-lg flex-row">
+        <TouchableOpacity className="w-[50%] h-[40] items-center justify-center rounded-lg bg-[#2C91E7]">
+          <Text className="text-center font-interRegular text-base font-bold text-[#fff]">
+            Friend
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity className="w-[50%] h-[40] items-center justify-center rounded-lg bg-[transparent]">
+          <Text className="text-center font-interRegular text-base font-bold text-[#125B9A]">
+            Friend
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <View className="mt-[35] w-full">
+        <SearchBar placeholder="Search" onSearch={handleSearch}></SearchBar>
+      </View>
+      <View className="mt-[20] w-full">
+        <FlatList
+          data={friendData}
+          keyExtractor={item => item.id.toString()}
+          renderItem={renderItem}
+          showsVerticalScrollIndicator={false}></FlatList>
       </View>
     </View>
   );
