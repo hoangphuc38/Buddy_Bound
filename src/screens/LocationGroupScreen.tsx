@@ -11,8 +11,8 @@ import {
   LocationGroupScreenProps,
   RootStackParamList,
 } from '../types/navigator.type';
-import {RouteProp} from '@react-navigation/native';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import { RouteProp } from '@react-navigation/native';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
   faAngleLeft,
   faArrowLeft,
@@ -22,15 +22,17 @@ import {
   faPeopleGroup,
   faPlus,
 } from '@fortawesome/free-solid-svg-icons';
-import {useEffect, useRef, useState} from 'react';
-import {NewspaperIcon} from 'react-native-heroicons/solid';
-import BottomSheet, {BottomSheetMethods} from '@devvie/bottom-sheet';
+import { useEffect, useRef, useState } from 'react';
+import { NewspaperIcon } from 'react-native-heroicons/solid';
+import BottomSheet, { BottomSheetMethods } from '@devvie/bottom-sheet';
 import GroupMember from '../components/GroupMember';
 import mockData from '../mock/mockData';
 import ApprovalMember from '../components/ApprovalMember';
 import UserMarker from '../components/UserMarker';
 import PostMarker from '../components/PostMarker';
 import React from 'react';
+import { GroupApi } from '../api/group.api';
+import { TMember } from '../types/member.type';
 
 const LocationGroupScreen = ({
   route,
@@ -38,10 +40,12 @@ const LocationGroupScreen = ({
 }: LocationGroupScreenProps & {
   route: RouteProp<RootStackParamList, 'LocationGroup'>;
 }) => {
-  const {groupID} = route.params;
-  const {groupMembers, approvalMembers, postMarkers, userMarkers} = mockData;
+  const { groupID } = route.params;
+  const { postMarkers, userMarkers } = mockData;
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isSeeAll, setIsSeeAll] = useState<string | null>(null);
+  const [groupMembers, setGroupMembers] = useState<TMember[]>([]);
+  const [approvalMembers, setApprovalMembers] = useState<TMember[]>([]);
 
   const sheetRef = useRef<BottomSheetMethods>(null);
 
@@ -138,6 +142,22 @@ const LocationGroupScreen = ({
     }
   }, [isSeeAll]);
 
+  useEffect(() => {
+    const fetchAPI = async () => {
+      try {
+        const { data } = await GroupApi.getMembers(groupID);
+        const { data: approval } = await GroupApi.getWaitingApproval(groupID);
+        setGroupMembers(data);
+        setApprovalMembers(approval);
+      }
+      catch (error) {
+        console.log('err: ', error);
+      }
+    }
+
+    fetchAPI();
+  }, [])
+
   return (
     <>
       <View className="flex flex-1 h-full w-full">
@@ -145,7 +165,7 @@ const LocationGroupScreen = ({
         <View>
           <Image
             source={require('../assets/images/map.png')}
-            style={{width: '100%', height: '100%', overflow: 'hidden'}}
+            style={{ width: '100%', height: '100%', overflow: 'hidden' }}
           />
         </View>
         <View className="absolute top-[300px] left-20">
@@ -211,7 +231,7 @@ const LocationGroupScreen = ({
               ]}>
               <TouchableOpacity
                 onPress={() =>
-                  navigation.push('PostOfGroup', {groupID: groupID})
+                  navigation.push('PostOfGroup', { groupID: groupID })
                 }
                 className="bg-primary w-[40px] h-[40px] rounded-full items-center justify-center">
                 <NewspaperIcon size={20} color="white" />
@@ -245,12 +265,12 @@ const LocationGroupScreen = ({
         </TouchableOpacity>
       </View>
       <BottomSheet
-        style={{backgroundColor: 'white'}}
+        style={{ backgroundColor: 'white' }}
         ref={sheetRef}
         height="90%">
         <View className="h-full px-4 relative bg-white">
           <View className="flex flex-row justify-center items-center mb-4">
-            <Text className="font-nunitoBold text-headerTitle text-center text-main font-medium">
+            <Text className="font-interMedium text-headerTitle text-center text-main">
               Group Member
             </Text>
           </View>
@@ -262,7 +282,7 @@ const LocationGroupScreen = ({
                 <FlatList
                   data={groupMembers}
                   keyExtractor={(item, index) => index.toString()}
-                  renderItem={({item}) => <GroupMember item={item} />}
+                  renderItem={({ item }) => <GroupMember item={item} />}
                   showsHorizontalScrollIndicator={false}
                 />
                 <TouchableOpacity
@@ -285,7 +305,7 @@ const LocationGroupScreen = ({
                 <FlatList
                   data={approvalMembers}
                   keyExtractor={(item, index) => index.toString()}
-                  renderItem={({item}) => <ApprovalMember item={item} />}
+                  renderItem={({ item }) => <ApprovalMember item={item} />}
                   showsHorizontalScrollIndicator={false}
                 />
                 <TouchableOpacity
@@ -319,7 +339,7 @@ const LocationGroupScreen = ({
                 <FlatList
                   data={groupMembers.slice(0, 3)}
                   keyExtractor={(item, index) => index.toString()}
-                  renderItem={({item}) => <GroupMember item={item} />}
+                  renderItem={({ item }) => <GroupMember item={item} />}
                   showsHorizontalScrollIndicator={false}
                 />
                 <TouchableOpacity onPress={() => setIsSeeAll('groupMembers')}>
@@ -331,7 +351,7 @@ const LocationGroupScreen = ({
                 <FlatList
                   data={approvalMembers.slice(0, 2)}
                   keyExtractor={(item, index) => index.toString()}
-                  renderItem={({item}) => <ApprovalMember item={item} />}
+                  renderItem={({ item }) => <ApprovalMember item={item} />}
                   showsHorizontalScrollIndicator={false}
                 />
                 <TouchableOpacity
@@ -342,7 +362,7 @@ const LocationGroupScreen = ({
             )}
           </View>
 
-          <TouchableOpacity className="absolute bottom-[30px] left-0 right-0 bg-main rounded-[10px] p-3 mx-4 mb-4 flex-row items-center justify-center">
+          <TouchableOpacity className="absolute bottom-[30px] left-0 right-0 bg-primary rounded-[10px] p-3 mx-4 mb-4 flex-row items-center justify-center">
             <FontAwesomeIcon icon={faPlus} size={15} color="white" />
             <Text className="text-white text-normal font-bold text-center ml-2">
               Invite your buddies

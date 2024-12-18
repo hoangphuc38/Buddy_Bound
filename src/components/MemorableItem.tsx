@@ -1,16 +1,13 @@
 import React from 'react';
-import {Image, Text, TouchableOpacity, View} from 'react-native';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { TMemorablePlace } from '../types/location-history.type';
 
 interface IMemorableItem {
   press: () => void;
-  item: MemorableItem;
+  item: TMemorablePlace;
 }
 
-export type MemorableItem = {
-  name: string;
-};
-
-const MemorableItem = ({item, press}: IMemorableItem) => {
+const MemorableItem = ({ item, press }: IMemorableItem) => {
   return (
     <TouchableOpacity
       onPress={press}
@@ -18,11 +15,11 @@ const MemorableItem = ({item, press}: IMemorableItem) => {
       <View className="flex items-center justify-center bg-backButton w-[45px] h-[45px] rounded-full">
         <Image
           source={require('../assets/images/location.png')}
-          style={{height: 30, width: 30}}
+          style={{ height: 30, width: 30 }}
         />
       </View>
 
-      <Text className="text-medim text-black font-medium">{item.name}</Text>
+      <Text className="text-medim text-black font-medium">{item.note}</Text>
     </TouchableOpacity>
   );
 };
