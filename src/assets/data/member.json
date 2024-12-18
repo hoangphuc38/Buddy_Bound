@@ -1,0 +1,36 @@
+[
+    {
+      "id": 1,
+      "user": {
+        "email": "user1@example.com",
+        "password": "Password1!",
+        "fullName": "User 1",
+        "avatar": "https://i.guim.co.uk/img/media/67944850a1b5ebd6a0fba9e3528d448ebe360c60/359_0_2469_1482/master/2469.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=03f3e07a7f367f36a738f1ad8132b3bb",
+        "gender": false,
+        "birthday": "1991-01-15"
+      }
+    },
+    {
+      "id": 2,
+      "user": {
+        "email": "user2@example.com",
+        "password": "Password2!",
+        "fullName": "User 2",
+        "avatar": "https://i.guim.co.uk/img/media/67944850a1b5ebd6a0fba9e3528d448ebe360c60/359_0_2469_1482/master/2469.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=03f3e07a7f367f36a738f1ad8132b3bb",
+        "gender": true,
+        "birthday": "1992-02-15"
+      }
+    },
+    {
+      "id": 3,
+      "user": {
+        "email": "user3@example.com",
+        "password": "Password3!",
+        "fullName": "User 3",
+        "avatar": "https://i.guim.co.uk/img/media/67944850a1b5ebd6a0fba9e3528d448ebe360c60/359_0_2469_1482/master/2469.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=03f3e07a7f367f36a738f1ad8132b3bb",
+        "gender": false,
+        "birthday": "1993-03-15"
+      }
+    }
+  ]
+  

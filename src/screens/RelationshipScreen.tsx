@@ -10,6 +10,9 @@ const RelationshipScreen = ({navigation}: TabsScreenProps) => {
       <TouchableOpacity onPress={signOut}>
         <Text>Logout</Text>
       </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.push('NewGroupScreen')}>
+        <Text>Create new group</Text>
+      </TouchableOpacity>
     </View>
   );
 };
