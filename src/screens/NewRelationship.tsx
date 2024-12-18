@@ -88,7 +88,8 @@ const NewRelationshipScreen = ({navigation}: NewRelationshipScreenProps) => {
                   style={[
                     styles.img,
                     {tintColor: isFamilyActive ? '#fff' : '#423D3D'},
-                  ]} />
+                  ]}
+                />
               </View>
               <Text
                 style={[
@@ -104,15 +105,20 @@ const NewRelationshipScreen = ({navigation}: NewRelationshipScreenProps) => {
                 style={[
                   styles.img,
                   {tintColor: isFamilyActive ? '#fff' : '#423D3D'},
-                ]} />
+                ]}
+              />
             </View>
           </TouchableOpacity>
           <Animated.View
             style={[styles.cbbOptions, {height: animationValueFamily}]}>
-            <TouchableOpacity style={styles.cbbItem}>
+            <TouchableOpacity
+              onPress={() => navigation.push('SetNewRelationship')}
+              style={styles.cbbItem}>
               <Text style={styles.itemText}>Parent-Child</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.cbbItem}>
+            <TouchableOpacity
+              onPress={() => navigation.push('SetNewRelationship')}
+              style={styles.cbbItem}>
               <Text style={styles.itemText}>Others</Text>
             </TouchableOpacity>
           </Animated.View>
@@ -133,7 +139,8 @@ const NewRelationshipScreen = ({navigation}: NewRelationshipScreenProps) => {
                   style={[
                     styles.img,
                     {tintColor: isFriendActive ? '#fff' : '#423D3D'},
-                  ]} />
+                  ]}
+                />
               </View>
               <Text
                 style={[
@@ -149,15 +156,20 @@ const NewRelationshipScreen = ({navigation}: NewRelationshipScreenProps) => {
                 style={[
                   styles.img,
                   {tintColor: isFriendActive ? '#fff' : '#423D3D'},
-                ]} />
+                ]}
+              />
             </View>
           </TouchableOpacity>
           <Animated.View
             style={[styles.cbbOptions, {height: animationValueFriend}]}>
-            <TouchableOpacity style={styles.cbbItem}>
+            <TouchableOpacity
+              onPress={() => navigation.push('SetNewRelationship')}
+              style={styles.cbbItem}>
               <Text style={styles.itemText}>Parent-Child</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.cbbItem}>
+            <TouchableOpacity
+              onPress={() => navigation.push('SetNewRelationship')}
+              style={styles.cbbItem}>
               <Text style={styles.itemText}>Others</Text>
             </TouchableOpacity>
           </Animated.View>

@@ -5,7 +5,6 @@ import {
   Image,
   TouchableOpacity,
   TextInput,
-  ActivityIndicator,
 } from 'react-native';
 import {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';

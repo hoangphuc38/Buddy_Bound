@@ -23,60 +23,18 @@ const SetNewRelationshipScreen = ({
   navigation,
 }: SetNewRelationshipScreenProps) => {
   return (
-    <SafeAreaView style={styles.container}>
-      <TouchableOpacity style={styles.backBtnBackground}>
-        <Image source={back} style={styles.backVector} />
+    <SafeAreaView className="flex-1 bg-[#FEFDFD] items-center">
+      <TouchableOpacity className="h-[35] w-[35] mt-[20] absolute justify-center items-center left-[15] bg-[#2C7CC133] rounded-full">
+        <Image source={back} className="h-[17] w-[10]" />
       </TouchableOpacity>
-      <View style={styles.content}>
-        <Text style={{fontSize: 24, fontWeight: 600, color: '#2C7CC1'}}>
+      <View className="mt-[20] items-center justify-center w-full px-[20]">
+        <Text className=" leading-[0]-  text-2xl font-[600] text-[#2C7CC1]">
           New Relationship
         </Text>
-        <View style={styles.qrImageContainer} />
+        <View className="h-[150] w-[150] rounded border mt-[15]" />
       </View>
     </SafeAreaView>
   );
 };
 
 export default SetNewRelationshipScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FEFDFD',
-    alignItems: 'center',
-  },
-  backBtnBackground: {
-    height: 35,
-    width: 35,
-    backgroundColor: 'rgba(44, 124, 193, 0.2)',
-    borderRadius: 17.5, // Đổi sang số vì React Native không hỗ trợ '50%'
-    marginTop: 20,
-    position: 'absolute',
-    left: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  img: {
-    height: '100%',
-    width: '100%',
-    resizeMode: 'contain',
-  },
-  backVector: {
-    height: 17,
-    width: 10,
-  },
-  content: {
-    marginTop: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    paddingHorizontal: 20,
-  },
-  qrImageContainer: {
-    height: 150,
-    width: 150,
-    borderRadius: 5,
-    borderWidth: 1,
-    marginTop: 15,
-  },
-});

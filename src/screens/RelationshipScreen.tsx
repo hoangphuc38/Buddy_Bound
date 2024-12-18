@@ -142,7 +142,9 @@ const RelationshipScreen = ({navigation}: TabsScreenProps) => {
         <Text className="font-interBold text-2xl font-bold text-[#2C7CC1]">
           Relationship
         </Text>
-        <TouchableOpacity className="h-[40] w-[40] rounded-full items-center justify-center bg-[#125B9A]">
+        <TouchableOpacity
+          onPress={() => navigation.push('NewRelationship')}
+          className="h-[40] w-[40] rounded-full items-center justify-center bg-[#125B9A]">
           <Image
             source={addUserGroup}
             className="w-[15] h-[15]"
