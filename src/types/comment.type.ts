@@ -4,6 +4,6 @@ export type TComment = {
     id: number,
     postId: number,
     member: TMember,
-    content:string,
+    content: string,
     createdAt: string
 }

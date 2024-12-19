@@ -18,8 +18,11 @@ const MemorableItem = ({ item, press }: IMemorableItem) => {
           style={{ height: 30, width: 30 }}
         />
       </View>
+      <View>
+        <Text className="text-medim text-black font-interMedium">{item.note}</Text>
+        <Text className="text-[10px] text-[#7C7979] font-interRegular">{item.locationType}</Text>
+      </View>
 
-      <Text className="text-medim text-black font-medium">{item.note}</Text>
     </TouchableOpacity>
   );
 };

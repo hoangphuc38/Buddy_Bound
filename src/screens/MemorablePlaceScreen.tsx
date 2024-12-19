@@ -16,8 +16,9 @@ import { TMemorablePlace } from '../types/location-history.type';
 import { MemorablePlaceApi } from '../api/memorablePlace.api';
 import SearchBar from '../components/SearchBar';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faFilter } from '@fortawesome/free-solid-svg-icons';
+import { faFilter, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { Modal } from '../components/Modal';
+import CustomButton, { ButtonProps } from '../components/CustomButton';
 
 const MemorablePlaceScreen = ({
   route,
@@ -27,7 +28,30 @@ const MemorablePlaceScreen = ({
 }) => {
   const [memorablePlaces, setMemorablePlaces] = useState<TMemorablePlace[]>([]);
   const [searchText, setSearchText] = useState<string>("");
+  const [selectedFilter, setSelectedFilter] = useState<string>("");
   const [isFilterModalVisible, setIsFilterModalVisible] = useState<boolean>(false);
+  const [buttons, setButtons] = useState<ButtonProps[]>([
+    {
+      id: '1',
+      name: 'All',
+    },
+    {
+      id: '2',
+      name: 'Home',
+    },
+    {
+      id: '3',
+      name: 'School',
+    },
+    {
+      id: '4',
+      name: 'Workplace',
+    },
+    {
+      id: '5',
+      name: 'Favourite place',
+    },
+  ]);
 
   useEffect(() => {
     const fetchAPI = async () => {
@@ -43,17 +67,12 @@ const MemorablePlaceScreen = ({
     fetchAPI();
   }, [])
 
-  const filteredPlaces = searchText
-    ? memorablePlaces.filter((place) =>
-      place.note.toLowerCase().includes(searchText.toLowerCase())
-    )
-    : memorablePlaces;
+  const filteredPlaces = memorablePlaces.filter((place) => {
+    const matchesSearch = searchText ? place.note.toLowerCase().includes(searchText.toLowerCase()) : true;
+    const matchesFilter = selectedFilter ? place.locationType === selectedFilter.toUpperCase() : true;
 
-  // Hàm xử lý tìm kiếm
-  const handleSearch = (text: string) => {
-    setSearchText(text);
-    // Thực hiện tìm kiếm tại đây
-  };
+    return matchesSearch && matchesFilter;
+  });
 
   // Hàm xử lý khi nhấn nút lọc
   const handleFilter = () => {
@@ -63,6 +82,12 @@ const MemorablePlaceScreen = ({
   // Hàm đóng modal lọc
   const closeFilterModal = () => {
     setIsFilterModalVisible(false);
+  };
+
+  const handleSelectType = (type: string) => {
+    setSelectedFilter(type === 'All' ? '' : type);
+
+    closeFilterModal();
   };
 
   return (
@@ -88,8 +113,26 @@ const MemorablePlaceScreen = ({
         </View>
 
         <Modal isOpen={isFilterModalVisible}>
-          <View className="bg-white w-full h-[40%] p-4 rounded-xl">
-            <Text>Home</Text>
+          <View className="bg-white w-full h-[40%] p-4  rounded-xl">
+            <View className='flex flex-row mb-4'>
+              <TouchableOpacity
+                onPress={closeFilterModal}
+                className="absolute top-0 right-0 bg-backButton w-[20px] h-[20px] rounded-full items-center justify-center">
+                <FontAwesomeIcon icon={faXmark} size={13} color="#2C7CC1" />
+              </TouchableOpacity>
+            </View>
+
+            <View className="mb-4 items-center">
+              <FlatList
+                data={buttons}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => (
+                  <CustomButton item={item}
+                    press={() => handleSelectType(item.name)} />
+                )}
+                showsHorizontalScrollIndicator={false}
+              />
+            </View>
           </View>
         </Modal>
 
