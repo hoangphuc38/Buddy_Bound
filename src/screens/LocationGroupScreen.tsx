@@ -21,6 +21,7 @@ import {
   faPen,
   faPeopleGroup,
   faPlus,
+  faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useRef, useState } from 'react';
 import { NewspaperIcon } from 'react-native-heroicons/solid';
@@ -33,6 +34,8 @@ import PostMarker from '../components/PostMarker';
 import React from 'react';
 import { GroupApi } from '../api/group.api';
 import { TMember } from '../types/member.type';
+import { Modal } from '../components/Modal';
+import SearchBar from '../components/SearchBar';
 
 const LocationGroupScreen = ({
   route,
@@ -46,6 +49,9 @@ const LocationGroupScreen = ({
   const [isSeeAll, setIsSeeAll] = useState<string | null>(null);
   const [groupMembers, setGroupMembers] = useState<TMember[]>([]);
   const [approvalMembers, setApprovalMembers] = useState<TMember[]>([]);
+
+  const [modal, setModal] = useState<boolean>(false);
+  const [searchText, setSearchText] = useState<string>("");
 
   const sheetRef = useRef<BottomSheetMethods>(null);
 
@@ -248,7 +254,7 @@ const LocationGroupScreen = ({
                 },
               ]}>
               <TouchableOpacity
-                onPress={() => navigation.push('NewPost')}
+                onPress={() => navigation.push('NewPost', { groupID: groupID })}
                 className="bg-secondary w-[40px] h-[40px] rounded-full items-center justify-center">
                 <FontAwesomeIcon icon={faPen} size={17} color="white" />
               </TouchableOpacity>
@@ -264,6 +270,42 @@ const LocationGroupScreen = ({
           </Animated.View>
         </TouchableOpacity>
       </View>
+
+      <Modal isOpen={modal}>
+        <View className="bg-white w-full h-[80%] p-4 rounded-xl">
+          <View className="flex flex-row justify-center items-center mb-4">
+            <Text className="font-interMedium text-[20px] text-center">
+              Buddies
+            </Text>
+            <TouchableOpacity
+              onPress={() => setModal(!modal)}
+              className="absolute top-0 right-0 bg-backButton w-[20px] h-[20px] rounded-full items-center justify-center">
+              <FontAwesomeIcon icon={faXmark} size={13} color="#2C7CC1" />
+            </TouchableOpacity>
+          </View>
+
+          <SearchBar
+            containerStyle={{ marginBottom: 20 }}
+            placeholder="Search your buddy ..."
+            onSearch={text => setSearchText(text)}
+            value={searchText}
+          />
+
+          {/* <FlatList
+              data={filteredBuddies}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => (
+                <BuddyItem
+                  horizontal
+                  item={item}
+                  press={() => HandleClickBuddy(item)}
+                />
+              )}
+              showsHorizontalScrollIndicator={false}
+            /> */}
+        </View>
+      </Modal>
+
       <BottomSheet
         style={{ backgroundColor: 'white' }}
         ref={sheetRef}
@@ -362,7 +404,8 @@ const LocationGroupScreen = ({
             )}
           </View>
 
-          <TouchableOpacity className="absolute bottom-[30px] left-0 right-0 bg-primary rounded-[10px] p-3 mx-4 mb-4 flex-row items-center justify-center">
+          <TouchableOpacity onPress={() => setModal(true)}
+            className="absolute bottom-[30px] left-0 right-0 bg-primary rounded-[10px] p-3 mx-4 mb-4 flex-row items-center justify-center">
             <FontAwesomeIcon icon={faPlus} size={15} color="white" />
             <Text className="text-white text-normal font-bold text-center ml-2">
               Invite your buddies

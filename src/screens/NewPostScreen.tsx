@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   FlatList,
   Image,
   Text,
@@ -6,18 +7,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {NewPostScreenProps, RootStackParamList} from '../types/navigator.type';
-import {RouteProp} from '@react-navigation/native';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import { NewPostScreenProps, RootStackParamList } from '../types/navigator.type';
+import { RouteProp } from '@react-navigation/native';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
   faAngleRight,
   faGear,
   faUserGroup,
 } from '@fortawesome/free-solid-svg-icons';
-import {PhotoIcon} from 'react-native-heroicons/solid';
-import {OptionStatus} from '../components/OptionStatus';
-import {useState} from 'react';
-import {Modal} from '../components/Modal';
+import { PhotoIcon } from 'react-native-heroicons/solid';
+import { OptionStatus } from '../components/OptionStatus';
+import { useEffect, useState } from 'react';
+import { Modal } from '../components/Modal';
 import Header from '../components/Header';
 import {
   Asset,
@@ -25,21 +26,60 @@ import {
   ImagePickerResponse,
   launchImageLibrary,
 } from 'react-native-image-picker';
-import {XMarkIcon} from 'react-native-heroicons/outline';
+import { XMarkIcon } from 'react-native-heroicons/outline';
 import mockData from '../mock/mockData';
 import LimitedItem from '../components/LimitedItem';
+import { TBuddy } from '../types/group.type';
+import { GroupApi } from '../api/group.api';
+import { PostApi } from '../api/post.api';
+import { TCreatePost, TPost } from '../types/post.type';
+import { useInput } from '../hooks/useInput';
+import { Validator } from '../helpers/validator';
+import { TMember } from '../types/member.type';
+import GroupMember from '../components/GroupMember';
+import { toast, ToastOptions } from '@baronha/ting';
+import { TCreateImage } from '../types/image.type';
 
 const NewPostScreen = ({
   route,
   navigation,
-}: NewPostScreenProps & {route: RouteProp<RootStackParamList, 'NewPost'>}) => {
-  const {buddies} = mockData;
+}: NewPostScreenProps & { route: RouteProp<RootStackParamList, 'NewPost'> }) => {
+  const { groupID } = route.params;
 
   const [isEveryOne, setEveryOne] = useState<boolean>(true);
   const [openOption, setOpenOption] = useState<boolean>(false);
   const [openLimitBuddy, setLimitBuddy] = useState<boolean>(false);
   const [isImage, setIsImage] = useState<boolean>(false);
   const [imageList, setImageList] = useState<Asset[]>([]);
+  const [groupMembers, setGroupMembers] = useState<TMember[]>([]);
+  const [limitedBuddyId, setLimitedBuddyId] = useState<number[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const {
+    value: noteValue,
+    handleInputBlur: handleNoteBlur,
+    handleInputChange: handleNoteChange,
+    setEnteredValue: setNoteValue,
+    didEdit: noteDidEdit,
+    hasError: noteHasError,
+  } = useInput({
+    defaultValue: '',
+    validationFn: (note) => note !== undefined && note?.length < 30 && note.length > 0,
+  });
+
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        const { data } = await GroupApi.getMembers(groupID);
+        setGroupMembers(data);
+      }
+      catch (error) {
+        console.log('errsss: ', error);
+      }
+    };
+
+    fetch();
+  }, [])
 
   const handleRemoveImage = (fileName: string | undefined) => {
     setImageList(prev =>
@@ -51,7 +91,6 @@ const NewPostScreen = ({
     const options: ImageLibraryOptions = {
       mediaType: 'photo',
       selectionLimit: 1,
-      includeBase64: true,
       presentationStyle: 'fullScreen',
     };
     const result: ImagePickerResponse = await launchImageLibrary(options);
@@ -66,6 +105,7 @@ const NewPostScreen = ({
   const HandleEveryone = () => {
     setEveryOne(true);
     setOpenOption(!openOption);
+    setLimitedBuddyId([]);
   };
 
   const HandleLimitBuddy = () => {
@@ -80,25 +120,83 @@ const NewPostScreen = ({
 
   const HandleCancelLimit = () => {
     setLimitBuddy(!openLimitBuddy);
+    setLimitedBuddyId([]);
   };
+
+  const addToLimitList = (id: number) => {
+    setLimitedBuddyId(prevList => {
+      if (prevList.includes(id)) {
+        return prevList.filter(item => item !== id);
+      } else {
+        return [...prevList, id];
+      }
+    });
+  }
+
+  const handleNewPost = async () => {
+    try {
+      setLoading(true);
+      const postData: TCreatePost = {
+        note: noteValue as string,
+        groupId: groupID,
+        viewerIds: limitedBuddyId,
+        location: {
+          latitude: 17.0685,
+          longitude: 106.6925,
+        }
+      }
+
+      const image: TCreateImage = {
+        uri: imageList[0].uri,
+        name: imageList[0].fileName,
+        type: imageList[0].type,
+      }
+
+      await PostApi.createPost(image, postData);
+
+      const options: ToastOptions = {
+        title: 'Post',
+        message: 'Create post successfully!',
+        preset: 'done',
+        backgroundColor: '#e2e8f0',
+      };
+      toast(options);
+
+      navigation.pop();
+
+      setLoading(false);
+    }
+    catch (error) {
+      console.log("err: ", error);
+      setLoading(false);
+    }
+  }
+
+  if (loading) {
+    return (
+      <View className='flex flex-1 justify-center items-center'>
+        <ActivityIndicator size="large" color="#2C7CC1" />
+      </View>
+    )
+  }
 
   return (
     <>
       <Header
         title="New post"
         onBack={() => navigation.pop()}
-        onPrimaryAction={() => {}}
+        onPrimaryAction={() => { }}
       />
       <View className="flex flex-1 mt-6">
         <View className="flex flex-row space-x-2 px-4 mb-4">
           <View>
             <Image
               source={require('../assets/images/avatar.jpg')}
-              style={{width: 50, height: 50, borderRadius: 60 / 2}}
+              style={{ width: 50, height: 50, borderRadius: 60 / 2 }}
             />
           </View>
           <View className="items-start justify-around">
-            <Text className="font-bold text-black text-medium">Hoàng Phúc</Text>
+            <Text className="font-interBold text-black text-medium">Hoàng Phúc</Text>
             <OptionStatus
               isChange={isEveryOne}
               onPress={() => setOpenOption(!openOption)}
@@ -112,6 +210,9 @@ const NewPostScreen = ({
           textAlignVertical="top"
           placeholderTextColor="#7C7979"
           multiline
+          value={noteValue}
+          onChange={handleNoteChange}
+          onBlur={handleNoteBlur}
         />
         {isImage && (
           <View className="w-full flex-row justify-center mb-5 px-4">
@@ -120,8 +221,8 @@ const NewPostScreen = ({
                 <View key={index} className="mx-4 w-full">
                   <View>
                     <Image
-                      source={{uri: item.uri}}
-                      style={{width: '100%', height: 200}}
+                      source={{ uri: item.uri }}
+                      style={{ width: '100%', height: 200 }}
                     />
                   </View>
                   <TouchableOpacity
@@ -140,16 +241,17 @@ const NewPostScreen = ({
             onPress={pickImages}
             className="flex-row space-x-2 items-center mb-3 px-4">
             <PhotoIcon size={24} color="#096C47" />
-            <Text className="text-primary text-medium">Picture</Text>
+            <Text className="text-black text-medium">Picture</Text>
           </TouchableOpacity>
           <View className="border-b border-[#E3E1D9] w-full mb-4" />
         </View>
         <View className="flex items-center gap-4">
-          <TouchableOpacity className="w-[80%] items-center py-[10px] bg-main rounded-[10px]">
+          <TouchableOpacity onPress={handleNewPost}
+            className="w-[80%] items-center py-[10px] bg-primary rounded-[10px]">
             <Text className="text-white font-bold text-title">Save</Text>
           </TouchableOpacity>
           <TouchableOpacity className="w-[80%] items-center py-[9px] bg-white rounded-[10px] border border-primary">
-            <Text className="text-main font-bold text-title">Cancel</Text>
+            <Text className="text-primary font-bold text-title">Cancel</Text>
           </TouchableOpacity>
         </View>
 
@@ -176,11 +278,9 @@ const NewPostScreen = ({
         <Modal isOpen={openLimitBuddy}>
           <View className="bg-white w-full h-[85%] px-4 pb-2 pt-4 rounded-xl">
             <FlatList
-              data={buddies}
+              data={groupMembers}
               keyExtractor={(item, index) => index.toString()}
-              renderItem={({item}) => (
-                <LimitedItem item={item} press={() => {}} />
-              )}
+              renderItem={({ item }) => <GroupMember item={item} onPress={() => addToLimitList(item.user.id)} />}
               showsHorizontalScrollIndicator={false}
             />
             <TouchableOpacity
@@ -192,8 +292,8 @@ const NewPostScreen = ({
             </TouchableOpacity>
             <TouchableOpacity
               onPress={HandleCancelLimit}
-              className="border border-main px-2 py-3 rounded-[8px] mb-2">
-              <Text className="text-main text-medium font-bold text-center">
+              className="border border-primary px-2 py-3 rounded-[8px] mb-2">
+              <Text className="text-primary text-medium font-bold text-center">
                 Cancel
               </Text>
             </TouchableOpacity>

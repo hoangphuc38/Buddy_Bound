@@ -3,11 +3,13 @@ import { TMember } from '../types/member.type';
 
 interface IGroupMember {
   item: TMember;
+  onPress?: () => void
 }
 
-const GroupMember = ({ item }: IGroupMember) => {
+const GroupMember = ({ item, onPress }: IGroupMember) => {
   return (
-    <TouchableOpacity className="flex flex-row items-center mb-4 gap-[20px]">
+    <TouchableOpacity onPress={onPress}
+      className="flex flex-row items-center mb-4 gap-[20px]">
       <Image
         source={{ uri: item.user.avatar }}
         style={

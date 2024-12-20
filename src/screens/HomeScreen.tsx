@@ -62,7 +62,7 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
       <View className="flex flex-1 px-4 mt-2">
         <View className="flex mb-2">
           <View className="flex flex-row justify-between items-center mb-4">
-            <Text className="font-interMedium text-lg">
+            <Text className="font-interMedium text-base text-main">
               Buddies
             </Text>
             <TouchableOpacity onPress={() => setAllBuddy(!allBuddy)}>
@@ -88,7 +88,7 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
           </View>
 
           <View className="flex flex-row justify-between items-center mb-4">
-            <Text className="font-interMedium text-title">
+            <Text className="font-interMedium text-base text-main">
               Groups
             </Text>
             <TouchableOpacity onPress={() => setAllGroup(!allGroup)}>
@@ -116,7 +116,7 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
         <Modal isOpen={allBuddy}>
           <View className="bg-white w-full h-[80%] p-4 rounded-xl">
             <View className="flex flex-row justify-center items-center mb-4">
-              <Text className="font-interMedium text-[20px] text-center text-primary">
+              <Text className="font-interMedium text-[20px] text-center">
                 Buddies
               </Text>
               <TouchableOpacity
@@ -151,7 +151,7 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
         <Modal isOpen={allGroup}>
           <View className="bg-white w-full h-[80%] p-4 rounded-xl">
             <View className="flex flex-row justify-center items-center mb-4">
-              <Text className="font-interMedium text-[20px] text-center text-primary">
+              <Text className="font-interMedium text-[20px] text-center">
                 Groups
               </Text>
               <TouchableOpacity

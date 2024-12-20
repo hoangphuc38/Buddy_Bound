@@ -1,20 +1,15 @@
-import {faCircleMinus} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {useState} from 'react';
-import {Image, Text, TouchableOpacity, View} from 'react-native';
+import { faCircleMinus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { useState } from 'react';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { TBuddy } from '../types/group.type';
 
 interface ILimitedItem {
   press: () => void;
-  item: LimitedItem;
+  item: TBuddy;
 }
 
-export type LimitedItem = {
-  id: number;
-  name: string;
-  avatar: string;
-};
-
-const LimitedItem = ({item, press}: ILimitedItem) => {
+const LimitedItem = ({ item, press }: ILimitedItem) => {
   const [active, setActive] = useState<boolean>(false);
 
   const HandleSelect = () => {
@@ -33,10 +28,10 @@ const LimitedItem = ({item, press}: ILimitedItem) => {
       </TouchableOpacity>
       <View className="flex flex-row items-center space-x-2">
         <Image
-          source={{uri: item.avatar}}
-          style={{height: 40, width: 40, borderRadius: 10}}
+          source={{ uri: item.userDto.avatar }}
+          style={{ height: 40, width: 40, borderRadius: 10 }}
         />
-        <Text className="text-medium text-main">{item.name}</Text>
+        <Text className="text-medium text-main">{item.userDto.fullName}</Text>
       </View>
     </View>
   );
