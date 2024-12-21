@@ -3,6 +3,7 @@ import {TabsScreenProps} from '../types/navigator.type';
 import {useAuth} from '../contexts/auth-context';
 import SearchBar from '../components/SearchBar';
 import {useState} from 'react';
+import SideBar from '../components/SideBar';
 
 const menu = require('../assets/images/menu.png');
 const addUserGroup = require('../assets/images/add-user-group.png');
@@ -93,6 +94,8 @@ const RelationshipScreen = ({navigation}: TabsScreenProps) => {
   const {signOut} = useAuth();
   const handleSearch = () => {};
 
+  const handleItemPress = (item: string) => {};
+
   const friendData = mockData.filter(
     user =>
       user.role === 'Close Friend' ||
@@ -102,6 +105,12 @@ const RelationshipScreen = ({navigation}: TabsScreenProps) => {
   const familyData = mockData.filter(user => user.family === 'Family');
 
   const [activeTag, setActiveTag] = useState('friend');
+  //mở SideBar
+  const [isSideBarVisible, setSideBarVisible] = useState(false);
+
+  const toggleSideBar = () => {
+    setSideBarVisible(!isSideBarVisible);
+  };
 
   //xử lý chuyển tag
   const handleChangeFriendTag = () => {
@@ -131,9 +140,9 @@ const RelationshipScreen = ({navigation}: TabsScreenProps) => {
   );
 
   return (
-    <View className=" pl-5 pr-5 flex items-center">
-      <View className="w-full mt-3 justify-between items-center flex-row">
-        <TouchableOpacity className="w-[25] h-[25]">
+    <View className=" flex-1 pl-5 pr-5 flex items-center">
+      <View className=" w-full mt-3 justify-between items-center flex-row">
+        <TouchableOpacity className="w-[25] h-[25]" onPress={toggleSideBar}>
           <Image
             source={menu}
             className="w-full h-full"
@@ -199,6 +208,12 @@ const RelationshipScreen = ({navigation}: TabsScreenProps) => {
             showsVerticalScrollIndicator={false}></FlatList>
         </View>
       )}
+      <SideBar
+        items={['Home', 'Settings', 'Profile']}
+        onItemPress={handleItemPress}
+        isVisible={isSideBarVisible}
+        onClose={toggleSideBar}
+      />
     </View>
   );
 };
