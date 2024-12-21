@@ -39,6 +39,7 @@ import { TMember } from '../types/member.type';
 import GroupMember from '../components/GroupMember';
 import { toast, ToastOptions } from '@baronha/ting';
 import { TCreateImage } from '../types/image.type';
+import { useAuth } from '../contexts/auth-context';
 
 const NewPostScreen = ({
   route,
@@ -79,7 +80,7 @@ const NewPostScreen = ({
     };
 
     fetch();
-  }, [])
+  }, []);
 
   const handleRemoveImage = (fileName: string | undefined) => {
     setImageList(prev =>
@@ -105,7 +106,7 @@ const NewPostScreen = ({
   const HandleEveryone = () => {
     setEveryOne(true);
     setOpenOption(!openOption);
-    setLimitedBuddyId([]);
+    setLimitedBuddyId(groupMembers.map((value) => value.user.id));
   };
 
   const HandleLimitBuddy = () => {
@@ -131,7 +132,7 @@ const NewPostScreen = ({
         return [...prevList, id];
       }
     });
-  }
+  };
 
   const handleNewPost = async () => {
     try {
@@ -143,16 +144,19 @@ const NewPostScreen = ({
         location: {
           latitude: 17.0685,
           longitude: 106.6925,
-        }
+        },
+      };
+      let image;
+      if (imageList[0]) {
+        image = {
+          uri: imageList[0].uri,
+          name: imageList[0].fileName,
+          type: imageList[0].type,
+        };
       }
 
-      const image: TCreateImage = {
-        uri: imageList[0].uri,
-        name: imageList[0].fileName,
-        type: imageList[0].type,
-      }
-
-      await PostApi.createPost(image, postData);
+      const response = await PostApi.createPost(postData, image ? image : undefined );
+      console.log(response);
 
       const options: ToastOptions = {
         title: 'Post',
@@ -167,17 +171,17 @@ const NewPostScreen = ({
       setLoading(false);
     }
     catch (error) {
-      console.log("err: ", error);
+      console.log('err: ', error);
       setLoading(false);
     }
-  }
+  };
 
   if (loading) {
     return (
-      <View className='flex flex-1 justify-center items-center'>
+      <View className="flex flex-1 justify-center items-center">
         <ActivityIndicator size="large" color="#2C7CC1" />
       </View>
-    )
+    );
   }
 
   return (

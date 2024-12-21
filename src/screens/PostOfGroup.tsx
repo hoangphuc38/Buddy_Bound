@@ -27,16 +27,16 @@ const PostOfGroupScreen = ({
         setPostGroup(data);
       }
       catch (error) {
-        console.log("Err: ", error);
+        console.log('Err: ', error);
       }
-    }
+    };
 
     fecthAPI();
-  }, [])
+  }, []);
 
   if (postGroup.length === 0) {
     return (
-      <View className='flex flex-1 items-center justify-center'>
+      <View className="flex flex-1 items-center justify-center">
         <ActivityIndicator size="large" color="#2C7CC1" />
       </View>
     );

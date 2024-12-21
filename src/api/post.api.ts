@@ -1,12 +1,14 @@
 import { Asset } from 'react-native-image-picker';
 import http, { httpClient } from '../helpers/axiosConfig';
-import { TCreatePost, TPost } from "../types/post.type";
-import { TSuccessResponse } from "../types/response.type";
+import { TCreatePost, TPost } from '../types/post.type';
+import { TSuccessResponse } from '../types/response.type';
 import { TCreateImage } from '../types/image.type';
+import axios from 'axios';
 
 export class PostApi {
     static async getAll(groupId: number): Promise<TSuccessResponse<TPost[]>> {
-        const response = await http.get(`/posts/get-all?groupId=${groupId}`);
+        const response = await http.get(`/posts/get-all?groupId=${groupId}&isExpired=false`);
+        console.log(response.data);
         return response.data;
     }
 
@@ -15,26 +17,21 @@ export class PostApi {
         return response.data;
     }
 
-    static async createPost(image: TCreateImage, postData: TCreatePost): Promise<TSuccessResponse<TPost>> {
-        let formData = new FormData();
+    static async createPost(postData: TCreatePost, image?: TCreateImage): Promise<TSuccessResponse<TPost>> {
+        const formData = new FormData();
 
-        formData.append("image", image);
+        if (image) {
+            formData.append('image', image);
+        }
 
-        // const postDataBlob = new Blob([JSON.stringify(postData)], {
-        //     type: 'application/json'
-        // });
+        formData.append('postData', JSON.stringify(postData));
 
-        console.log("check: ", JSON.stringify(postData));
-
-        formData.append("postData", JSON.stringify(postData));
-
-        const response = await http.post(`/posts`, formData, {
+        const response = await http.post('/posts', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
-                'Accept': 'application/json'
+                'Accept': 'application/json',
             },
         });
-
         return response.data;
     }
 }

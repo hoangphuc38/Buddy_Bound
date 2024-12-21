@@ -10,7 +10,7 @@ export type RootStackParamList = {
   NewRelationship: undefined;
   SetNewRelationship: undefined;
   LocationBuddy: { userID: number };
-  LocationGroup: { groupID: number };
+  LocationGroup: { groupID: number, groupType: string };
   NewPost: { groupID: number };
   PostOfGroup: { groupID: number };
   PostDetail: { postID: number };

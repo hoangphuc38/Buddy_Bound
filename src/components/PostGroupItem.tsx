@@ -42,6 +42,9 @@ const timeAgo = (createdAt: string) => {
 };
 
 const PostGroupItem = ({ press, item }: IPostGroupItem) => {
+  if (!item.image) {
+    return;
+  }
   return (
     <TouchableOpacity onPress={press} className="w-full relative mb-5">
       <ImageBackground

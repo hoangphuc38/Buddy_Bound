@@ -36,6 +36,9 @@ import { GroupApi } from '../api/group.api';
 import { TMember } from '../types/member.type';
 import { Modal } from '../components/Modal';
 import SearchBar from '../components/SearchBar';
+import MemberItem from '../components/MemberItem';
+import { RelationshipApi } from '../api/relationship.api';
+import { TUser } from '../types/user.type';
 
 const LocationGroupScreen = ({
   route,
@@ -43,15 +46,16 @@ const LocationGroupScreen = ({
 }: LocationGroupScreenProps & {
   route: RouteProp<RootStackParamList, 'LocationGroup'>;
 }) => {
-  const { groupID } = route.params;
+  const { groupID, groupType } = route.params;
   const { postMarkers, userMarkers } = mockData;
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isSeeAll, setIsSeeAll] = useState<string | null>(null);
   const [groupMembers, setGroupMembers] = useState<TMember[]>([]);
   const [approvalMembers, setApprovalMembers] = useState<TMember[]>([]);
+  const [allRelatedUsers, setAllRelatedUsers] = useState<TUser[]>([]);
 
   const [modal, setModal] = useState<boolean>(false);
-  const [searchText, setSearchText] = useState<string>("");
+  const [searchText, setSearchText] = useState<string>('');
 
   const sheetRef = useRef<BottomSheetMethods>(null);
 
@@ -159,10 +163,21 @@ const LocationGroupScreen = ({
       catch (error) {
         console.log('err: ', error);
       }
-    }
+    };
+
+    const getAllRelationshipsByType = async () => {
+      try {
+        const { data } = await RelationshipApi.getRelationshipsByType({type: groupType});
+        setAllRelatedUsers(data.map((value) => value.receiver));
+      }
+      catch (error) {
+        console.log('err: ', error);
+      }
+    };
 
     fetchAPI();
-  }, [])
+    getAllRelationshipsByType();
+  }, [groupID, groupType]);
 
   return (
     <>
@@ -291,18 +306,18 @@ const LocationGroupScreen = ({
             value={searchText}
           />
 
-          {/* <FlatList
-              data={filteredBuddies}
+          <FlatList
+              data={allRelatedUsers}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => (
-                <BuddyItem
+                <MemberItem
                   horizontal
                   item={item}
-                  press={() => HandleClickBuddy(item)}
+                  press={() => {}}
                 />
               )}
               showsHorizontalScrollIndicator={false}
-            /> */}
+            />
         </View>
       </Modal>
 

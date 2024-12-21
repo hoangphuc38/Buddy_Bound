@@ -104,7 +104,7 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
                 <GroupItem
                   item={item}
                   press={() => {
-                    navigation.push('LocationGroup', { groupID: item.id });
+                    navigation.push('LocationGroup', { groupID: item.id, groupType: item.groupType });
                   }}
                 />
               )}
