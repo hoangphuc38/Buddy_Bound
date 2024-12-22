@@ -5,6 +5,37 @@ interface TimeUnit {
     plural: string;
 }
 
+export const toISOFormat = (readableDate: string) => {
+  const months = {
+    'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04',
+    'May': '05', 'Jun': '06', 'Jul': '07', 'Aug': '08',
+    'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12',
+  };
+
+  const parts = readableDate.split(' ');
+  if (parts.length === 2) {
+    const [month, day] = parts;
+    const year = new Date().getFullYear();
+    return `${year}-${months[month]}-${day.padStart(2, '0')}`;
+  } else { // "Jun 15 2024"
+    const [month, day, year] = parts;
+    return `${year}-${months[month]}-${day.padStart(2, '0')}`;
+  }
+};
+
+export const toReadableFormat = (isoDate: string, referenceYear = new Date().getFullYear()) => {
+  const months = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+  ];
+  const date = new Date(isoDate);
+  const year = date.getFullYear();
+
+  return year === referenceYear
+    ? `${months[date.getMonth()]} ${date.getDate()}` // "Jun 15"
+    : `${months[date.getMonth()]} ${date.getDate()} ${year}`; // "Jun 15 2024"
+};
+
 export class TimeFormatter {
     private static readonly units: TimeUnit[] = [
         { max: 60, divisor: 1, unit: 'just now', plural: 'just now' },              // seconds

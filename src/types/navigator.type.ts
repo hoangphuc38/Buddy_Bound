@@ -22,6 +22,7 @@ export type RootStackParamList = {
   AlbumDetailsScreen: undefined;
   NewGroupScreen: undefined;
   ChatScreen: undefined;
+  AddAlbum: undefined;
   //Declare new screen with needed parameters
 };
 
@@ -91,6 +92,7 @@ export type AlbumStorageScreenProps = NativeStackScreenProps<RootStackParamList,
 export type AlbumDetailsScreenProps = NativeStackScreenProps<RootStackParamList, 'AlbumDetailsScreen'>
 export type NewGroupScreenProps = NativeStackScreenProps<RootStackParamList, 'NewGroupScreen'>
 export type ChatScreenProps = NativeStackScreenProps<RootStackParamList, 'ChatScreen'>
+export type AddAlbumProps = NativeStackScreenProps<RootStackParamList, 'AddAlbum'>
 //Continue when declare new screens
 
 export type BottomTabParamList = {
