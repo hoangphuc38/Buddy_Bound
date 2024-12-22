@@ -51,7 +51,7 @@ const PostGroupItem = ({ press, item }: IPostGroupItem) => {
         source={{ uri: item.image.imageUrl }}
         style={{
           width: '100%',
-          height: 175,
+          height: 200,
           borderRadius: 5,
           overflow: 'hidden',
         }}

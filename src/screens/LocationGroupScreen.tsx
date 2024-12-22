@@ -39,6 +39,8 @@ import SearchBar from '../components/SearchBar';
 import MemberItem from '../components/MemberItem';
 import { RelationshipApi } from '../api/relationship.api';
 import { TUser } from '../types/user.type';
+import { TInviteGroup } from '../types/group.type';
+import { toast, ToastOptions } from '@baronha/ting';
 
 const LocationGroupScreen = ({
   route,
@@ -53,6 +55,7 @@ const LocationGroupScreen = ({
   const [groupMembers, setGroupMembers] = useState<TMember[]>([]);
   const [approvalMembers, setApprovalMembers] = useState<TMember[]>([]);
   const [allRelatedUsers, setAllRelatedUsers] = useState<TUser[]>([]);
+  const [invitedBuddies, setInvitedBuddies] = useState<number[]>([]);
 
   const [modal, setModal] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>('');
@@ -167,7 +170,7 @@ const LocationGroupScreen = ({
 
     const getAllRelationshipsByType = async () => {
       try {
-        const { data } = await RelationshipApi.getRelationshipsByType({type: groupType});
+        const { data } = await RelationshipApi.getRelationshipsByType({ type: groupType });
         setAllRelatedUsers(data.map((value) => value.receiver));
       }
       catch (error) {
@@ -178,6 +181,41 @@ const LocationGroupScreen = ({
     fetchAPI();
     getAllRelationshipsByType();
   }, [groupID, groupType]);
+
+  const addToInvitedList = (id: number) => {
+    setInvitedBuddies(prevList => {
+      if (prevList.includes(id)) {
+        return prevList.filter(item => item !== id);
+      } else {
+        return [...prevList, id];
+      }
+    });
+  };
+
+  const handleSendInviation = async () => {
+    let body: TInviteGroup = {
+      id: groupID,
+      groupType: groupType,
+      userIds: invitedBuddies,
+      groupName: "",
+      groupDescription: "",
+    }
+
+    try {
+      await GroupApi.inviteGroup(body);
+
+      const options: ToastOptions = {
+        title: 'Invite buddies',
+        message: 'Send invitation successfully!',
+        preset: 'done',
+        backgroundColor: '#e2e8f0',
+      };
+      toast(options);
+    }
+    catch (error) {
+      console.log("err: ", error)
+    }
+  }
 
   return (
     <>
@@ -307,17 +345,24 @@ const LocationGroupScreen = ({
           />
 
           <FlatList
-              data={allRelatedUsers}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => (
-                <MemberItem
-                  horizontal
-                  item={item}
-                  press={() => {}}
-                />
-              )}
-              showsHorizontalScrollIndicator={false}
-            />
+            data={allRelatedUsers.filter(user => !groupMembers.some(member => member.id === user.id))}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <MemberItem
+                horizontal
+                item={item}
+                press={() => addToInvitedList(item.id)}
+              />
+            )}
+            showsHorizontalScrollIndicator={false}
+          />
+
+          <TouchableOpacity onPress={handleSendInviation}
+            className="absolute bottom-0 left-0 right-0 bg-primary rounded-[10px] p-3 mx-4 mb-4 flex-row items-center justify-center">
+            <Text className="text-white text-normal font-bold text-center ml-2">
+              Send invitation
+            </Text>
+          </TouchableOpacity>
         </View>
       </Modal>
 
@@ -419,7 +464,7 @@ const LocationGroupScreen = ({
             )}
           </View>
 
-          <TouchableOpacity onPress={() => setModal(true)}
+          <TouchableOpacity onPress={() => setModal(!modal)}
             className="absolute bottom-[30px] left-0 right-0 bg-primary rounded-[10px] p-3 mx-4 mb-4 flex-row items-center justify-center">
             <FontAwesomeIcon icon={faPlus} size={15} color="white" />
             <Text className="text-white text-normal font-bold text-center ml-2">

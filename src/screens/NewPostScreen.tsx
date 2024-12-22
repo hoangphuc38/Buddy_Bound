@@ -86,6 +86,8 @@ const NewPostScreen = ({
     setImageList(prev =>
       prev.filter((item, index) => item.fileName !== fileName),
     );
+
+    setIsImage(false);
   };
 
   const pickImages = async () => {
@@ -155,7 +157,7 @@ const NewPostScreen = ({
         };
       }
 
-      const response = await PostApi.createPost(postData, image ? image : undefined );
+      const response = await PostApi.createPost(postData, image ? image : undefined);
       console.log(response);
 
       const options: ToastOptions = {
@@ -192,7 +194,7 @@ const NewPostScreen = ({
         onPrimaryAction={() => { }}
       />
       <View className="flex flex-1 mt-6">
-        <View className="flex flex-row space-x-2 px-4 mb-4">
+        <View className="flex flex-row space-x-2 px-4 mb-5">
           <View>
             <Image
               source={require('../assets/images/avatar.jpg')}
@@ -208,48 +210,48 @@ const NewPostScreen = ({
           </View>
         </View>
 
-        <TextInput
-          placeholder="Write your status ... (30 characters)"
-          className="text-medium text-black h-auto px-4 mb-3"
-          textAlignVertical="top"
-          placeholderTextColor="#7C7979"
-          multiline
-          value={noteValue}
-          onChange={handleNoteChange}
-          onBlur={handleNoteBlur}
-        />
-        {isImage && (
-          <View className="w-full flex-row justify-center mb-5 px-4">
-            {imageList.map((item, index) => {
-              return (
-                <View key={index} className="mx-4 w-full">
-                  <View>
-                    <Image
-                      source={{ uri: item.uri }}
-                      style={{ width: '100%', height: 200 }}
-                    />
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => handleRemoveImage(item.fileName)}
-                    className="rounded-full p-1 absolute top-2 right-2 bg-black">
-                    <XMarkIcon size={16} color="white" />
-                  </TouchableOpacity>
-                </View>
-              );
-            })}
+        <View className='px-4'>
+          {!isImage ? (
+            <View className="rounded-lg py-8 items-center justify-center" style={{ borderStyle: 'dashed', borderRadius: 1, borderWidth: 1 }}>
+              <View className="bg-gray-100 p-4 rounded-full">
+                <PhotoIcon size={32} color="#9e9e9e" />
+              </View>
+              <Text className="text-sm text-gray-600 mt-2">Add photo to your post</Text>
+              <TouchableOpacity onPress={pickImages} className="mt-4">
+                <Text className="text-sm text-blue-600">Select from gallery</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View className="relative">
+              <Image
+                source={{ uri: imageList[0].uri }}
+                className="w-full h-48 rounded-lg"
+              />
+              <TouchableOpacity
+                onPress={() => handleRemoveImage(imageList[0].fileName)}
+                className="absolute top-2 right-2 p-2 bg-black/50 rounded-full"
+              >
+                <XMarkIcon size={16} color="white" />
+              </TouchableOpacity>
+            </View>
+          )}
+
+          <View className="mt-4 mb-4">
+            <Text className="text-sm font-medium text-gray-700">Caption</Text>
+            <TextInput
+              placeholder="Write your status ... (30 characters)"
+              className="min-h-24 border border-gray-300 rounded-lg p-3 mt-2 text-sm"
+              textAlignVertical="top"
+              placeholderTextColor="#7C7979"
+              multiline
+              value={noteValue}
+              onChange={handleNoteChange}
+              onBlur={handleNoteBlur}
+            />
           </View>
-        )}
-        <View className="mb-[80px]">
-          <View className="border-b border-[#E3E1D9] w-full mb-3" />
-          <TouchableOpacity
-            onPress={pickImages}
-            className="flex-row space-x-2 items-center mb-3 px-4">
-            <PhotoIcon size={24} color="#096C47" />
-            <Text className="text-black text-medium">Picture</Text>
-          </TouchableOpacity>
-          <View className="border-b border-[#E3E1D9] w-full mb-4" />
         </View>
-        <View className="flex items-center gap-4">
+
+        {/* <View className="flex items-center gap-4">
           <TouchableOpacity onPress={handleNewPost}
             className="w-[80%] items-center py-[10px] bg-primary rounded-[10px]">
             <Text className="text-white font-bold text-title">Save</Text>
@@ -257,7 +259,7 @@ const NewPostScreen = ({
           <TouchableOpacity className="w-[80%] items-center py-[9px] bg-white rounded-[10px] border border-primary">
             <Text className="text-primary font-bold text-title">Cancel</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
 
         <Modal isOpen={openOption}>
           <View className="bg-white w-full px-4 py-8 rounded-xl">

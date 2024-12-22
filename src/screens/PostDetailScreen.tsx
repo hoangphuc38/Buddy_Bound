@@ -143,7 +143,7 @@ const PostDetailScreen = ({
           </Text>
           <ChatBubbleOvalLeftEllipsisIcon size={18} color="white" />
         </TouchableOpacity>
-        {/* {
+        {
           detailPost.firstComment && <View className="absolute inset-x-0 bottom-3">
             <View className="flex">
               <Text className="font-interBold text-white text-[10px] text-center">
@@ -154,7 +154,7 @@ const PostDetailScreen = ({
               </Text>
             </View>
           </View>
-        } */}
+        }
 
       </View>
       <BottomSheet
