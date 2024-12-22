@@ -8,10 +8,11 @@ interface HeaderProps {
   onBack?: () => void;
   onPrimaryAction?: () => void;
   PrimaryIcon?: React.FunctionComponent<SvgProps>;
-  SideTitleIcon?: React.FunctionComponent<SvgProps>
+  SideTitleIcon?: React.FunctionComponent<SvgProps>;
+  primaryText?: string
 }
 
-const Header = ({title, SideTitleIcon, onBack, onPrimaryAction, PrimaryIcon}: HeaderProps) => {
+const Header = ({title, SideTitleIcon, onBack, onPrimaryAction, PrimaryIcon, primaryText}: HeaderProps) => {
   return (
     <View className="fixed top-0 left-0 right-0 h-[60px] bg-white border-b-[0.5px] border-[#A4A7AE] flex items-center px-4 justify-between z-50 flex-row">
       {onBack && (
@@ -29,8 +30,10 @@ const Header = ({title, SideTitleIcon, onBack, onPrimaryAction, PrimaryIcon}: He
 
       <TouchableOpacity
         onPress={onPrimaryAction}
-        className="h-9 px-4 text-sm"
-      />
+      >
+        {PrimaryIcon && <PrimaryIcon width={22} height={22} />}
+        {primaryText && <Text className="font-interBold text-primary">{primaryText}</Text>}
+      </TouchableOpacity>
     </View>
   );
 };

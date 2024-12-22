@@ -28,6 +28,7 @@ import AlbumDetailsScreen from '../screens/AlbumDetailsScreen';
 import HistoryLocation from '../screens/HistoryLocation';
 import ChatScreen from '../screens/ChatScreen';
 import { useAuth } from '../contexts/auth-context';
+import AddAlbum from '../screens/AddAlbum';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -89,6 +90,7 @@ const Navigator = () => {
         />
         <Stack.Screen name="MemorablePlaces" component={MemorablePlaceScreen} />
         <Stack.Screen name="NewMemorable" component={NewMemorablePlaceScreen} />
+        <Stack.Screen name="AddAlbum" component={AddAlbum} />
           </>
           :
           <>
