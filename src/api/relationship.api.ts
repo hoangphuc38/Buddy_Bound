@@ -1,5 +1,5 @@
 import http from '../helpers/axiosConfig';
-import { TRelationship, TUserRelationship } from '../types/relationship.type';
+import { TNewRelationship, TRelationship, TUserRelationship } from '../types/relationship.type';
 import { TSuccessResponse } from '../types/response.type';
 import { TUser } from '../types/user.type';
 
@@ -12,5 +12,10 @@ export class RelationshipApi {
                 isPending: params.isPending ? params.isPending : undefined,
             },
         })).data;
+    }
+
+    static async newRelationship(body: TNewRelationship): Promise<TSuccessResponse<null>> {
+        const response = await http.post('/relationship/add', body);
+        return response.data;
     }
 }

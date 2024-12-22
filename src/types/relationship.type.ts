@@ -15,3 +15,12 @@ export type TRelationship = {
     createdAt: string,
     updatedAt: string
 }
+
+export type TNewRelationship = {
+    receiverId: number,
+    relationshipType: string,
+    familyType?: string,
+    friendType?: string,
+    senderRole?: string,
+    receiverRole?: string
+}

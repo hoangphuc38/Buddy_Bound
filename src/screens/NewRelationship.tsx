@@ -36,7 +36,7 @@ const NewRelationshipScreen = ({ navigation }: NewRelationshipScreenProps) => {
       // Trượt xuống (hiện dropdown)
       setIsFamilyActive(true);
       Animated.timing(animationValueFamily, {
-        toValue: 100, // Chiều cao tối đa của dropdown
+        toValue: 160, // Chiều cao tối đa của dropdown
         duration: 500,
         useNativeDriver: false,
       }).start();
@@ -117,9 +117,14 @@ const NewRelationshipScreen = ({ navigation }: NewRelationshipScreenProps) => {
                 <Text style={styles.itemText}>Parent-Child</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => navigation.push('SetNewRelationship', { relationshipType: "FAMILY", detailRelationship: "Others" })}
+                onPress={() => navigation.push('SetNewRelationship', { relationshipType: "FAMILY", detailRelationship: "Spouse" })}
                 style={styles.cbbItem}>
-                <Text style={styles.itemText}>Others</Text>
+                <Text style={styles.itemText}>Spouse</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.push('SetNewRelationship', { relationshipType: "FAMILY", detailRelationship: "Sibling" })}
+                style={styles.cbbItem}>
+                <Text style={styles.itemText}>Sibling</Text>
               </TouchableOpacity>
             </Animated.View>
           </View>
@@ -181,11 +186,6 @@ const NewRelationshipScreen = ({ navigation }: NewRelationshipScreenProps) => {
                 onPress={() => navigation.push('SetNewRelationship', { relationshipType: "FRIEND", detailRelationship: "Close friends" })}
                 style={styles.cbbItem}>
                 <Text style={styles.itemText}>Close friends</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => navigation.push('SetNewRelationship', { relationshipType: "FRIEND", detailRelationship: "Others" })}
-                style={styles.cbbItem}>
-                <Text style={styles.itemText}>Others</Text>
               </TouchableOpacity>
             </Animated.View>
           </View>
