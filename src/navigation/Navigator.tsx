@@ -60,15 +60,9 @@ const Navigator = () => {
       <Stack.Navigator screenOptions={{headerShown: false}}>
         {token !== null ?
           <>
-          <Stack.Screen name="Tabs" component={Tabs} />
-        <Stack.Screen
-          name="NewRelationship"
-          component={NewRelationshipScreen}
-        />
-        <Stack.Screen
-          name="SetNewRelationship"
-          component={SetNewRelationshipScreen}
-        />
+        <Stack.Screen name="Tabs" component={Tabs} />
+        <Stack.Screen name="NewRelationship" component={NewRelationshipScreen}/>
+        <Stack.Screen name="SetNewRelationship" component={SetNewRelationshipScreen}/>
         <Stack.Screen name="LocationBuddy" component={LocationBuddyScreen} />
         <Stack.Screen name="LocationGroup" component={LocationGroupScreen} />
         <Stack.Screen name="NewPost" component={NewPostScreen} />
@@ -79,15 +73,11 @@ const Navigator = () => {
         <Stack.Screen name="AlbumStorageScreen" component={AlbumStorage} />
         <Stack.Screen name="AlbumDetailsScreen" component={AlbumDetailsScreen} />
         <Stack.Screen name="ChatScreen" component={ChatScreen} />
-        <Stack.Screen
-          name="PostDetail"
-          component={PostDetailScreen}
-          options={{
+        <Stack.Screen name="PostDetail" component={PostDetailScreen} options={{
             gestureEnabled: true,
             gestureDirection: 'vertical',
             animation: 'slide_from_bottom',
-          }}
-        />
+          }}/>
         <Stack.Screen name="MemorablePlaces" component={MemorablePlaceScreen} />
         <Stack.Screen name="NewMemorable" component={NewMemorablePlaceScreen} />
         <Stack.Screen name="AddAlbum" component={AddAlbum} />
