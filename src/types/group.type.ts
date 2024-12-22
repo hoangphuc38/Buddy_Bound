@@ -27,3 +27,11 @@ export type TGroup = {
     families: TFamily[];
     friends: [];
 }
+
+export type TInviteGroup = {
+    id: number;
+    groupName: string;
+    groupDescription: string;
+    userIds: number[];
+    groupType: string;
+}

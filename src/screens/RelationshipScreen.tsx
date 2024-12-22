@@ -129,7 +129,7 @@ const RelationshipScreen = ({navigation}: TabsScreenProps) => {
       <View className="items-center flex-row gap-[10]">
         <Image
           source={{uri: item.avt}}
-          className="w-[55] h-[55] border-[#2C7CC1] rounded-full"></Image>
+          className="w-[55] h-[55] border-[#2C7CC1] rounded-full" />
         <View>
           <Text className="font-interBold">{item.name}</Text>
           <Text className="">{item.phone}</Text>
@@ -146,7 +146,7 @@ const RelationshipScreen = ({navigation}: TabsScreenProps) => {
           <Image
             source={menu}
             className="w-full h-full"
-            resizeMode="contain"></Image>
+            resizeMode="contain" />
         </TouchableOpacity>
         <Text className="font-interBold text-2xl font-bold text-[#2C7CC1]">
           Relationship
@@ -157,7 +157,7 @@ const RelationshipScreen = ({navigation}: TabsScreenProps) => {
           <Image
             source={addUserGroup}
             className="w-[15] h-[15]"
-            resizeMode="contain"></Image>
+            resizeMode="contain" />
         </TouchableOpacity>
       </View>
       {/* family and friend tag */}
@@ -188,7 +188,7 @@ const RelationshipScreen = ({navigation}: TabsScreenProps) => {
         </TouchableOpacity>
       </View>
       <View className="mt-[35] w-full">
-        <SearchBar placeholder="Search" onSearch={handleSearch}></SearchBar>
+        <SearchBar placeholder="Search" onSearch={handleSearch} />
       </View>
       {/* friend list */}
       {activeTag === 'friend' ? (
@@ -197,7 +197,7 @@ const RelationshipScreen = ({navigation}: TabsScreenProps) => {
             data={friendData}
             keyExtractor={item => item.id.toString()}
             renderItem={renderItem}
-            showsVerticalScrollIndicator={false}></FlatList>
+            showsVerticalScrollIndicator={false} />
         </View>
       ) : (
         <View className="mt-[20] w-full">
@@ -205,7 +205,7 @@ const RelationshipScreen = ({navigation}: TabsScreenProps) => {
             data={familyData}
             keyExtractor={item => item.id.toString()}
             renderItem={renderItem}
-            showsVerticalScrollIndicator={false}></FlatList>
+            showsVerticalScrollIndicator={false} />
         </View>
       )}
       <SideBar

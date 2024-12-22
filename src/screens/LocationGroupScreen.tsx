@@ -11,8 +11,8 @@ import {
   LocationGroupScreenProps,
   RootStackParamList,
 } from '../types/navigator.type';
-import {RouteProp} from '@react-navigation/native';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import { RouteProp } from '@react-navigation/native';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
   faAngleLeft,
   faArrowLeft,
@@ -21,16 +21,26 @@ import {
   faPen,
   faPeopleGroup,
   faPlus,
+  faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import {useEffect, useRef, useState} from 'react';
-import {NewspaperIcon} from 'react-native-heroicons/solid';
-import BottomSheet, {BottomSheetMethods} from '@devvie/bottom-sheet';
+import { useEffect, useRef, useState } from 'react';
+import { NewspaperIcon } from 'react-native-heroicons/solid';
+import BottomSheet, { BottomSheetMethods } from '@devvie/bottom-sheet';
 import GroupMember from '../components/GroupMember';
 import mockData from '../mock/mockData';
 import ApprovalMember from '../components/ApprovalMember';
 import UserMarker from '../components/UserMarker';
 import PostMarker from '../components/PostMarker';
 import React from 'react';
+import { GroupApi } from '../api/group.api';
+import { TMember } from '../types/member.type';
+import { Modal } from '../components/Modal';
+import SearchBar from '../components/SearchBar';
+import MemberItem from '../components/MemberItem';
+import { RelationshipApi } from '../api/relationship.api';
+import { TUser } from '../types/user.type';
+import { TInviteGroup } from '../types/group.type';
+import { toast, ToastOptions } from '@baronha/ting';
 
 const LocationGroupScreen = ({
   route,
@@ -38,10 +48,17 @@ const LocationGroupScreen = ({
 }: LocationGroupScreenProps & {
   route: RouteProp<RootStackParamList, 'LocationGroup'>;
 }) => {
-  const {groupID} = route.params;
-  const {groupMembers, approvalMembers, postMarkers, userMarkers} = mockData;
+  const { groupID, groupType } = route.params;
+  const { postMarkers, userMarkers } = mockData;
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isSeeAll, setIsSeeAll] = useState<string | null>(null);
+  const [groupMembers, setGroupMembers] = useState<TMember[]>([]);
+  const [approvalMembers, setApprovalMembers] = useState<TMember[]>([]);
+  const [allRelatedUsers, setAllRelatedUsers] = useState<TUser[]>([]);
+  const [invitedBuddies, setInvitedBuddies] = useState<number[]>([]);
+
+  const [modal, setModal] = useState<boolean>(false);
+  const [searchText, setSearchText] = useState<string>('');
 
   const sheetRef = useRef<BottomSheetMethods>(null);
 
@@ -138,6 +155,68 @@ const LocationGroupScreen = ({
     }
   }, [isSeeAll]);
 
+  useEffect(() => {
+    const fetchAPI = async () => {
+      try {
+        const { data } = await GroupApi.getMembers(groupID);
+        const { data: approval } = await GroupApi.getWaitingApproval(groupID);
+        setGroupMembers(data);
+        setApprovalMembers(approval);
+      }
+      catch (error) {
+        console.log('err: ', error);
+      }
+    };
+
+    const getAllRelationshipsByType = async () => {
+      try {
+        const { data } = await RelationshipApi.getRelationshipsByType({ type: groupType });
+        setAllRelatedUsers(data.map((value) => value.receiver));
+      }
+      catch (error) {
+        console.log('err: ', error);
+      }
+    };
+
+    fetchAPI();
+    getAllRelationshipsByType();
+  }, [groupID, groupType]);
+
+  const addToInvitedList = (id: number) => {
+    setInvitedBuddies(prevList => {
+      if (prevList.includes(id)) {
+        return prevList.filter(item => item !== id);
+      } else {
+        return [...prevList, id];
+      }
+    });
+  };
+
+  const handleSendInviation = async () => {
+    let body: TInviteGroup = {
+      id: groupID,
+      groupType: groupType,
+      userIds: invitedBuddies,
+      groupName: "",
+      groupDescription: "",
+    }
+
+    try {
+      await GroupApi.inviteGroup(body);
+
+      const options: ToastOptions = {
+        title: 'Invite buddies',
+        message: 'Send invitation successfully!',
+        preset: 'done',
+        backgroundColor: '#e2e8f0',
+      };
+      toast(options);
+    }
+    catch (error) {
+      console.log("err: ", error)
+    }
+  }
+
   return (
     <>
       <View className="flex flex-1 h-full w-full">
@@ -145,7 +224,7 @@ const LocationGroupScreen = ({
         <View>
           <Image
             source={require('../assets/images/map.png')}
-            style={{width: '100%', height: '100%', overflow: 'hidden'}}
+            style={{ width: '100%', height: '100%', overflow: 'hidden' }}
           />
         </View>
         <View className="absolute top-[300px] left-20">
@@ -211,7 +290,7 @@ const LocationGroupScreen = ({
               ]}>
               <TouchableOpacity
                 onPress={() =>
-                  navigation.push('PostOfGroup', {groupID: groupID})
+                  navigation.push('PostOfGroup', { groupID: groupID })
                 }
                 className="bg-primary w-[40px] h-[40px] rounded-full items-center justify-center">
                 <NewspaperIcon size={20} color="white" />
@@ -228,7 +307,7 @@ const LocationGroupScreen = ({
                 },
               ]}>
               <TouchableOpacity
-                onPress={() => navigation.push('NewPost')}
+                onPress={() => navigation.push('NewPost', { groupID: groupID })}
                 className="bg-secondary w-[40px] h-[40px] rounded-full items-center justify-center">
                 <FontAwesomeIcon icon={faPen} size={17} color="white" />
               </TouchableOpacity>
@@ -244,13 +323,56 @@ const LocationGroupScreen = ({
           </Animated.View>
         </TouchableOpacity>
       </View>
+
+      <Modal isOpen={modal}>
+        <View className="bg-white w-full h-[80%] p-4 rounded-xl">
+          <View className="flex flex-row justify-center items-center mb-4">
+            <Text className="font-interMedium text-[20px] text-center">
+              Buddies
+            </Text>
+            <TouchableOpacity
+              onPress={() => setModal(!modal)}
+              className="absolute top-0 right-0 bg-backButton w-[20px] h-[20px] rounded-full items-center justify-center">
+              <FontAwesomeIcon icon={faXmark} size={13} color="#2C7CC1" />
+            </TouchableOpacity>
+          </View>
+
+          <SearchBar
+            containerStyle={{ marginBottom: 20 }}
+            placeholder="Search your buddy ..."
+            onSearch={text => setSearchText(text)}
+            value={searchText}
+          />
+
+          <FlatList
+            data={allRelatedUsers.filter(user => !groupMembers.some(member => member.id === user.id))}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <MemberItem
+                horizontal
+                item={item}
+                press={() => addToInvitedList(item.id)}
+              />
+            )}
+            showsHorizontalScrollIndicator={false}
+          />
+
+          <TouchableOpacity onPress={handleSendInviation}
+            className="absolute bottom-0 left-0 right-0 bg-primary rounded-[10px] p-3 mx-4 mb-4 flex-row items-center justify-center">
+            <Text className="text-white text-normal font-bold text-center ml-2">
+              Send invitation
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
       <BottomSheet
-        style={{backgroundColor: 'white'}}
+        style={{ backgroundColor: 'white' }}
         ref={sheetRef}
         height="90%">
         <View className="h-full px-4 relative bg-white">
           <View className="flex flex-row justify-center items-center mb-4">
-            <Text className="font-nunitoBold text-headerTitle text-center text-main font-medium">
+            <Text className="font-interMedium text-headerTitle text-center text-main">
               Group Member
             </Text>
           </View>
@@ -262,7 +384,7 @@ const LocationGroupScreen = ({
                 <FlatList
                   data={groupMembers}
                   keyExtractor={(item, index) => index.toString()}
-                  renderItem={({item}) => <GroupMember item={item} />}
+                  renderItem={({ item }) => <GroupMember item={item} />}
                   showsHorizontalScrollIndicator={false}
                 />
                 <TouchableOpacity
@@ -285,7 +407,7 @@ const LocationGroupScreen = ({
                 <FlatList
                   data={approvalMembers}
                   keyExtractor={(item, index) => index.toString()}
-                  renderItem={({item}) => <ApprovalMember item={item} />}
+                  renderItem={({ item }) => <ApprovalMember item={item} />}
                   showsHorizontalScrollIndicator={false}
                 />
                 <TouchableOpacity
@@ -319,7 +441,7 @@ const LocationGroupScreen = ({
                 <FlatList
                   data={groupMembers.slice(0, 3)}
                   keyExtractor={(item, index) => index.toString()}
-                  renderItem={({item}) => <GroupMember item={item} />}
+                  renderItem={({ item }) => <GroupMember item={item} />}
                   showsHorizontalScrollIndicator={false}
                 />
                 <TouchableOpacity onPress={() => setIsSeeAll('groupMembers')}>
@@ -331,7 +453,7 @@ const LocationGroupScreen = ({
                 <FlatList
                   data={approvalMembers.slice(0, 2)}
                   keyExtractor={(item, index) => index.toString()}
-                  renderItem={({item}) => <ApprovalMember item={item} />}
+                  renderItem={({ item }) => <ApprovalMember item={item} />}
                   showsHorizontalScrollIndicator={false}
                 />
                 <TouchableOpacity
@@ -342,7 +464,8 @@ const LocationGroupScreen = ({
             )}
           </View>
 
-          <TouchableOpacity className="absolute bottom-[30px] left-0 right-0 bg-main rounded-[10px] p-3 mx-4 mb-4 flex-row items-center justify-center">
+          <TouchableOpacity onPress={() => setModal(!modal)}
+            className="absolute bottom-[30px] left-0 right-0 bg-primary rounded-[10px] p-3 mx-4 mb-4 flex-row items-center justify-center">
             <FontAwesomeIcon icon={faPlus} size={15} color="white" />
             <Text className="text-white text-normal font-bold text-center ml-2">
               Invite your buddies

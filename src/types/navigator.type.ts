@@ -1,4 +1,4 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -9,11 +9,11 @@ export type RootStackParamList = {
   AddContact: undefined;
   NewRelationship: undefined;
   SetNewRelationship: undefined;
-  LocationBuddy: {userID: number};
-  LocationGroup: {groupID: number};
-  NewPost: undefined;
-  PostOfGroup: {groupID: number};
-  PostDetail: {postID: number};
+  LocationBuddy: { userID: number };
+  LocationGroup: { groupID: number, groupType: string };
+  NewPost: { groupID: number };
+  PostOfGroup: { groupID: number };
+  PostDetail: { postID: number };
   MemorablePlaces: undefined;
   NewMemorable: undefined;
   PermissionScreen: undefined;
@@ -22,6 +22,7 @@ export type RootStackParamList = {
   AlbumDetailsScreen: undefined;
   NewGroupScreen: undefined;
   ChatScreen: undefined;
+  AddAlbum: undefined;
   //Declare new screen with needed parameters
 };
 
@@ -91,13 +92,14 @@ export type AlbumStorageScreenProps = NativeStackScreenProps<RootStackParamList,
 export type AlbumDetailsScreenProps = NativeStackScreenProps<RootStackParamList, 'AlbumDetailsScreen'>
 export type NewGroupScreenProps = NativeStackScreenProps<RootStackParamList, 'NewGroupScreen'>
 export type ChatScreenProps = NativeStackScreenProps<RootStackParamList, 'ChatScreen'>
+export type AddAlbumProps = NativeStackScreenProps<RootStackParamList, 'AddAlbum'>
 //Continue when declare new screens
 
 export type BottomTabParamList = {
-    HomeScreen: undefined;
-    RelationshipScreen: undefined;
-    NotificationScreen: undefined;
-    SettingScreen: undefined;
+  HomeScreen: undefined;
+  RelationshipScreen: undefined;
+  NotificationScreen: undefined;
+  SettingScreen: undefined;
 };
 
 export type HomeScreenProps = NativeStackScreenProps<BottomTabParamList, 'HomeScreen'>
