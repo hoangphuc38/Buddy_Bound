@@ -1,0 +1,142 @@
+import SockJS from 'sockjs-client';
+import { Client, Frame, Message } from '@stomp/stompjs';
+import { useState, useEffect } from 'react';
+import { TLocation } from '../types/location.type';
+import { TNotification } from '../types/notification.type';
+import { TMessage } from '../types/message.type';
+
+interface WebSocketHookResult {
+  connected: boolean;
+  error: string | null;
+  sendMessage: (destination: string, message: unknown) => void;
+  stompClient: Client | null;
+  subscribeToGroup: (groupId: string) => void;
+  subscribeToLocation: (groupId: string) => void;
+  subscribeToNotifications: (userId: string) => void;
+}
+
+interface WebSocketConfig {
+  serverUrl?: string;
+  onMessageReceived?: (groupId: string, message: TMessage) => void;
+  onLocationReceived?: (groupId: string, location: TLocation) => void;
+  onNotificationReceived?: (userId: string, notification: TNotification) => void;
+  debug?: boolean;
+  reconnectDelay?: number;
+  heartbeatIncoming?: number;
+  heartbeatOutgoing?: number;
+}
+
+export const BASE_WS = 'https://buddybound-app-790723374073.asia-southeast1.run.app/ws';
+
+const useWebSocketConnection = ({
+  serverUrl = BASE_WS,
+  onMessageReceived,
+  onLocationReceived,
+  onNotificationReceived,
+  debug = false,
+  reconnectDelay = 5000,
+  heartbeatIncoming = 4000,
+  heartbeatOutgoing = 4000,
+}: WebSocketConfig): WebSocketHookResult => {
+  const [stompClient, setStompClient] = useState<Client | null>(null);
+  const [connected, setConnected] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const client = new Client({
+      webSocketFactory: () => new SockJS(serverUrl),
+      debug: (str) => {
+        if (debug) {
+          console.log('STOMP: ' + str);
+        }
+      },
+      reconnectDelay,
+      heartbeatIncoming,
+      heartbeatOutgoing,
+    });
+
+    client.onConnect = (frame: Frame) => {
+      setConnected(true);
+      setError(null);
+      console.log('Connected:', frame);
+    };
+
+    client.onStompError = (frame: Frame) => {
+      const errorMessage = frame.headers?.message || 'Unknown STOMP error';
+      setError(errorMessage);
+      console.error('STOMP error:', frame);
+    };
+
+    client.onWebSocketError = (event: Event) => {
+      setError('WebSocket connection error');
+      console.error('WebSocket error:', event);
+    };
+
+    client.onDisconnect = () => {
+      setConnected(false);
+      console.log('Disconnected');
+    };
+
+    client.activate();
+    setStompClient(client);
+
+    return () => {
+      if (client.active) {
+        client.deactivate();
+      }
+    };
+  }, [serverUrl, debug, reconnectDelay, heartbeatIncoming, heartbeatOutgoing]);
+
+  const subscribeToGroup = (groupId: string) => {
+    if (stompClient && connected && onMessageReceived) {
+      const topic = `/topic/group/messages/${groupId}`;
+      stompClient.subscribe(topic, (message: Message) => {
+        const messageData = JSON.parse(message.body) as TMessage;
+        onMessageReceived(groupId, messageData);
+      });
+    }
+  };
+
+  const subscribeToLocation = (groupId: string) => {
+    if (stompClient && connected && onLocationReceived) {
+      const topic = `/topic/group/location/${groupId}`;
+      stompClient.subscribe(topic, (message: Message) => {
+        const locationData = JSON.parse(message.body) as TLocation;
+        onLocationReceived(groupId, locationData);
+      });
+    }
+  };
+
+  const subscribeToNotifications = (userId: string) => {
+    if (stompClient && connected && onNotificationReceived) {
+      const topic = `/topic/notification/users/${userId}`;
+      stompClient.subscribe(topic, (message: Message) => {
+        const notificationData = JSON.parse(message.body) as TNotification;
+        onNotificationReceived(userId, notificationData);
+      });
+    }
+  };
+
+  const sendMessage = (destination: string, message: unknown): void => {
+    if (stompClient && connected) {
+      stompClient.publish({
+        destination,
+        body: JSON.stringify(message),
+      });
+    } else {
+      console.warn('Cannot send message: Client not connected');
+    }
+  };
+
+  return {
+    connected,
+    error,
+    sendMessage,
+    stompClient,
+    subscribeToGroup,
+    subscribeToLocation,
+    subscribeToNotifications,
+  };
+};
+
+export default useWebSocketConnection;

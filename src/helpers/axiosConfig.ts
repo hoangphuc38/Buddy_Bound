@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosInstance } from 'axios';
-import { getData, removeData } from './asyncStorage';
+import { removeData } from './asyncStorage';
 import { ToastOptions, toast } from '@baronha/ting';
 
 export const BASE_ENDPOINT = 'https://buddybound-app-790723374073.asia-southeast1.run.app/api/v1';

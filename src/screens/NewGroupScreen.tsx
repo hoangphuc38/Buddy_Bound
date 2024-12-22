@@ -10,6 +10,9 @@ import { SelectCountry } from 'react-native-element-dropdown';
 import { Modal } from '../components/Modal';
 import Close from '../assets/icons/close.svg';
 import SearchBar from 'react-native-dynamic-search-bar';
+import { TCreateGroup } from '../types/group.type';
+import { RelationshipApi } from '../api/relationship.api';
+import { TUser } from '../types/user.type';
 
 const members = require('../assets/data/member.json');
 const data = [
@@ -27,7 +30,25 @@ const NewGroupScreen = ({ navigation }: NewGroupScreenProps) => {
     const [isOpen, setOpen] = useState<boolean>(false);
 
     const handleCreateGroup = () => {
-        console.log(groupType);
+        const payload: TCreateGroup = {
+            groupName: item1.value as string,
+            groupDescription: item1.value as string,
+            groupType: groupType,
+            userIds: invitedMembers.map((value) => value.user.id),
+        };
+    };
+
+    const getRelationshipByType = async (searchTerm?: string) => {
+        try {
+            const { data } = await RelationshipApi.getRelationshipsByType({
+                searchText: searchTerm ? searchTerm : undefined,
+                type: groupType,
+                isPending: false,
+            });
+            setMembers(data.map((value) => value.receiver));
+        } catch (error) {
+            console.log('err: ', error);
+        }
     };
 
     useEffect(() => {
@@ -43,6 +64,7 @@ const NewGroupScreen = ({ navigation }: NewGroupScreenProps) => {
             setKeyboardVisible(false);
         }
         );
+        getRelationshipByType();
 
         return () => {
             keyboardDidHideListener.remove();
@@ -62,17 +84,18 @@ const NewGroupScreen = ({ navigation }: NewGroupScreenProps) => {
         setOpen((prev) => !prev);
     };
 
-    const handleAddMember = (item: TMember) => {
+    const handleAddMember = (item: TUser) => {
         if (invitedMembers.some((value) => value.id === item.id)) {
             return;
         }
         setInvitedMembers((prev) => [...prev, item]);
     };
-    const [invitedMembers, setInvitedMembers] = useState<TMember[]>(members);
+    const [invitedMembers, setInvitedMembers] = useState<TUser[]>([]);
+    const [members, setMembers] = useState<TUser[]>([]);
     return (
         <>
         <View className="relative h-full">
-            <Header onBack={() => navigation.pop()} title="Create new group"/>
+            <Header onBack={() => navigation.pop()} title="Create new group" primaryText="Create" onPrimaryAction={() => {}}/>
             <View className="mx-4 flex flex-col">
                 <Textbox label="Group Name" placeholder="Enter group name" item={item1} />
                 <Textbox label="Group Description" placeholder="Enter group description" item={item2} />
@@ -112,9 +135,6 @@ const NewGroupScreen = ({ navigation }: NewGroupScreenProps) => {
             {!isKeyboardVisible &&
                 <>
                 <View className="flex flex-col absolute bottom-5 w-full space-y-3">
-                    <TouchableOpacity onPress={handleCreateGroup} className="mx-4 py-3 bg-primary rounded-lg">
-                        <Text className="w-full text-center font-interBold text-white">Create Group</Text>
-                    </TouchableOpacity>
                     <TouchableOpacity onPress={handleOpenModal} className="mx-4 py-3 border border-gray-300 rounded-lg">
                         <Text className="w-full text-center font-interMedium text-gray-700">Invite Someone</Text>
                     </TouchableOpacity>
@@ -138,14 +158,17 @@ const NewGroupScreen = ({ navigation }: NewGroupScreenProps) => {
                 className="bg-gray-100 rounded-full my-4"
                 placeholderTextColor="#6b7280"
                 placeholder="Find your relationship"
+                onChangeText={(text: string) => {
+                    getRelationshipByType(text);
+                }}
                 spinnerVisibility={false}
                 returnKeyType="search"
             />
             <FlatList
-                data={invitedMembers}
+                data={members}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
-                    <MemberItem item={item} horizontal press={() => handleAddMember(item)} />
+                    <MemberItem item={item} horizontal isInvited={invitedMembers.some((value) => value.id === item.id)} press={() => handleAddMember(item)} />
                 )}
             />
           </View>
@@ -196,7 +219,7 @@ const Textbox = ({ label, placeholder, item} : ITextbox) => {
     return (
         <View className="flex flex-col space-y-2 mt-4">
             <Text className="font-interMedium text-gray-700">{label}</Text>
-            <View className="p-1 px-4 bg-gray-50 rounded-lg border border-gray-300">
+            <View className={`p-1 px-4 bg-gray-50 rounded-lg border ${item.didEdit && item.hasError ? 'border-red-400' : 'border-gray-300'}`}>
                 <TextInput
                     placeholder={placeholder}
                     className="w-full text-gray-900 leading-5"

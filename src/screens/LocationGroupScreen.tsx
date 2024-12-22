@@ -2,7 +2,6 @@ import {
   Animated,
   FlatList,
   Image,
-  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -27,10 +26,7 @@ import { useEffect, useRef, useState } from 'react';
 import { NewspaperIcon } from 'react-native-heroicons/solid';
 import BottomSheet, { BottomSheetMethods } from '@devvie/bottom-sheet';
 import GroupMember from '../components/GroupMember';
-import mockData from '../mock/mockData';
 import ApprovalMember from '../components/ApprovalMember';
-import UserMarker from '../components/UserMarker';
-import PostMarker from '../components/PostMarker';
 import React from 'react';
 import { GroupApi } from '../api/group.api';
 import { TMember } from '../types/member.type';
@@ -41,6 +37,11 @@ import { RelationshipApi } from '../api/relationship.api';
 import { TUser } from '../types/user.type';
 import { TInviteGroup } from '../types/group.type';
 import { toast, ToastOptions } from '@baronha/ting';
+import Mapbox, { Camera, MapView, MarkerView } from '@rnmapbox/maps';
+import { LocationHistoryApi } from '../api/location-history.api';
+import { TLocation } from '../types/location.type';
+import Geolocation from '@react-native-community/geolocation';
+import { TimeFormatter } from '../helpers';
 
 const LocationGroupScreen = ({
   route,
@@ -49,13 +50,14 @@ const LocationGroupScreen = ({
   route: RouteProp<RootStackParamList, 'LocationGroup'>;
 }) => {
   const { groupID, groupType } = route.params;
-  const { postMarkers, userMarkers } = mockData;
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isSeeAll, setIsSeeAll] = useState<string | null>(null);
   const [groupMembers, setGroupMembers] = useState<TMember[]>([]);
+  const [memberLocations, setMemberLocations] = useState<TLocation[]>([]);
   const [approvalMembers, setApprovalMembers] = useState<TMember[]>([]);
   const [allRelatedUsers, setAllRelatedUsers] = useState<TUser[]>([]);
   const [invitedBuddies, setInvitedBuddies] = useState<number[]>([]);
+  const [isMapReady, setIsMapReady] = useState(false);
 
   const [modal, setModal] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>('');
@@ -79,6 +81,15 @@ const LocationGroupScreen = ({
         }),
       },
     ],
+  };
+
+  const fetchMemberLocation = async () => {
+    try {
+      const { data } = await LocationHistoryApi.getUserLocations(groupID);
+      setMemberLocations(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -182,6 +193,31 @@ const LocationGroupScreen = ({
     getAllRelationshipsByType();
   }, [groupID, groupType]);
 
+  useEffect(() => {
+    const initializeMap = async () => {
+      try {
+        await Mapbox.setTelemetryEnabled(false);
+        fetchMemberLocation();
+        setIsMapReady(true);
+      } catch (error) {
+          console.error('Error initializing map:', error);
+      }
+    };
+    initializeMap();
+    const intervalId = setInterval(() => {
+      Geolocation.getCurrentPosition(
+        async (position) => {
+          await LocationHistoryApi.updateLocation(position.coords.latitude, position.coords.longitude);
+        },
+        (error) => {
+          console.log('Error getting location: ', error);
+        },
+        {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000}
+      );
+    }, 180000);
+    return () => clearInterval(intervalId);
+  }, []);
+
   const addToInvitedList = (id: number) => {
     setInvitedBuddies(prevList => {
       if (prevList.includes(id)) {
@@ -197,9 +233,9 @@ const LocationGroupScreen = ({
       id: groupID,
       groupType: groupType,
       userIds: invitedBuddies,
-      groupName: "",
-      groupDescription: "",
-    }
+      groupName: '',
+      groupDescription: '',
+    };
 
     try {
       await GroupApi.inviteGroup(body);
@@ -213,32 +249,59 @@ const LocationGroupScreen = ({
       toast(options);
     }
     catch (error) {
-      console.log("err: ", error)
+      console.log('err: ', error);
     }
-  }
+  };
 
   return (
     <>
       <View className="flex flex-1 h-full w-full">
         {/* Place maps area*/}
-        <View>
-          <Image
-            source={require('../assets/images/map.png')}
-            style={{ width: '100%', height: '100%', overflow: 'hidden' }}
-          />
-        </View>
-        <View className="absolute top-[300px] left-20">
-          <UserMarker item={userMarkers[0]} />
-        </View>
-        <View className="absolute top-[400px] left-[270px]">
-          <UserMarker item={userMarkers[1]} />
-        </View>
-        <View className="absolute top-[600px] left-[40px]">
-          <PostMarker item={postMarkers[0]} />
-        </View>
-        <View className="absolute top-[450px] left-[10px]">
-          <PostMarker item={postMarkers[1]} />
-        </View>
+        <View style={{ flex: 1 }}>
+                <MapView
+                    style={{ flex: 1 }}
+                    zoomEnabled={true}
+                    styleURL="mapbox://styles/mapbox/outdoors-v12"
+                    rotateEnabled={true}
+                    attributionEnabled={true}
+                    logoEnabled={true}
+                >
+                    <Camera
+                        zoomLevel={15}
+                        centerCoordinate={
+                            memberLocations?.length
+                                ? [memberLocations[0].longitude, memberLocations[0].latitude]
+                                : [10.181667, 36.806389]
+                        }
+                        animationMode={'flyTo'}
+                        animationDuration={6000}
+                    />
+                    {memberLocations?.map((location) => (
+                        <MarkerView
+                        key={location.id.toString()}
+                        coordinate={[location.longitude, location.latitude]}
+                        anchor={{ x: 0.5, y: 0.5 }}
+                    >
+                        <View className="flex items-center justify-center space-y-1">
+                            <View className="px-6 py-2 flex flex-col items-center justify-center bg-white rounded-full">
+                              <Text className="font-interRegular">{location.user?.fullName}</Text>
+                              <Text className="text-[10px]">{TimeFormatter.format(location.timestamp)}</Text>
+                            </View>
+                            <Image
+                                source={{ uri: location.user && location.user.avatar }}
+                                style={{
+                                    width: 40,
+                                    height: 40,
+                                    borderRadius: 20,
+                                    borderWidth: 2,
+                                    borderColor: '#FF6600',
+                                }}
+                            />
+                        </View>
+                    </MarkerView>
+                    ))}
+                </MapView>
+            </View>
 
         {/* Place maps area*/}
         <TouchableOpacity

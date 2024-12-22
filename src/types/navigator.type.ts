@@ -19,10 +19,10 @@ export type RootStackParamList = {
   PermissionScreen: undefined;
   LocationHistoryScreen: undefined;
   AlbumStorageScreen: undefined;
-  AlbumDetailsScreen: undefined;
+  AlbumDetailsScreen: { albumId: number };
   NewGroupScreen: undefined;
   ChatScreen: undefined;
-  AddAlbum: undefined;
+  AddAlbum: { isEditMode: boolean, albumId?: number };
   //Declare new screen with needed parameters
 };
 

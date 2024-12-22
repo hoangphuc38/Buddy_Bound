@@ -34,4 +34,8 @@ export class PostApi {
         });
         return response.data;
     }
+
+    static async getUserPosts(): Promise<TSuccessResponse<TPost[]>> {
+        return (await http.get('/posts/get-user-posts')).data;
+    }
 }

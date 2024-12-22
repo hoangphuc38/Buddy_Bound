@@ -1,9 +1,30 @@
+import { TPost } from '../types/post.type';
+
 interface TimeUnit {
     max: number;
     divisor: number;
     unit: string;
     plural: string;
 }
+
+export const getStartAndEndDates = (posts: TPost[]) => {
+  if (!posts || posts.length === 0) {return { startDate: null, endDate: null };}
+
+  const result = posts.reduce(
+    (acc, post) => {
+      const createdAt = new Date(post.createdAt);
+      if (createdAt < acc.startDate) {acc.startDate = createdAt;}
+      if (createdAt > acc.endDate) {acc.endDate = createdAt;}
+      return acc;
+    },
+    { startDate: new Date(posts[0].createdAt), endDate: new Date(posts[0].createdAt) }
+  );
+
+  return {
+    startDate: result.startDate.toISOString(),
+    endDate: result.endDate.toISOString(),
+  };
+};
 
 export const toISOFormat = (readableDate: string) => {
   const months = {

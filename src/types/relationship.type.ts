@@ -2,7 +2,7 @@ import { TUser } from './user.type';
 
 export type TUserRelationship = {
     searchText?: string,
-    isPending?: string,
+    isPending?: boolean,
     type: string
 }
 
