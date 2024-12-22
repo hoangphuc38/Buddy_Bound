@@ -28,7 +28,7 @@ const CustomTabBarIcon = ({icon: Icon, label, focused}) => {
   return (
     <View style={[styles.tabItemContainer]}>
       <Icon
-        color={focused ? '#2C91E7' : '#9ca3af'}
+        color={focused ? '#2C7CC1' : '#9ca3af'}
         size={24}
         strokeWidth={focused ? 2 : 1.5}
       />
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     color: '#9ca3af',
   },
   focusedTabLabel: {
-    color: '#2C91E7',
+    color: '#2C7CC1',
     fontWeight: '500',
   },
   indicator: {
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     top: -11,
     width: 20,
     height: 3,
-    backgroundColor: '#2C91E7',
+    backgroundColor: '#2C7CC1',
     borderRadius: 2,
   },
 });
