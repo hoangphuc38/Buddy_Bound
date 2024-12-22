@@ -39,7 +39,7 @@ import SearchBar from '../components/SearchBar';
 import MemberItem from '../components/MemberItem';
 import { RelationshipApi } from '../api/relationship.api';
 import { TUser } from '../types/user.type';
-import { TInviteGroup } from '../types/group.type';
+import { TFamily, TGroup, TInviteGroup } from '../types/group.type';
 import { toast, ToastOptions } from '@baronha/ting';
 
 const LocationGroupScreen = ({
@@ -180,7 +180,7 @@ const LocationGroupScreen = ({
 
     fetchAPI();
     getAllRelationshipsByType();
-  }, [groupID, groupType]);
+  }, [groupID]);
 
   const addToInvitedList = (id: number) => {
     setInvitedBuddies(prevList => {

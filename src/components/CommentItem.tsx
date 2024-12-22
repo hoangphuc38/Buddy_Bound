@@ -1,26 +1,32 @@
-import {Image, Text, View} from 'react-native';
+import { Image, Text, View } from 'react-native';
+import { TComment } from '../types/comment.type';
 
 interface ICommentItem {
-  item: CommentItem;
+  item: TComment;
 }
 
-export type CommentItem = {
-  id: number;
-  name: string;
-  avatar: string;
-  content: string;
-  time: Date;
-};
-
-const timeAgo = (date: Date) => {
+const timeAgo = (createdAt: string) => {
   const currentTime = new Date();
+  const date = new Date(createdAt);
+
+  if (isNaN(date.getTime())) {
+    return 'Invalid date';
+  }
+
   const diffInSeconds = Math.floor(
     (currentTime.getTime() - date.getTime()) / 1000,
   );
 
+  console.log("date: ", date);
+  console.log("diffInSeconds: ", diffInSeconds);
+
   const minutes = Math.floor(diffInSeconds / 60);
   const hours = Math.floor(diffInSeconds / 3600);
   const days = Math.floor(diffInSeconds / (3600 * 24));
+
+  console.log("minute: ", minutes);
+  console.log("hour: ", hours);
+  console.log("day: ", days);
 
   if (minutes < 1) {
     return 'Just now'; // Nếu dưới 1 phút
@@ -33,26 +39,26 @@ const timeAgo = (date: Date) => {
   }
 };
 
-const CommentItem = ({item}: ICommentItem) => {
+const CommentItem = ({ item }: ICommentItem) => {
   return (
     <View className="flex flex-row space-x-2 mb-5">
       <View>
         <Image
-          source={{uri: item.avatar}}
-          style={{width: 40, height: 40, borderRadius: 50 / 2}}
+          source={{ uri: item.member.user.avatar }}
+          style={{ width: 40, height: 40, borderRadius: 50 / 2 }}
         />
       </View>
       <View>
         <View className="items-start bg-[#F5F5F5] pl-3 pr-4 pt-2 pb-2 rounded-[10px] max-w-[280px]">
           <Text className="font-bold text-[#535862] text-medium mb-1">
-            {item.name}
+            {item.member.user.fullName}
           </Text>
           <Text className="text-[12px] text-[#717680] font-medium leading-5">
             {item.content}
           </Text>
         </View>
         <Text className="text-[12px] text-[#717680] mt-1 ml-3">
-          {timeAgo(item.time)}
+          {timeAgo(item.createdAt)}
         </Text>
       </View>
     </View>

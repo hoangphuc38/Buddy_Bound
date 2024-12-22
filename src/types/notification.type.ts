@@ -16,5 +16,6 @@ export type TNotification = {
     groupName?: string,
     requestorName?: string,
     relationshipType?: string,
-    requestRole?: string
+    requestRole?: string,
+    groupType?: string,
 }

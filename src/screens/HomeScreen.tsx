@@ -1,4 +1,4 @@
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, NativeSyntheticEvent, Text, TextInputChangeEventData, TouchableOpacity, View } from 'react-native';
 import { TabsScreenProps } from '../types/navigator.type';
 import React, { useEffect, useState } from 'react';
 import BuddyItem from '../components/BuddyItem';
@@ -7,7 +7,7 @@ import GroupItem from '../components/GroupItem';
 import { Modal } from '../components/Modal';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import SearchBar from '../components/SearchBar';
+import SearchBar from 'react-native-dynamic-search-bar';
 import Header from '../components/Header';
 import { TBuddy, TFamily } from '../types/group.type';
 import { GroupApi } from '../api/group.api';
@@ -17,6 +17,7 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
   const [allGroup, setAllGroup] = useState<boolean>(false);
   const [buddies, setBuddies] = useState<TBuddy[]>([]);
   const [groups, setGroups] = useState<TFamily[]>([]);
+  const [friendGroups, setFriendGroups] = useState<TFamily[]>([]);
   const [searchText, setSearchText] = useState<string>('');
 
   useEffect(() => {
@@ -25,6 +26,7 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
         const { data } = await GroupApi.getBuddies();
         setBuddies(data.buddies);
         setGroups(data.families);
+        setFriendGroups(data.friends);
       }
       catch (error) {
         console.log('errsss: ', error);
@@ -40,9 +42,13 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
   };
 
   const HandleClickGroup = (item: TFamily) => {
-    navigation.push('LocationGroup', { groupID: item.id });
+    navigation.push('LocationGroup', { groupID: item.id, groupType: item.groupType });
     setAllBuddy(!allBuddy);
   };
+
+  const onChangeText = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
+    setSearchText(e.nativeEvent.text);
+  }
 
   const filteredBuddies = searchText
     ? buddies.filter((buddy) =>
@@ -110,6 +116,19 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
               )}
               showsVerticalScrollIndicator={false}
             />
+            <FlatList
+              data={friendGroups}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => (
+                <GroupItem
+                  item={item}
+                  press={() => {
+                    navigation.push('LocationGroup', { groupID: item.id, groupType: item.groupType });
+                  }}
+                />
+              )}
+              showsVerticalScrollIndicator={false}
+            />
           </View>
         </View>
 
@@ -127,9 +146,14 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
             </View>
 
             <SearchBar
-              containerStyle={{ marginBottom: 20 }}
+              style={{ width: '100%' }}
+              textInputStyle={{ fontSize: 16 }}
+              className="bg-gray-100 rounded-[10px] mb-[20px] pr-2"
+              placeholderTextColor="#6b7280"
               placeholder="Search your buddy ..."
-              onSearch={text => setSearchText(text)}
+              spinnerVisibility={false}
+              returnKeyType="search"
+              onChange={onChangeText}
               value={searchText}
             />
 
@@ -162,9 +186,14 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
             </View>
 
             <SearchBar
-              containerStyle={{ marginBottom: 20 }}
-              placeholder="Search your group ..."
-              onSearch={text => setSearchText(text)}
+              style={{ width: '100%' }}
+              textInputStyle={{ fontSize: 16 }}
+              className="bg-gray-100 rounded-[10px] mb-[20px] pr-2"
+              placeholderTextColor="#6b7280"
+              placeholder="Search your buddy ..."
+              spinnerVisibility={false}
+              returnKeyType="search"
+              onChange={onChangeText}
               value={searchText}
             />
 

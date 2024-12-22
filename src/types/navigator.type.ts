@@ -8,7 +8,7 @@ export type RootStackParamList = {
   ForgetPass: undefined;
   AddContact: undefined;
   NewRelationship: undefined;
-  SetNewRelationship: undefined;
+  SetNewRelationship: { relationshipType: string, detailRelationship: string };
   LocationBuddy: { userID: number };
   LocationGroup: { groupID: number, groupType: string };
   NewPost: { groupID: number };

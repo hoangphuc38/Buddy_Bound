@@ -191,7 +191,8 @@ const NewPostScreen = ({
       <Header
         title="New post"
         onBack={() => navigation.pop()}
-        onPrimaryAction={() => { }}
+        primaryText='Post'
+        onPrimaryAction={handleNewPost}
       />
       <View className="flex flex-1 mt-6">
         <View className="flex flex-row space-x-2 px-4 mb-5">

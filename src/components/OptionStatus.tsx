@@ -13,14 +13,15 @@ type OptionProps = {
 
 export const OptionStatus = ({ isChange, onPress }: OptionProps) => {
   return isChange ? (
-    <View className="flex flex-row bg-backButton px-2 py-1 rounded-[5px]">
+    <TouchableOpacity onPress={onPress}
+      className="flex flex-row bg-backButton px-2 py-1 rounded-[5px]">
       <View className="flex flex-row items-center">
         <FontAwesomeIcon icon={faUserGroup} size={13} color="#2C7CC1" />
         <Text className="text-[11px] font-interBold text-primary ml-[6px]">
           Everyone
         </Text>
       </View>
-      <TouchableOpacity onPress={onPress}>
+      <TouchableOpacity>
         <FontAwesomeIcon
           icon={faSortDown}
           size={12}
@@ -28,7 +29,7 @@ export const OptionStatus = ({ isChange, onPress }: OptionProps) => {
           style={{ marginLeft: 5 }}
         />
       </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   ) : (
     <View className="flex flex-row bg-backButton px-2 py-1 rounded-[5px]">
       <View className="flex flex-row items-center">
