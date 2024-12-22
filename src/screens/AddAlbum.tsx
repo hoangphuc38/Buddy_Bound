@@ -1,28 +1,49 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import { AddAlbumProps } from '../types/navigator.type';
-import { Text, TextInput, View } from 'react-native';
+import { FlatList, Text, TextInput, View } from 'react-native';
 import { useInput } from '../hooks/useInput';
+import { TPost } from '../types/post.type';
+import { PostApi } from '../api/post.api';
+import SelectedPost from '../components/SelectedPost';
 
 const AddAlbum = ({ navigation }: AddAlbumProps) => {
     const item1 = useInput({
             defaultValue: '',
             validationFn: (inputText) => inputText !== undefined && inputText.length > 5,
         });
+    const [posts, setPosts] = useState<TPost[]>([]);
+    const [selectedPosts, setSelectedPosts] = useState<TPost[]>([]);
+
+    const handleSelect = (id: number) => {
+    };
 
     useEffect(() => {
-        const fetchPosts = async () => {
+        const fecthAPI = async () => {
+          try {
+            const { data } = await PostApi.getAll(1);
+            setPosts(data);
+          }
+          catch (error) {
+            console.log('Err: ', error);
+          }
         };
-    }, []);
+
+        fecthAPI();
+      }, []);
     return (
         <View className="relative h-full w-full">
             <Header title="Add album" onBack={() => navigation.pop() } primaryText="Create"/>
             <View className="h-full mx-3 flex flex-col space-y-2">
                 <Textbox label="Album title" placeholder="Enter album title" item={item1} />
                 <Text className="font-interMedium text-gray-700">Select posts</Text>
-            </View>
-            <View className="absolute bottom-0 right-0 left-0 h-[40px] bg-slate-100 flex justify-center px-4">
-                <Text className="font-interRegular text-gray-700">5 posts selected</Text>
+                <FlatList
+                    data={posts}
+                    renderItem={({ item }: { item: TPost }) => (
+                        <SelectedPost item={item} isSelected select={() => {}} />
+                      )}
+                      keyExtractor={(item) => item.id.toString()}
+                />
             </View>
         </View>
     );

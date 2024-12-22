@@ -36,7 +36,7 @@ const NotificationItem = (data: NotificationItemProps) => {
                                 source={{uri: sender.avatar}}
                                 style={{height: 50, width: 50, borderRadius: 30}}
                             />
-                            <View className="p-[5px] bg-blue-500 rounded-full absolute bottom-0 right-0">
+                            <View className="p-[5px] bg-primary rounded-full absolute bottom-0 right-0">
                                 {getCorrectIcon(notificationType)}
                             </View>
                         </View>
@@ -45,11 +45,11 @@ const NotificationItem = (data: NotificationItemProps) => {
                         <Text className={`${isRead && 'text-gray-400'} text-interRegular break-word leading-5 max-w-[100%]`}>
                             { message }
                         </Text>
-                        <Text className={`${!isRead ? 'text-blue-600 font-interMedium' : 'text-gray-500 font-interRegular'} text-[13px]`}>{TimeFormatter.format(createdAt)}</Text>
+                        <Text className={`${!isRead ? 'text-primary font-interMedium' : 'text-gray-500 font-interRegular'} text-[13px]`}>{TimeFormatter.format(createdAt)}</Text>
                     </View>
                 </View>
                 {!isRead && <View className="flex items-center justify-center">
-                    <View className="p-[6px] bg-blue-600 rounded-full" />
+                    <View className="p-[6px] bg-primary rounded-full" />
                 </View>}
             </View>
         </TouchableOpacity>

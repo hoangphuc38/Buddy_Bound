@@ -1,5 +1,4 @@
 import http from '../helpers/axiosConfig';
-import { TAccount, TSignUp } from '../types/account.type';
 import { TAlbum } from '../types/album.type';
 import { TSuccessResponse } from '../types/response.type';
 

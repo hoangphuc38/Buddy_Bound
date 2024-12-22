@@ -15,15 +15,15 @@ const SelectedPost = ({ item, isSelected, select }: ISelectedPost) => {
         return;
     }
     return (
-        <TouchableOpacity onPress={select} className={`${isSelected ? 'border border-blue-400' : ''} p-2`}>
+        <TouchableOpacity onPress={select} className={`${isSelected ? 'border-2 border-primary' : ''} p-2 my-1 rounded-lg`}>
             <View className="flex flex-row items-center space-x-2">
                 <Image
-                    className="h-[100px] w-[100px]"
+                    className="h-[100px] w-[100px] rounded-lg"
                     source={{uri: item.image.imageUrl }}
                 />
-                <View className="flex flex-col items-center justify-start">
-                    <Text>{item.note}</Text>
-                    <View className="flex flex-row space-x-2">
+                <View className="flex flex-col items-center justify-start space-y-2">
+                    <Text className="font-interMedium">{item.note}</Text>
+                    <View className="flex flex-row space-x-2 items-center">
                         <CalendarIcon width={22} height={22} />
                         <Text>{toReadableFormat(item.createdAt)}</Text>
                     </View>
