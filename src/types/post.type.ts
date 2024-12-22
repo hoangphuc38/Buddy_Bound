@@ -1,6 +1,7 @@
 import { TComment } from './comment.type';
 import { TImage } from './image.type';
 import { TLocationHistory } from './location-history.type';
+import { TLocation } from './location.type';
 import { TMember } from './member.type';
 
 export type TPost = {
@@ -20,4 +21,11 @@ export type TPost = {
 export type TPostVisibility = {
     id: number,
     member: TMember
+}
+
+export type TCreatePost = {
+    note: string;
+    viewerIds: number[];
+    groupId: number;
+    location: TLocation;
 }

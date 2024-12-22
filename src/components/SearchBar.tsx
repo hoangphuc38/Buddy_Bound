@@ -1,6 +1,6 @@
-import {faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import React, {useState} from 'react';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import React from 'react';
 import {
   View,
   TextInput,
@@ -11,6 +11,7 @@ import {
 
 interface SearchBarProps {
   placeholder?: string;
+  value: string;
   onSearch: (text: string) => void;
   containerStyle?: StyleProp<ViewStyle>;
   inputStyle?: StyleProp<ViewStyle>;
@@ -21,29 +22,24 @@ const SearchBar: React.FC<SearchBarProps> = ({
   onSearch,
   containerStyle,
   inputStyle,
+  value,
 }) => {
-  const [searchText, setSearchText] = useState('');
-
-  const handleSearch = () => {
-    onSearch(searchText);
-  };
 
   return (
     <View
       className="flex-row items-center bg-backButton rounded-[10px] px-2"
       style={containerStyle}>
       <TextInput
-        value={searchText}
-        onChangeText={setSearchText}
+        value={value}
+        onChangeText={onSearch}
         placeholder={placeholder}
-        className="flex-1 mr-2 text-gray-700"
+        className="flex-1 mr-2 text-primary"
         style={inputStyle}
-        onSubmitEditing={handleSearch}
         clearButtonMode="while-editing"
         placeholderTextColor="#2C7CC1"
       />
 
-      <TouchableOpacity onPress={handleSearch}>
+      <TouchableOpacity onPress={() => onSearch}>
         <FontAwesomeIcon icon={faMagnifyingGlass} size={20} color="#2C7CC1" />
       </TouchableOpacity>
     </View>

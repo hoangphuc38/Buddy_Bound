@@ -8,18 +8,16 @@ import { Modal } from '../components/Modal';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import SearchBar from '../components/SearchBar';
-import mockData from '../mock/mockData';
 import Header from '../components/Header';
 import { TBuddy, TFamily } from '../types/group.type';
 import { GroupApi } from '../api/group.api';
 
 const HomeScreen = ({ navigation }: TabsScreenProps) => {
-  //const {buddies, groups} = mockData;
-
   const [allBuddy, setAllBuddy] = useState<boolean>(false);
   const [allGroup, setAllGroup] = useState<boolean>(false);
   const [buddies, setBuddies] = useState<TBuddy[]>([]);
   const [groups, setGroups] = useState<TFamily[]>([]);
+  const [searchText, setSearchText] = useState<string>('');
 
   useEffect(() => {
     const fetch = async () => {
@@ -46,13 +44,25 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
     setAllBuddy(!allBuddy);
   };
 
+  const filteredBuddies = searchText
+    ? buddies.filter((buddy) =>
+      buddy.userDto.fullName.toLowerCase().includes(searchText.toLowerCase())
+    )
+    : buddies;
+
+  const filteredGroups = searchText
+    ? groups.filter((group) =>
+      group.groupName.toLowerCase().includes(searchText.toLowerCase())
+    )
+    : groups;
+
   return (
     <>
       <Header title="Your buddy" onPrimaryAction={() => { }} />
       <View className="flex flex-1 px-4 mt-2">
         <View className="flex mb-2">
           <View className="flex flex-row justify-between items-center mb-4">
-            <Text className="font-interMedium text-xl">
+            <Text className="font-interMedium text-base text-main">
               Buddies
             </Text>
             <TouchableOpacity onPress={() => setAllBuddy(!allBuddy)}>
@@ -78,7 +88,7 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
           </View>
 
           <View className="flex flex-row justify-between items-center mb-4">
-            <Text className="font-nunitoBold text-title text-main font-medium">
+            <Text className="font-interMedium text-base text-main">
               Groups
             </Text>
             <TouchableOpacity onPress={() => setAllGroup(!allGroup)}>
@@ -94,7 +104,7 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
                 <GroupItem
                   item={item}
                   press={() => {
-                    navigation.push('LocationGroup', { groupID: item.id });
+                    navigation.push('LocationGroup', { groupID: item.id, groupType: item.groupType });
                   }}
                 />
               )}
@@ -106,7 +116,7 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
         <Modal isOpen={allBuddy}>
           <View className="bg-white w-full h-[80%] p-4 rounded-xl">
             <View className="flex flex-row justify-center items-center mb-4">
-              <Text className="font-nunitoBold text-[20px] text-center text-main font-bold">
+              <Text className="font-interMedium text-[20px] text-center">
                 Buddies
               </Text>
               <TouchableOpacity
@@ -119,11 +129,12 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
             <SearchBar
               containerStyle={{ marginBottom: 20 }}
               placeholder="Search your buddy ..."
-              onSearch={text => console.log(text)}
+              onSearch={text => setSearchText(text)}
+              value={searchText}
             />
 
             <FlatList
-              data={buddies}
+              data={filteredBuddies}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => (
                 <BuddyItem
@@ -140,7 +151,7 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
         <Modal isOpen={allGroup}>
           <View className="bg-white w-full h-[80%] p-4 rounded-xl">
             <View className="flex flex-row justify-center items-center mb-4">
-              <Text className="font-nunitoBold text-[20px] text-center text-main font-bold">
+              <Text className="font-interMedium text-[20px] text-center">
                 Groups
               </Text>
               <TouchableOpacity
@@ -153,11 +164,12 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
             <SearchBar
               containerStyle={{ marginBottom: 20 }}
               placeholder="Search your group ..."
-              onSearch={text => console.log(text)}
+              onSearch={text => setSearchText(text)}
+              value={searchText}
             />
 
             <FlatList
-              data={groups}
+              data={filteredGroups}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => (
                 <GroupItem item={item} press={() => HandleClickGroup(item)} />

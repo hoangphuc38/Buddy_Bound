@@ -10,51 +10,51 @@ import Logout from '../assets/icons/logout.svg';
 import SettingItem, { ISettingItem } from '../components/SettingItem';
 
 const SettingScreen = ({ navigation }: TabsScreenProps) => {
-    const items: ISettingItem[] = [
-      {
-        Icon: Shield,
-        text: 'Permission',
-        onClick: () => navigation.push('PermissionScreen'),
-      },
-      {
-        Icon: LocationHistory,
-        text: 'Your location history',
-        onClick: () => navigation.push('LocationHistoryScreen'),
-      },
-      {
-        Icon: Image,
-        text: 'Album storage',
-        onClick: () => navigation.push('AlbumStorageScreen'),
-      },
-      {
-        Icon: Location,
-        text: 'Memorable destinations',
-        onClick: () => navigation.push('ChatScreen'),
-      },
-    ];
-    return (
-      <>
-        <Header title="Settings" />
-        <View className="flex flex-1 h-full w-full ">
-          <FlatList
-            data={items}
-            renderItem={({ item }: { item: ISettingItem }) => (
-              <SettingItem Icon={item.Icon} text={item.text} onClick={item.onClick} />
-            )}
-            keyExtractor={(item) => item.text}
-          />
-          <TouchableOpacity
-            className="bg-[#EF4444] flex items-center justify-center py-3 mb-5 mx-2 rounded-lg"
-            onPress={() => {/* Add your logout functionality here */}}
-          >
-            <View className="flex flex-row items-center justify-center space-x-2">
-              <Logout height={20} width={20} />
-              <Text className="text-white font-interMedium">Log out</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </>
-    );
+  const items: ISettingItem[] = [
+    {
+      Icon: Shield,
+      text: 'Permission',
+      onClick: () => navigation.push('PermissionScreen'),
+    },
+    {
+      Icon: LocationHistory,
+      text: 'Your location history',
+      onClick: () => navigation.push('LocationHistoryScreen'),
+    },
+    {
+      Icon: Image,
+      text: 'Album storage',
+      onClick: () => navigation.push('AlbumStorageScreen'),
+    },
+    {
+      Icon: Location,
+      text: 'Memorable destinations',
+      onClick: () => navigation.push('MemorablePlaces'),
+    },
+  ];
+  return (
+    <>
+      <Header title="Settings" />
+      <View className="flex flex-1 h-full w-full ">
+        <FlatList
+          data={items}
+          renderItem={({ item }: { item: ISettingItem }) => (
+            <SettingItem Icon={item.Icon} text={item.text} onClick={item.onClick} />
+          )}
+          keyExtractor={(item) => item.text}
+        />
+        <TouchableOpacity
+          className="bg-[#EF4444] flex items-center justify-center py-3 mb-5 mx-2 rounded-lg"
+          onPress={() => {/* Add your logout functionality here */ }}
+        >
+          <View className="flex flex-row items-center justify-center space-x-2">
+            <Logout height={20} width={20} />
+            <Text className="text-white font-interMedium">Log out</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    </>
+  );
 };
 
 export default SettingScreen;
