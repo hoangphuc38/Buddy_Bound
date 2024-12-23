@@ -23,6 +23,8 @@ export type RootStackParamList = {
   NewGroupScreen: undefined;
   ChatScreen: undefined;
   AddAlbum: undefined;
+  RelationshipRequest: { referenceId?: number }
+  LimitedPeople: undefined;
   //Declare new screen with needed parameters
 };
 
@@ -93,6 +95,8 @@ export type AlbumDetailsScreenProps = NativeStackScreenProps<RootStackParamList,
 export type NewGroupScreenProps = NativeStackScreenProps<RootStackParamList, 'NewGroupScreen'>
 export type ChatScreenProps = NativeStackScreenProps<RootStackParamList, 'ChatScreen'>
 export type AddAlbumProps = NativeStackScreenProps<RootStackParamList, 'AddAlbum'>
+export type RelationshipRequestScreenProps = NativeStackScreenProps<RootStackParamList, 'RelationshipRequest'>
+export type LimitedPeopleScreenProps = NativeStackScreenProps<RootStackParamList, 'LimitedPeople'>
 //Continue when declare new screens
 
 export type BottomTabParamList = {

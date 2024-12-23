@@ -9,9 +9,9 @@ export class UserApi {
         const isNumber = /^\d+$/.test(searchText);
 
         if (isNumber) {
-            url = `${url}?phoneNumber=${searchText}`;
+            url = `${url}?phoneNumber=${searchText}&hasRelationship=true`;
         } else {
-            url = `${url}?fullName=${searchText}`;
+            url = `${url}?fullName=${searchText}&hasRelationship=true`;
         }
 
         return (await http.get(url)).data;

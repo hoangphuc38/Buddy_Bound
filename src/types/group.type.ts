@@ -35,3 +35,10 @@ export type TInviteGroup = {
     userIds: number[];
     groupType: string;
 }
+
+export type TCreateGroup = {
+    groupName?: string;
+    groupDescription?: string;
+    userIds: number[];
+    groupType: "FAMILY" | "FRIEND" | "ONE_TO_ONE"
+}

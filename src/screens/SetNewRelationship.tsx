@@ -17,6 +17,8 @@ import { Modal } from '../components/Modal';
 import { TNewRelationship } from '../types/relationship.type';
 import { RelationshipApi } from '../api/relationship.api';
 import { toast, ToastOptions } from '@baronha/ting';
+import { GroupApi } from '../api/group.api';
+import { TCreateGroup } from '../types/group.type';
 
 const SetNewRelationshipScreen = ({
   route,
@@ -26,6 +28,7 @@ const SetNewRelationshipScreen = ({
 
   const [searchText, setSearchText] = useState<string>("");
   const [users, setUsers] = useState<TUser[]>([]);
+  const [selectedMembers, setSelectedMembers] = useState<TUser[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState<TUser | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -52,23 +55,27 @@ const SetNewRelationshipScreen = ({
   const handleAddPeople = (item: TUser) => {
     setSelectedUser(item);
     setModalVisible(!modalVisible);
+
+    const isSelected = selectedMembers.some((member) => member.id === item.id);
+
+    if (isSelected) {
+      setSelectedMembers(prev => prev.filter(member => member.id !== item.id));
+    }
   }
 
   const handleChooseRole = (selectedParent: string) => {
     setParent(selectedParent);
 
-    // Nếu parent là Mother hoặc Father thì receiver chỉ có thể là Child
     if (selectedParent === "Father" || selectedParent === "Mother") {
       setReceiverRole("Child");
     }
-    // Nếu parent là Child thì receiver có thể là Mother hoặc Father
+
     else if (selectedParent === "Child") {
-      setReceiverRole("Father"); // Đặt giá trị mặc định là Father khi chọn Child
+      setReceiverRole("Father");
     }
   }
 
   const handleChooseReceiverRole = (role: string) => {
-    // Chỉ cho phép thay đổi receiverRole khi parent là Child
     if (parent === "Child" && (role === "Father" || role === "Mother")) {
       setReceiverRole(role);
     }
@@ -86,15 +93,7 @@ const SetNewRelationshipScreen = ({
             senderRole: parent.toUpperCase(),
             receiverRole: receiverRole.toUpperCase(),
           }
-          console.log("bodyParent_Child: ", body);
           await RelationshipApi.newRelationship(body);
-          const options: ToastOptions = {
-            title: 'Post',
-            message: 'Create post successfully!',
-            preset: 'done',
-            backgroundColor: '#e2e8f0',
-          };
-          toast(options);
         }
         else if (relationshipType === "FAMILY") {
           let body: TNewRelationship = {
@@ -102,15 +101,7 @@ const SetNewRelationshipScreen = ({
             relationshipType: relationshipType.toUpperCase(),
             familyType: detailRelationship.toUpperCase()
           }
-          console.log("bodyFAMILY: ", body);
           await RelationshipApi.newRelationship(body);
-          const options: ToastOptions = {
-            title: 'Post',
-            message: 'Create post successfully!',
-            preset: 'done',
-            backgroundColor: '#e2e8f0',
-          };
-          toast(options);
         }
         else {
           let body: TNewRelationship = {
@@ -118,16 +109,26 @@ const SetNewRelationshipScreen = ({
             relationshipType: relationshipType.toUpperCase(),
             friendType: detailRelationship.toUpperCase(),
           }
-          console.log("body: ", body);
           await RelationshipApi.newRelationship(body);
-          const options: ToastOptions = {
-            title: 'Post',
-            message: 'Create post successfully!',
-            preset: 'done',
-            backgroundColor: '#e2e8f0',
-          };
-          toast(options);
         }
+
+        let group: TCreateGroup = {
+          userIds: [selectedUser.id],
+          groupType: "ONE_TO_ONE"
+        }
+
+        await GroupApi.createGroup(group);
+
+        const options: ToastOptions = {
+          title: 'New Relationship',
+          message: 'Send relationship request successfully!',
+          preset: 'done',
+          backgroundColor: '#e2e8f0',
+        };
+        toast(options);
+
+        setSelectedMembers(prev => [...prev, selectedUser]);
+
         setLoading(false);
       }
       catch (error) {
@@ -141,17 +142,6 @@ const SetNewRelationshipScreen = ({
   const handleCancel = () => {
     setModalVisible(false);
   };
-
-  if (loading) {
-    return (
-      <View className='flex flex-1 justify-center items-center'>
-        <ActivityIndicator style={{ display: 'flex', justifyContent: "center", alignItems: 'center' }}
-          size='small'
-          color="#2C7CC1"
-        />
-      </View>
-    )
-  }
 
   return (
     <>
@@ -169,14 +159,29 @@ const SetNewRelationshipScreen = ({
               <SearchBar placeholder='Search by name or phone number' onSearch={text => setSearchText(text)} value={searchText}></SearchBar>
             </View>
             {/* list user */}
+            {
+              loading ? (
+                <View className='flex flex-1 justify-center items-center'>
+                  <ActivityIndicator style={{ display: 'flex', justifyContent: "center", alignItems: 'center' }}
+                    size='small'
+                    color="#2C7CC1"
+                  />
+                </View>
+              ) : (
+                <FlatList
+                  data={users}
+                  keyExtractor={(item) => item.id.toString()}
+                  renderItem={({ item }) => (
+                    <MemberItem item={item}
+                      isInvited={selectedMembers.some((member) => member.id === item.id)}
+                      horizontal
+                      press={() => handleAddPeople(item)} />
+                  )}
+                />
+              )
+            }
 
-            <FlatList
-              data={users}
-              keyExtractor={(item) => item.id.toString()}
-              renderItem={({ item }) => (
-                <MemberItem item={item} isInvited={ } horizontal press={() => handleAddPeople(item)} />
-              )}
-            />
+
           </View>
         </View>
 

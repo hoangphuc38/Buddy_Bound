@@ -1,7 +1,6 @@
 import http from '../helpers/axiosConfig';
 import { TNewRelationship, TRelationship, TUserRelationship } from '../types/relationship.type';
 import { TSuccessResponse } from '../types/response.type';
-import { TUser } from '../types/user.type';
 
 export class RelationshipApi {
     static async getRelationshipsByType(params: TUserRelationship): Promise<TSuccessResponse<TRelationship[]>> {

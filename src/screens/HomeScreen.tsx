@@ -1,4 +1,4 @@
-import { FlatList, NativeSyntheticEvent, Text, TextInputChangeEventData, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, NativeSyntheticEvent, Text, TextInputChangeEventData, TouchableOpacity, View } from 'react-native';
 import { TabsScreenProps } from '../types/navigator.type';
 import React, { useEffect, useState } from 'react';
 import BuddyItem from '../components/BuddyItem';
@@ -11,30 +11,42 @@ import SearchBar from 'react-native-dynamic-search-bar';
 import Header from '../components/Header';
 import { TBuddy, TFamily } from '../types/group.type';
 import { GroupApi } from '../api/group.api';
+import { useFocusEffect } from '@react-navigation/native';
 
 const HomeScreen = ({ navigation }: TabsScreenProps) => {
   const [allBuddy, setAllBuddy] = useState<boolean>(false);
   const [allGroup, setAllGroup] = useState<boolean>(false);
   const [buddies, setBuddies] = useState<TBuddy[]>([]);
   const [groups, setGroups] = useState<TFamily[]>([]);
-  const [friendGroups, setFriendGroups] = useState<TFamily[]>([]);
   const [searchText, setSearchText] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const fetch = async () => {
+    try {
+      setLoading(true);
+      const { data } = await GroupApi.getBuddies();
+      setBuddies(data.buddies);
+
+      const combinedGroups = [...data.families, ...data.friends];
+
+      setGroups(combinedGroups);
+      setLoading(false);
+    }
+    catch (error) {
+      console.log('errsss: ', error);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetch = async () => {
-      try {
-        const { data } = await GroupApi.getBuddies();
-        setBuddies(data.buddies);
-        setGroups(data.families);
-        setFriendGroups(data.friends);
-      }
-      catch (error) {
-        console.log('errsss: ', error);
-      }
-    };
-
     fetch();
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetch();
+    }, [])
+  );
 
   const HandleClickBuddy = (item: TBuddy) => {
     navigation.push('LocationBuddy', { userID: item.id });
@@ -66,71 +78,81 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
     <>
       <Header title="Your buddy" onPrimaryAction={() => { }} />
       <View className="flex flex-1 px-4 mt-2">
-        <View className="flex mb-2">
-          <View className="flex flex-row justify-between items-center mb-4">
-            <Text className="font-interMedium text-base text-main">
-              Buddies
-            </Text>
-            <TouchableOpacity onPress={() => setAllBuddy(!allBuddy)}>
-              <ChevronRightIcon size={20} color="#535862" />
-            </TouchableOpacity>
-          </View>
-
-          <View className="mb-4">
-            <FlatList
-              data={buddies}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => (
-                <BuddyItem
-                  item={item}
-                  press={() => {
-                    navigation.push('LocationBuddy', { userID: item.id });
-                  }}
-                />
-              )}
-              horizontal
-              showsHorizontalScrollIndicator={false}
+        {
+          loading ? (
+            <ActivityIndicator style={{ display: 'flex', justifyContent: "center", alignItems: 'center' }}
+              size='small'
+              color="#2C7CC1"
             />
-          </View>
+          ) : (
+            <View className="flex mb-2">
+              <View className="flex flex-row justify-between items-center mb-4">
+                <Text className="font-interMedium text-base text-main">
+                  Buddies
+                </Text>
+                <TouchableOpacity onPress={() => setAllBuddy(!allBuddy)}>
+                  <ChevronRightIcon size={20} color="#535862" />
+                </TouchableOpacity>
+              </View>
 
-          <View className="flex flex-row justify-between items-center mb-4">
-            <Text className="font-interMedium text-base text-main">
-              Groups
-            </Text>
-            <TouchableOpacity onPress={() => setAllGroup(!allGroup)}>
-              <ChevronRightIcon size={20} color="#535862" />
-            </TouchableOpacity>
-          </View>
+              <View className="mb-4">
+                {
+                  buddies.length > 0 ? (
+                    <FlatList
+                      data={buddies}
+                      keyExtractor={(item, index) => index.toString()}
+                      renderItem={({ item }) => (
+                        <BuddyItem
+                          item={item}
+                          press={() => {
+                            navigation.push('LocationBuddy', { userID: item.id });
+                          }}
+                        />
+                      )}
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                    />
+                  ) : (
+                    <Text className='font-interRegular italic text-[13px]'>No buddies here yet. Time to make some new friends!</Text>
+                  )
+                }
 
-          <View className="mb-4">
-            <FlatList
-              data={groups}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => (
-                <GroupItem
-                  item={item}
-                  press={() => {
-                    navigation.push('LocationGroup', { groupID: item.id, groupType: item.groupType });
-                  }}
-                />
-              )}
-              showsVerticalScrollIndicator={false}
-            />
-            <FlatList
-              data={friendGroups}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => (
-                <GroupItem
-                  item={item}
-                  press={() => {
-                    navigation.push('LocationGroup', { groupID: item.id, groupType: item.groupType });
-                  }}
-                />
-              )}
-              showsVerticalScrollIndicator={false}
-            />
-          </View>
-        </View>
+              </View>
+
+              <View className="flex flex-row justify-between items-center mb-4">
+                <Text className="font-interMedium text-base text-main">
+                  Groups
+                </Text>
+                <TouchableOpacity onPress={() => setAllGroup(!allGroup)}>
+                  <ChevronRightIcon size={20} color="#535862" />
+                </TouchableOpacity>
+              </View>
+
+              <View className="mb-4">
+                {
+                  groups.length > 0 ? (
+                    <FlatList
+                      data={groups}
+                      keyExtractor={(item, index) => index.toString()}
+                      renderItem={({ item }) => (
+                        <GroupItem
+                          item={item}
+                          press={() => {
+                            navigation.push('LocationGroup', { groupID: item.id, groupType: item.groupType });
+                          }}
+                        />
+                      )}
+                      showsVerticalScrollIndicator={false}
+                    />
+                  ) : (
+                    <Text className='font-interRegular italic text-[13px]'>Create new groups to connect with buddies</Text>
+                  )
+                }
+
+              </View>
+            </View>
+          )
+        }
 
         <Modal isOpen={allBuddy}>
           <View className="bg-white w-full h-[80%] p-4 rounded-xl">

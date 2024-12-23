@@ -13,7 +13,7 @@ export type TRelationship = {
     senderRole: string,
     receiverRole: string,
     createdAt: string,
-    updatedAt: string
+    updatedAt: string,
 }
 
 export type TNewRelationship = {
