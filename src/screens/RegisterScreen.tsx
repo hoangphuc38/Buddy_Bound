@@ -18,6 +18,10 @@ const user = require('../assets/images/user-icon.png');
 const google = require('../assets/images/google-icon.png');
 
 const RegisterScreen = ({navigation}: RegisterScreenProps) => {
+  const handleSignUp = () => {
+    navigation.push('CreateAccInfo');
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-[#FEFDFD]">
       <TouchableOpacity
@@ -44,24 +48,6 @@ const RegisterScreen = ({navigation}: RegisterScreenProps) => {
         </View>
         {/* form đăng ký */}
         <View className="mt-[40] px-[36] w-full">
-          {/* username */}
-          <View className="bg-[#2C7CC133] flex-row items-center px-[20] rounded-lg mb-[8]">
-            <View className="h-[13] w-[13]">
-              <Image
-                source={user}
-                resizeMode="contain"
-                className="h-full w-full"
-              />
-            </View>
-            <View className="ml-[10] w-full">
-              <TextInput
-                placeholder="User name"
-                placeholderTextColor={'#2C7CC1'}
-                multiline={false}
-                className="text-interBold font-[600] text-sm leading-[0] w-full text-[#2C7CC1] h-[50]"
-              />
-            </View>
-          </View>
           {/* email */}
           <View className="bg-[#2C7CC133] flex-row items-center px-[20] rounded-lg mb-[8]">
             <View className="h-[13] w-[13]">
@@ -119,8 +105,9 @@ const RegisterScreen = ({navigation}: RegisterScreenProps) => {
             </View>
           </View>
           <TouchableOpacity
-            className="w-full py-[15] bg-[#125B9A] mt-[20]"
-            style={{borderRadius: 30}}>
+            className="w-full py-[15] bg-[#125B9A] mt-[30]"
+            style={{borderRadius: 30}}
+            onPress={handleSignUp}>
             <Text
               className="text-center text-[#fff] font-interBold font-[700]"
               style={{
