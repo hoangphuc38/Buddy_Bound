@@ -14,12 +14,53 @@ const register = require('../assets/images/register-icon.png');
 const back = require('../assets/images/back-vector.png');
 const email = require('../assets/images/email-icon.png');
 const pasword = require('../assets/images/lock-icon.png');
-const user = require('../assets/images/user-icon.png');
 const google = require('../assets/images/google-icon.png');
 
 const RegisterScreen = ({navigation}: RegisterScreenProps) => {
+  const [emailInput, setEmailInput] = useState('');
+  const [passwordInput, setPasswordInput] = useState('');
+  const [confirmPasswordInput, setConfirmPasswordInput] = useState('');
+
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
+
   const handleSignUp = () => {
-    navigation.push('CreateAccInfo');
+    let valid = true;
+
+    // Reset errors
+    setEmailError('');
+    setPasswordError('');
+    setConfirmPasswordError('');
+
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailInput) {
+      setEmailError('Email is required');
+      valid = false;
+    } else if (!emailRegex.test(emailInput)) {
+      setEmailError('Invalid email format');
+      valid = false;
+    }
+
+    // Validate password
+    if (!passwordInput) {
+      setPasswordError('Password is required');
+      valid = false;
+    }
+
+    // Validate confirm password
+    if (!confirmPasswordInput) {
+      setConfirmPasswordError('Please confirm your password');
+      valid = false;
+    } else if (passwordInput && confirmPasswordInput !== passwordInput) {
+      setConfirmPasswordError('Passwords do not match');
+      valid = false;
+    }
+
+    if (valid) {
+      navigation.push('CreateAccInfo', {email: emailInput, password: passwordInput});
+    }
   };
 
   return (
@@ -61,11 +102,19 @@ const RegisterScreen = ({navigation}: RegisterScreenProps) => {
               <TextInput
                 placeholder="Email"
                 placeholderTextColor={'#2C7CC1'}
+                value={emailInput}
+                onChangeText={setEmailInput}
                 multiline={false}
                 className="text-interBold font-[600] text-sm leading-[0] w-full text-[#2C7CC1] h-[50]"
               />
             </View>
           </View>
+          {emailError ? (
+            <Text className="text-[#FF0000] text-sm mt-[-5] mb-[8]">
+              {emailError}
+            </Text>
+          ) : null}
+
           {/* password */}
           <View className="bg-[#2C7CC133] flex-row items-center px-[20] rounded-lg mb-[8]">
             <View className="h-[13] w-[13]">
@@ -80,11 +129,19 @@ const RegisterScreen = ({navigation}: RegisterScreenProps) => {
                 placeholder="Password"
                 placeholderTextColor={'#2C7CC1'}
                 secureTextEntry
+                value={passwordInput}
+                onChangeText={setPasswordInput}
                 multiline={false}
                 className="text-interBold font-[600] text-sm leading-[0] w-full text-[#2C7CC1] h-[50]"
               />
             </View>
           </View>
+          {passwordError ? (
+            <Text className="text-[#FF0000] text-sm mt-[-5] mb-[8]">
+              {passwordError}
+            </Text>
+          ) : null}
+
           {/* confirm pass */}
           <View className="bg-[#2C7CC133] flex-row items-center px-[20] rounded-lg">
             <View className="h-[13] w-[13]">
@@ -99,11 +156,19 @@ const RegisterScreen = ({navigation}: RegisterScreenProps) => {
                 placeholder="Repeat your password"
                 placeholderTextColor={'#2C7CC1'}
                 secureTextEntry
+                value={confirmPasswordInput}
+                onChangeText={setConfirmPasswordInput}
                 multiline={false}
                 className="text-interBold font-[600] text-sm leading-[0] w-full text-[#2C7CC1] h-[50]"
               />
             </View>
           </View>
+          {confirmPasswordError ? (
+            <Text className="text-[#FF0000] text-sm mt-[3] mb-[8]">
+              {confirmPasswordError}
+            </Text>
+          ) : null}
+
           <TouchableOpacity
             className="w-full py-[15] bg-[#125B9A] mt-[30]"
             style={{borderRadius: 30}}

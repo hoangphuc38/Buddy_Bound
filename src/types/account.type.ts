@@ -17,6 +17,7 @@ export type TSignUp = {
     password: string,
     fullName: string,
     gender: boolean,
+    phoneNumber: string,
     birthday: string
 }
 

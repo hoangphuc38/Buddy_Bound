@@ -5,11 +5,14 @@ import {
   Image,
   TouchableOpacity,
   TextInput,
+  Alert,
 } from 'react-native';
 import {useState} from 'react';
 import DatePicker from 'react-native-date-picker';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {CreateAccInfoProps} from '../types/navigator.type';
+import {CreateAccInfoProps, RootStackParamList} from '../types/navigator.type';
+import {RouteProp} from '@react-navigation/native';
+import {AuthApi} from '../api/auth.api';
 
 const register = require('../assets/images/register-icon.png');
 const back = require('../assets/images/back-vector.png');
@@ -18,11 +21,50 @@ const birthday = require('../assets/images/cake-icon.png');
 const user = require('../assets/images/user-icon.png');
 const calendar = require('../assets/images/calendar-icon.png');
 
-const CreateAccInfoScreen = ({navigation}: CreateAccInfoProps) => {
+const CreateAccInfoScreen = ({
+  route,
+  navigation,
+}: CreateAccInfoProps & {
+  route: RouteProp<RootStackParamList, 'CreateAccInfo'>;
+}) => {
+  const {email, password} = route.params;
+
   const [openDatePicker, setOpenDatePicker] = useState(false);
+  const [userName, setUserName] = useState('');
   const [date, setDate] = useState(new Date());
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [isMale, setIsMale] = useState(true);
+  const [phoneNum, setPhoneNum] = useState('');
+
+  const [errorMessage, setErrorMessage] = useState<string>('');
+
+  const handleConfirm = async () => {
+    // Kiểm tra các trường đã được nhập chưa
+    if (!phoneNum || !dateOfBirth || !userName) {
+      setErrorMessage('Please fill in all fields.');
+    } else {
+      try {
+        const response = await AuthApi.signup({
+          email: email as string,
+          password: password as string,
+          fullName: userName as string,
+          gender: isMale as boolean,
+          phoneNumber: phoneNum as string,
+          birthday: dateOfBirth as string,
+        });
+        Alert.alert('success');
+        navigation.push('LogIn')
+      } catch (error) {
+        Alert.alert('failed');
+      }
+    }
+  };
+
+  const handlePhoneInput = (text: string) => {
+    // Chỉ cho phép các ký tự số
+    const phoneNumber = text.replace(/[^0-9]/g, '');
+    setPhoneNum(phoneNumber);
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-[#FEFDFD]">
@@ -64,6 +106,8 @@ const CreateAccInfoScreen = ({navigation}: CreateAccInfoProps) => {
                 placeholder="User name"
                 placeholderTextColor={'#2C7CC1'}
                 multiline={false}
+                value={userName}
+                onChangeText={e => setUserName(e)}
                 className="text-interBold font-[600] text-sm leading-[0] w-full text-[#2C7CC1] h-[50]"
               />
             </View>
@@ -81,7 +125,10 @@ const CreateAccInfoScreen = ({navigation}: CreateAccInfoProps) => {
             <View className="ml-[10] w-full">
               <TextInput
                 placeholder="Phone number"
+                keyboardType="numeric"
+                onChangeText={handlePhoneInput}
                 placeholderTextColor={'#2C7CC1'}
+                value={phoneNum}
                 multiline={false}
                 className="text-interBold font-[600] text-sm leading-[0] w-full text-[#2C7CC1] h-[50]"
               />
@@ -124,7 +171,7 @@ const CreateAccInfoScreen = ({navigation}: CreateAccInfoProps) => {
               onConfirm={date => {
                 setOpenDatePicker(false);
                 setDate(date);
-                setDateOfBirth(date.toLocaleDateString('en-GB'));
+                setDateOfBirth(date.toISOString().split('T')[0]);
               }}
               onCancel={() => {
                 setOpenDatePicker(false);
@@ -172,9 +219,15 @@ const CreateAccInfoScreen = ({navigation}: CreateAccInfoProps) => {
               </Text>
             </TouchableOpacity>
           </View>
+          {errorMessage ? (
+            <Text className="text-center text-red-500 mt-[10]">
+              {errorMessage}
+            </Text>
+          ) : null}
           <TouchableOpacity
             className="w-full py-[15] bg-[#125B9A] mt-[20]"
-            style={{borderRadius: 30}}>
+            style={{borderRadius: 30}}
+            onPress={handleConfirm}>
             <Text
               className="text-center text-[#fff] font-interBold font-[700]"
               style={{

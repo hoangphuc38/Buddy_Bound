@@ -23,7 +23,7 @@ export type RootStackParamList = {
   NewGroupScreen: undefined;
   ChatScreen: undefined;
   AddAlbum: undefined;
-  CreateAccInfo: undefined;
+  CreateAccInfo: {email: string, password: string};
   //Declare new screen with needed parameters
 };
 
