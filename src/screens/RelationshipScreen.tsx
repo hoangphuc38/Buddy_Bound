@@ -188,7 +188,7 @@ const RelationshipScreen = ({navigation}: TabsScreenProps) => {
         </TouchableOpacity>
       </View>
       <View className="mt-[35] w-full">
-        <SearchBar placeholder="Search" onSearch={handleSearch} />
+        {/* <SearchBar placeholder="Search" onSearch={handleSearch} /> */}
       </View>
       {/* friend list */}
       {activeTag === 'friend' ? (

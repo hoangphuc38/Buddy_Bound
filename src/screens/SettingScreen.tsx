@@ -8,8 +8,21 @@ import LocationHistory from '../assets/icons/location-history.svg';
 import Shield from '../assets/icons/shield.svg';
 import Logout from '../assets/icons/logout.svg';
 import SettingItem, { ISettingItem } from '../components/SettingItem';
+import { useAuth } from '../contexts/auth-context';
 
 const SettingScreen = ({ navigation }: TabsScreenProps) => {
+
+  const {signOut} = useAuth();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      navigation.push('LogIn'); // Điều hướng về màn hình đăng nhập (tùy chỉnh theo cấu trúc của bạn)
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  }
+
   const items: ISettingItem[] = [
     {
       Icon: Shield,
@@ -45,7 +58,7 @@ const SettingScreen = ({ navigation }: TabsScreenProps) => {
         />
         <TouchableOpacity
           className="bg-[#EF4444] flex items-center justify-center py-3 mb-5 mx-2 rounded-lg"
-          onPress={() => {/* Add your logout functionality here */ }}
+          onPress={handleSignOut}
         >
           <View className="flex flex-row items-center justify-center space-x-2">
             <Logout height={20} width={20} />
