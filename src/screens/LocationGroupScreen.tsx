@@ -10,7 +10,7 @@ import {
   LocationGroupScreenProps,
   RootStackParamList,
 } from '../types/navigator.type';
-import { RouteProp } from '@react-navigation/native';
+import { RouteProp, useFocusEffect } from '@react-navigation/native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
   faAngleLeft,
@@ -22,7 +22,7 @@ import {
   faPlus,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { NewspaperIcon } from 'react-native-heroicons/solid';
 import BottomSheet, { BottomSheetMethods } from '@devvie/bottom-sheet';
 import GroupMember from '../components/GroupMember';
@@ -42,6 +42,10 @@ import { LocationHistoryApi } from '../api/location-history.api';
 import { TLocation } from '../types/location.type';
 import Geolocation from '@react-native-community/geolocation';
 import { TimeFormatter } from '../helpers';
+import { TPost } from '../types/post.type';
+import { TMemorablePlace } from '../types/location-history.type';
+import { PostApi } from '../api/post.api';
+import { MemorablePlaceApi } from '../api/memorablePlace.api';
 
 const LocationGroupScreen = ({
   route,
@@ -53,16 +57,43 @@ const LocationGroupScreen = ({
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isSeeAll, setIsSeeAll] = useState<string | null>(null);
   const [groupMembers, setGroupMembers] = useState<TMember[]>([]);
-  const [memberLocations, setMemberLocations] = useState<TLocation[]>([]);
   const [approvalMembers, setApprovalMembers] = useState<TMember[]>([]);
   const [allRelatedUsers, setAllRelatedUsers] = useState<TUser[]>([]);
   const [invitedBuddies, setInvitedBuddies] = useState<number[]>([]);
   const [isMapReady, setIsMapReady] = useState(false);
+  const [showPosts, setShowPosts] = useState<boolean>(true);
+  const [showMembers, setShowMembers] = useState<boolean>(true);
+  const [showMemorableDestinations, setShowMemorableDestinations] = useState<boolean>(true);
+
+  //for map
+  const [groupPosts, setGroupPosts] = useState<TPost[]>([]);
+  const [memberLocations, setMemberLocations] = useState<TLocation[]>([]);
+  const [memorableDestinations, setMemorableDestinations] = useState<TMemorablePlace[]>([]);
+  const [selectedMemberLocation, setSelectedMemberLocation] = useState<TLocation>();
 
   const [modal, setModal] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>('');
 
   const sheetRef = useRef<BottomSheetMethods>(null);
+
+  const fetchMap = async () => {
+    try {
+      const { data: posts } = await PostApi.getAll(groupID);
+      const { data: memorableList } = await MemorablePlaceApi.getAll();
+      const { data: locations } = await LocationHistoryApi.getUserLocations(groupID);
+      setGroupPosts(posts);
+      setMemberLocations(locations);
+      setMemorableDestinations(memorableList);
+    } catch (error) {
+      console.log('err: ', error);
+    }
+  };
+
+  const renderMemberMarkers = async () => {
+    if (!showMembers) {return null;}
+
+    // return memberLocations.map();
+  };
 
   const buttonAnimations = [
     useRef(new Animated.Value(0)).current,
@@ -83,18 +114,8 @@ const LocationGroupScreen = ({
     ],
   };
 
-  const fetchMemberLocation = async () => {
-    try {
-      const { data } = await LocationHistoryApi.getUserLocations(groupID);
-      setMemberLocations(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
     if (isOpen) {
-      // Staggered animation for buttons
       Animated.stagger(
         100,
         buttonAnimations.map(animation =>
@@ -107,14 +128,12 @@ const LocationGroupScreen = ({
         ),
       ).start();
 
-      // Rotate chevron down
       Animated.timing(chevronRotation, {
         toValue: 1,
         duration: 500,
         useNativeDriver: true,
       }).start();
     } else {
-      // Reset button animations
       buttonAnimations.forEach(animation => {
         Animated.timing(animation, {
           toValue: 0,
@@ -123,7 +142,6 @@ const LocationGroupScreen = ({
         }).start();
       });
 
-      // Rotate chevron up
       Animated.timing(chevronRotation, {
         toValue: 0,
         duration: 500,
@@ -193,11 +211,16 @@ const LocationGroupScreen = ({
     getAllRelationshipsByType();
   }, [groupID, groupType]);
 
+  useFocusEffect(
+    useCallback(() => {
+      fetchMap();
+    }, [])
+  );
+
   useEffect(() => {
     const initializeMap = async () => {
       try {
         await Mapbox.setTelemetryEnabled(false);
-        fetchMemberLocation();
         setIsMapReady(true);
       } catch (error) {
           console.error('Error initializing map:', error);

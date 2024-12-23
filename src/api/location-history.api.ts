@@ -19,4 +19,8 @@ export class LocationHistoryApi {
             longitude: longitude,
         }));
     }
+
+    static async getMemberLocation(userId: number): Promise<TSuccessResponse<TLocation>> {
+        return (await http.get(`/location/getUserLocation/${userId}`)).data;
+    }
 }

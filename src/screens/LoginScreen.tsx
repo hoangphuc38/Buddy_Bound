@@ -49,7 +49,7 @@ const LoginScreen = ({navigation}: LogInScreenProps) => {
             toast(options);
         }
     } catch (error) {
-        console.error('Login failed:', error);
+        console.log('Login failed:', error);
     }
 };
 

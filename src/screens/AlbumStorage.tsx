@@ -14,7 +14,6 @@ const AlbumStorage = ({ navigation }: AlbumStorageScreenProps) => {
     const fetchAlbums = async () => {
         try {
             const { data } = await AlbumApi.getAlbums();
-            console.log(data);
             setAlbums(data);
         } catch (error) {
             console.error('Error fetching albums:', error);
