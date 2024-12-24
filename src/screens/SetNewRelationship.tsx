@@ -180,8 +180,6 @@ const SetNewRelationshipScreen = ({
                 />
               )
             }
-
-
           </View>
         </View>
 

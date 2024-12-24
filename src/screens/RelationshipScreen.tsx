@@ -42,12 +42,15 @@ const RelationshipScreen = ({ navigation }: TabsScreenProps) => {
     switch (item) {
       case "Limited People List":
         navigation.push('LimitedPeople');
+        setSideBarVisible(!isSideBarVisible);
         break;
       case "New Group":
         navigation.push("NewGroupScreen");
+        setSideBarVisible(!isSideBarVisible);
         break;
       case "Relationship Request":
         navigation.push('RelationshipRequest', {});
+        setSideBarVisible(!isSideBarVisible);
     }
   };
 

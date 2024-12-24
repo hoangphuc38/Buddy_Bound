@@ -17,4 +17,9 @@ export class RelationshipApi {
         const response = await http.post('/relationship/add', body);
         return response.data;
     }
+
+    static async getLimitedPeople(): Promise<TSuccessResponse<TRelationship[]>> {
+        const response = await http.get('/relationship/get-all-restricted-user');
+        return response.data;
+    }
 }

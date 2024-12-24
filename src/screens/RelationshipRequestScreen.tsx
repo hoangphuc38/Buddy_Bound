@@ -1,11 +1,12 @@
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, FlatList, View } from 'react-native';
 import { RelationshipRequestScreenProps } from '../types/navigator.type';
 import { Text } from 'react-native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import React from 'react';
 import Header from '../components/Header';
 import { TRelationship } from '../types/relationship.type';
 import { RelationshipApi } from '../api/relationship.api';
+import RequestItem from '../components/RequestItem';
 
 const RelationshipRequestScreen = ({
     route,
@@ -30,6 +31,10 @@ const RelationshipRequestScreen = ({
         }
     }
 
+    useEffect(() => {
+        //fetchAPI();
+    }, [])
+
     if (loading) {
         return (
             <View className="flex flex-1 items-center justify-center">
@@ -44,7 +49,18 @@ const RelationshipRequestScreen = ({
                 onBack={() => navigation.pop()}
                 onPrimaryAction={() => { }} />
             <View className="flex flex-1 px-4 mt-4">
-
+                <FlatList
+                    data={data}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item }) => (
+                        <RequestItem
+                            item={item}
+                            onAccept={() => { }}
+                            onReject={() => { }}
+                        />
+                    )}
+                    showsVerticalScrollIndicator={false}
+                />
             </View>
         </>
     )
