@@ -89,7 +89,7 @@ const LoginScreen = ({navigation}: LogInScreenProps) => {
               <View style={{height: 13, width: 13}}>
                 <Image source={email} style={styles.icon} />
               </View>
-              <View style={styles.textInputContainer}>
+              <View className='w-full' style={styles.textInputContainer}>
                 <TextInput
                   placeholder="Email"
                   value={emailValue}
@@ -110,7 +110,7 @@ const LoginScreen = ({navigation}: LogInScreenProps) => {
               <View style={{height: 13, width: 13}}>
                 <Image source={pasword} style={styles.icon} />
               </View>
-              <View style={styles.textInputContainer}>
+              <View className='w-full' style={styles.textInputContainer}>
                 <TextInput
                   placeholder="Password"
                   value={passwordValue}

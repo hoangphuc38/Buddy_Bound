@@ -41,7 +41,7 @@ const SetNewRelationshipScreen = ({
             Scan QR to set relationship with me
           </Text>
           {/* copy QR button */}
-          <TouchableOpacity className="py-[8] mt-[10] px-[31] bg-[#2C7CC1] rounded">
+          <TouchableOpacity className="py-[8] mt-[10] px-[31] bg-[#2C7CC1] rounded" onPress={() => navigation.push('AddContact')}>
             <Text className="text-[#fff] font-interBold ">Copy QR</Text>
           </TouchableOpacity>
         </View>

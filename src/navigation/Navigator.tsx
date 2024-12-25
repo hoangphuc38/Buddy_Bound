@@ -83,6 +83,7 @@ const Navigator = () => {
         <Stack.Screen name="NewMemorable" component={NewMemorablePlaceScreen} />
         <Stack.Screen name="AddAlbum" component={AddAlbum} />
         <Stack.Screen name='CreateAccInfo' component={CreateAccInfoScreen}/>
+        <Stack.Screen name='AddContact' component={AddContactScreen}/>
           </>
           :
           <>
