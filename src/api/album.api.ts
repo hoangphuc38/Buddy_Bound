@@ -1,5 +1,5 @@
 import http from '../helpers/axiosConfig';
-import { TAlbum } from '../types/album.type';
+import { TAlbum, TCreateAlbum } from '../types/album.type';
 import { TSuccessResponse } from '../types/response.type';
 
 export class AlbumApi {
@@ -10,5 +10,14 @@ export class AlbumApi {
     static async getAlbumById(id: number): Promise<TSuccessResponse<TAlbum>> {
         const response = await http.get(`/albums/${id}`);
         return response.data;
+    }
+
+    static async createAlbum(body: TCreateAlbum): Promise<TSuccessResponse<TAlbum>> {
+        const response = await http.post('/albums', body);
+        return response.data;
+    }
+
+    static async deleteAlbum(id: number) {
+        await http.delete(`/albums/${id}`);
     }
 }

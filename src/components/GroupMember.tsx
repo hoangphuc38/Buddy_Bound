@@ -1,14 +1,14 @@
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Text, View, TouchableOpacity } from 'react-native';
 import { TMember } from '../types/member.type';
 
 interface IGroupMember {
   item: TMember;
-  onPress?: () => void
+  onNavigate?: () => void
 }
 
-const GroupMember = ({ item, onPress }: IGroupMember) => {
+const GroupMember = ({ item, onNavigate }: IGroupMember) => {
   return (
-    <TouchableOpacity onPress={onPress}
+    <TouchableOpacity onPress={onNavigate}
       className="flex flex-row items-center mb-4 gap-[20px]">
       <Image
         source={{ uri: item.user.avatar }}

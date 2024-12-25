@@ -40,5 +40,5 @@ export type TCreateGroup = {
     groupName?: string;
     groupDescription?: string;
     userIds: number[];
-    groupType: "FAMILY" | "FRIEND" | "ONE_TO_ONE"
+    groupType: "FAMILY" | "FRIEND" | "ONE_TO_ONE" | string
 }

@@ -1,0 +1,33 @@
+[
+    {
+      "id": 1,
+      "user": {
+        "id": 1,
+        "email": "john.doe@example.com",
+        "password": "a1b2c3d4",
+        "fullName": "John Doe",
+        "avatar": "https://randomuser.me/api/portraits/men/1.jpg",
+        "gender": true,
+        "birthday": "1990-07-15"
+      },
+      "latitude": 37.7749,
+      "longitude": -122.4194,
+      "createdAt": "2023-06-12T08:30:00Z"
+    },
+    {
+      "id": 2,
+      "user": {
+        "id": 2,
+        "email": "jane.smith@example.com",
+        "password": "x9y8z7w6",
+        "fullName": "Jane Smith",
+        "avatar": "https://randomuser.me/api/portraits/women/2.jpg",
+        "gender": false,
+        "birthday": "1985-03-22"
+      },
+      "latitude": 40.7128,
+      "longitude": -74.0060,
+      "createdAt": "2023-05-20T14:45:00Z"
+    }
+  ]
+  

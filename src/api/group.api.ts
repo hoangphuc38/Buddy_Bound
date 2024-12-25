@@ -25,7 +25,11 @@ export class GroupApi {
     }
 
     static async createGroup(body: TCreateGroup): Promise<TSuccessResponse<TGroup>> {
+<<<<<<< HEAD
+        return (await http.post('/group/create', body)).data;
+=======
         const response = await http.post('/group/create', body);
         return response.data;
+>>>>>>> 5916045b8b771512d6ebc403e71c1a3bfcbe660a
     }
 }

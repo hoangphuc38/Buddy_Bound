@@ -20,10 +20,10 @@ export type RootStackParamList = {
   PermissionScreen: undefined;
   LocationHistoryScreen: undefined;
   AlbumStorageScreen: undefined;
-  AlbumDetailsScreen: undefined;
+  AlbumDetailsScreen: { albumId: number };
   NewGroupScreen: undefined;
+  AddAlbum: { isEditMode: boolean, albumId?: number };
   ChatScreen: { groupId: number, user?: TBuddy };
-  AddAlbum: undefined;
   RelationshipRequest: { referenceId?: number }
   LimitedPeople: undefined;
   //Declare new screen with needed parameters

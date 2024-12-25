@@ -1,8 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
+  ActivityIndicator,
   Animated,
   FlatList,
   Image,
-  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -11,7 +12,7 @@ import {
   LocationGroupScreenProps,
   RootStackParamList,
 } from '../types/navigator.type';
-import { RouteProp } from '@react-navigation/native';
+import { RouteProp, useFocusEffect } from '@react-navigation/native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
   faAngleLeft,
@@ -23,14 +24,11 @@ import {
   faPlus,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { NewspaperIcon } from 'react-native-heroicons/solid';
 import BottomSheet, { BottomSheetMethods } from '@devvie/bottom-sheet';
 import GroupMember from '../components/GroupMember';
-import mockData from '../mock/mockData';
 import ApprovalMember from '../components/ApprovalMember';
-import UserMarker from '../components/UserMarker';
-import PostMarker from '../components/PostMarker';
 import React from 'react';
 import { GroupApi } from '../api/group.api';
 import { TMember } from '../types/member.type';
@@ -41,26 +39,84 @@ import { RelationshipApi } from '../api/relationship.api';
 import { TUser } from '../types/user.type';
 import { TFamily, TGroup, TInviteGroup } from '../types/group.type';
 import { toast, ToastOptions } from '@baronha/ting';
+import Mapbox, { Camera, MapView, MarkerView } from '@rnmapbox/maps';
+import { LocationHistoryApi } from '../api/location-history.api';
+import { TLocation } from '../types/location.type';
+import Geolocation from '@react-native-community/geolocation';
+import { TPost } from '../types/post.type';
+import { TMemorablePlace } from '../types/location-history.type';
+import { PostApi } from '../api/post.api';
+import { MemorablePlaceApi } from '../api/memorablePlace.api';
+import useWebSocketConnection from '../hooks/useWebsocket';
+import { renderMarkers } from '../pattern/decorator';
+import { UserContext } from '../contexts/user-context';
+import Config from 'react-native-config';
 
+
+Mapbox.setAccessToken(Config.MAPBOX_PB_TOKEN || 'pk.eyJ1IjoicGh1bGUyMzMzIiwiYSI6ImNtMHpna2l1azA1dDIya3B1bXRzMm5jcXMifQ.PPE8QVyyUoOSOXfwSg33hA');
 const LocationGroupScreen = ({
   route,
   navigation,
 }: LocationGroupScreenProps & {
   route: RouteProp<RootStackParamList, 'LocationGroup'>;
 }) => {
+  const { user } = useContext(UserContext);
   const { groupID, groupType } = route.params;
-  const { postMarkers, userMarkers } = mockData;
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isSeeAll, setIsSeeAll] = useState<string | null>(null);
   const [groupMembers, setGroupMembers] = useState<TMember[]>([]);
   const [approvalMembers, setApprovalMembers] = useState<TMember[]>([]);
   const [allRelatedUsers, setAllRelatedUsers] = useState<TUser[]>([]);
   const [invitedBuddies, setInvitedBuddies] = useState<number[]>([]);
+  const [isMapReady, setIsMapReady] = useState(false);
+  const [showPosts, setShowPosts] = useState<boolean>(true);
+  const [showMembers, setShowMembers] = useState<boolean>(true);
+  const [showMemorableDestinations, setShowMemorableDestinations] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  //for map
+  const [groupPosts, setGroupPosts] = useState<TPost[]>([]);
+  const [memberLocations, setMemberLocations] = useState<TLocation[]>([]);
+  const [memorableDestinations, setMemorableDestinations] = useState<TMemorablePlace[]>([]);
+  const [selectedMemberLocation, setSelectedMemberLocation] = useState<TLocation>();
 
   const [modal, setModal] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>('');
 
   const sheetRef = useRef<BottomSheetMethods>(null);
+
+  //websocket
+  const {
+    connected,
+    subscribeToLocation,
+  } = useWebSocketConnection({
+    onLocationReceived: (groupId: number, location: TLocation) => {
+      console.log('Location received for group:', groupId, location);
+    },
+    debug: true,
+  });
+
+  const fetchMap = async () => {
+    try {
+      const [postsResponse, memorableResponse, locationsResponse, currentLocationResponse] =
+        await Promise.all([
+          PostApi.getAll(groupID),
+          MemorablePlaceApi.getAll(),
+          LocationHistoryApi.getUserLocations(groupID),
+          LocationHistoryApi.getMemberLocation(user?.id as number),
+        ]);
+
+      return {
+        posts: postsResponse.data,
+        locations: locationsResponse.data,
+        memorablePlaces: memorableResponse.data,
+        currentLocation: currentLocationResponse.data,
+      };
+    } catch (error) {
+      console.log('Error fetching map data:', error);
+      throw error;
+    }
+  };
 
   const buttonAnimations = [
     useRef(new Animated.Value(0)).current,
@@ -83,7 +139,6 @@ const LocationGroupScreen = ({
 
   useEffect(() => {
     if (isOpen) {
-      // Staggered animation for buttons
       Animated.stagger(
         100,
         buttonAnimations.map(animation =>
@@ -96,14 +151,12 @@ const LocationGroupScreen = ({
         ),
       ).start();
 
-      // Rotate chevron down
       Animated.timing(chevronRotation, {
         toValue: 1,
         duration: 500,
         useNativeDriver: true,
       }).start();
     } else {
-      // Reset button animations
       buttonAnimations.forEach(animation => {
         Animated.timing(animation, {
           toValue: 0,
@@ -112,7 +165,6 @@ const LocationGroupScreen = ({
         }).start();
       });
 
-      // Rotate chevron up
       Animated.timing(chevronRotation, {
         toValue: 0,
         duration: 500,
@@ -156,31 +208,75 @@ const LocationGroupScreen = ({
   }, [isSeeAll]);
 
   useEffect(() => {
-    const fetchAPI = async () => {
+    if (connected) {
+      subscribeToLocation(groupID);
+    }
+  }, [connected, groupID]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
       try {
-        const { data } = await GroupApi.getMembers(groupID);
-        const { data: approval } = await GroupApi.getWaitingApproval(groupID);
-        setGroupMembers(data);
-        setApprovalMembers(approval);
-      }
-      catch (error) {
-        console.log('err: ', error);
+        const [
+          membersResponse,
+          approvalResponse,
+          mapData,
+        ] = await Promise.all([
+          GroupApi.getMembers(groupID),
+          GroupApi.getWaitingApproval(groupID),
+          fetchMap(),
+        ]);
+
+        setSelectedMemberLocation(mapData.currentLocation);
+        setMemberLocations(mapData.locations);
+        setMemorableDestinations(mapData.memorablePlaces);
+        setGroupPosts(mapData.posts);
+        setGroupMembers(membersResponse.data);
+        setApprovalMembers(approvalResponse.data);
+      } catch (error) {
+        console.log('Error fetching data:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    const getAllRelationshipsByType = async () => {
-      try {
-        const { data } = await RelationshipApi.getRelationshipsByType({ type: groupType });
-        setAllRelatedUsers(data.map((value) => value.receiver));
-      }
-      catch (error) {
-        console.log('err: ', error);
-      }
-    };
-
-    fetchAPI();
-    getAllRelationshipsByType();
+    fetchData();
   }, [groupID]);
+
+  useEffect(() => {
+    const initializeMap = async () => {
+      try {
+        await Mapbox.setTelemetryEnabled(false);
+        setIsMapReady(true);
+      } catch (error) {
+        console.error('Error initializing map:', error);
+      }
+    };
+
+    initializeMap();
+  }, []);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      Geolocation.getCurrentPosition(
+        async (position) => {
+          console.log(position);
+          await LocationHistoryApi.updateLocation(position.coords.latitude, position.coords.longitude);
+        },
+        (error) => {
+          console.log('Error getting location: ', error);
+        },
+        {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000}
+      );
+    }, 180000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchMap();
+    }, [])
+  );
 
   const addToInvitedList = (id: number) => {
     setInvitedBuddies(prevList => {
@@ -192,14 +288,25 @@ const LocationGroupScreen = ({
     });
   };
 
+  const handleNavigateToMemberLocation = (item: TMember) => {
+    console.log(item.user.fullName);
+    const location = memberLocations.filter((value) => value.user?.id === item.user.id).at(0);
+    if (!location?.longitude || !location?.latitude) {
+      sheetRef.current.close();
+      return;
+    }
+    setSelectedMemberLocation(location);
+    sheetRef.current.close();
+  };
+
   const handleSendInviation = async () => {
     let body: TInviteGroup = {
       id: groupID,
       groupType: groupType,
       userIds: invitedBuddies,
-      groupName: "",
-      groupDescription: "",
-    }
+      groupName: '',
+      groupDescription: '',
+    };
 
     if (invitedBuddies.length === 0) {
       const options: ToastOptions = {
@@ -224,34 +331,68 @@ const LocationGroupScreen = ({
       toast(options);
     }
     catch (error) {
-      console.log("err: ", error)
+      console.log('err: ', error);
     }
-  }
+  };
+
+  const centerCoordinate = useMemo(() => {
+    if (
+      selectedMemberLocation &&
+      selectedMemberLocation.longitude !== undefined &&
+      selectedMemberLocation.latitude !== undefined
+    ) {
+      return [selectedMemberLocation.longitude, selectedMemberLocation.latitude];
+    }
+    return [10.769505599915275, 106.66807324372434];
+  }, [selectedMemberLocation]);
 
   return (
     <>
       <View className="flex flex-1 h-full w-full">
-        {/* Place maps area*/}
-        <View>
-          <Image
-            source={require('../assets/images/map.png')}
-            style={{ width: '100%', height: '100%', overflow: 'hidden' }}
-          />
+        <View style={{ flex: 1 }}>
+        {isMapReady ? (
+          <MapView
+            style={{ flex: 1 }}
+            zoomEnabled={true}
+            styleURL="mapbox://styles/mapbox/outdoors-v12"
+            rotateEnabled={true}
+            attributionEnabled={true}
+            logoEnabled={true}
+          >
+            {!loading && (
+              <Camera
+                zoomLevel={15}
+                centerCoordinate={centerCoordinate}
+                animationMode={'flyTo'}
+                animationDuration={1000}
+              />
+            )}
+            {!loading && (
+              <>
+                {renderMarkers({
+                  isShown: showMembers,
+                  type: 'User',
+                  data: memberLocations,
+                })}
+                {renderMarkers({
+                  isShown: showPosts,
+                  type: 'Post',
+                  data: groupPosts,
+                })}
+                {renderMarkers({
+                  isShown: true,
+                  type: 'Destination',
+                  data: memorableDestinations,
+                })}
+              </>
+            )}
+          </MapView>
+        ) : (
+          <View className="flex flex-1 justify-center items-center">
+            <ActivityIndicator size="large" color="#2C7CC1" />
+          </View>
+        )}
         </View>
-        <View className="absolute top-[300px] left-20">
-          <UserMarker item={userMarkers[0]} />
-        </View>
-        <View className="absolute top-[400px] left-[270px]">
-          <UserMarker item={userMarkers[1]} />
-        </View>
-        <View className="absolute top-[600px] left-[40px]">
-          <PostMarker item={postMarkers[0]} />
-        </View>
-        <View className="absolute top-[450px] left-[10px]">
-          <PostMarker item={postMarkers[1]} />
-        </View>
-
-        {/* Place maps area*/}
         <TouchableOpacity
           onPress={() => navigation.pop()}
           className="absolute left-3 top-3 bg-backButton w-[33px] h-[33px] rounded-full items-center justify-center">
@@ -407,7 +548,7 @@ const LocationGroupScreen = ({
                 <FlatList
                   data={groupMembers}
                   keyExtractor={(item, index) => index.toString()}
-                  renderItem={({ item }) => <GroupMember item={item} />}
+                  renderItem={({ item }) => <GroupMember item={item} onNavigate={() => handleNavigateToMemberLocation(item)}/>}
                   showsHorizontalScrollIndicator={false}
                 />
               </>
@@ -452,7 +593,7 @@ const LocationGroupScreen = ({
                 <FlatList
                   data={groupMembers.slice(0, 3)}
                   keyExtractor={(item, index) => index.toString()}
-                  renderItem={({ item }) => <GroupMember item={item} />}
+                  renderItem={({ item }) => <GroupMember item={item} onNavigate={() => handleNavigateToMemberLocation(item)}/>}
                   showsHorizontalScrollIndicator={false}
                 />
                 <TouchableOpacity onPress={() => setIsSeeAll('groupMembers')}>

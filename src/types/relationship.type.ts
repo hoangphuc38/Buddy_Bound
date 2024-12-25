@@ -2,7 +2,7 @@ import { TUser } from './user.type';
 
 export type TUserRelationship = {
     searchText?: string,
-    isPending?: string,
+    isPending?: boolean,
     type: string
 }
 
@@ -14,7 +14,7 @@ export type TRelationship = {
     senderRole: string,
     receiverRole: string,
     createdAt: string,
-    updatedAt: string,
+    updatedAt: string
 }
 
 export type TNewRelationship = {

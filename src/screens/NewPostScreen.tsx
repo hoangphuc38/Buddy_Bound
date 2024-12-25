@@ -189,7 +189,7 @@ const NewPostScreen = ({
       <Header
         title="New post"
         onBack={() => navigation.pop()}
-        primaryText='Post'
+        primaryText="Post"
         onPrimaryAction={handleNewPost}
       />
       <View className="flex flex-1 mt-6">
@@ -209,7 +209,7 @@ const NewPostScreen = ({
           </View>
         </View>
 
-        <View className='px-4'>
+        <View className="px-4">
           {!isImage ? (
             <View className="rounded-lg py-8 items-center justify-center" style={{ borderStyle: 'dashed', borderRadius: 1, borderWidth: 1 }}>
               <View className="bg-gray-100 p-4 rounded-full">

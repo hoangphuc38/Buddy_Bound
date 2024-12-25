@@ -11,9 +11,14 @@ import SearchBar from 'react-native-dynamic-search-bar';
 import Header from '../components/Header';
 import { TBuddy, TFamily } from '../types/group.type';
 import { GroupApi } from '../api/group.api';
+import { TSetting } from '../types/setting.type';
+import { UserApi } from '../api/user.api';
+import useWebSocketConnection from '../hooks/useWebsocket';
+import { TLocation } from '../types/location.type';
 import { useFocusEffect } from '@react-navigation/native';
 
 const HomeScreen = ({ navigation }: TabsScreenProps) => {
+  // const [settings, setSettings] = useState<TSetting>({locationEnabled: true, locationHistoryEnabled: true, contactEnabled: true});
   const [allBuddy, setAllBuddy] = useState<boolean>(false);
   const [allGroup, setAllGroup] = useState<boolean>(false);
   const [buddies, setBuddies] = useState<TBuddy[]>([]);

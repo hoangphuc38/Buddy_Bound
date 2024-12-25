@@ -6,4 +6,11 @@ export type TAlbum = {
     title: string,
     user: TUser,
     posts: TPost[],
+    createdAt: string
+}
+
+export type TCreateAlbum = {
+    id?: number,
+    postIdList: number[],
+    title: string
 }

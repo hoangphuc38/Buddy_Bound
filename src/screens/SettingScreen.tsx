@@ -12,7 +12,6 @@ import { useAuth } from '../contexts/auth-context';
 
 const SettingScreen = ({ navigation }: TabsScreenProps) => {
   const { signOut } = useAuth();
-
   const items: ISettingItem[] = [
     {
       Icon: Shield,

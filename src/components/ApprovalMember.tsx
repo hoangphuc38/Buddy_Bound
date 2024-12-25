@@ -5,7 +5,7 @@ interface IApprovalMember {
   item: TMember;
 }
 
-const ApprovalMember = ({ item }: IApprovalMember) => {
+const ApprovalMember = ({ item, handlePress }: IApprovalMember) => {
   return (
     <TouchableOpacity className="flex flex-row items-center justify-between mb-4 gap-[20px]">
       <View className="flex flex-row items-center">
