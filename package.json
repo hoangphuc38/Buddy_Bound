@@ -47,7 +47,8 @@
     "react-native-screens": "^4.3.0",
     "react-native-svg": "^15.10.1",
     "react-native-svg-transformer": "^1.5.0",
-    "sockjs-client": "^1.6.1"
+    "sockjs-client": "^1.6.1",
+    "stompjs": "^2.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

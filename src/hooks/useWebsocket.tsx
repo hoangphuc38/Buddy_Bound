@@ -1,12 +1,13 @@
+import { useState, useEffect } from 'react';
 import SockJS from 'sockjs-client';
 import { Client, Frame, Message } from '@stomp/stompjs';
-import { useState, useEffect } from 'react';
 import { TLocation } from '../types/location.type';
 import { TNotification } from '../types/notification.type';
 import { TMessage } from '../types/message.type';
 
 interface WebSocketHookResult {
   connected: boolean;
+  connecting: boolean;
   error: string | null;
   sendMessage: (destination: string, message: unknown) => void;
   stompClient: Client | null;
@@ -29,7 +30,6 @@ interface WebSocketConfig {
 export const BASE_WS = 'https://buddybound-app-790723374073.asia-southeast1.run.app/ws';
 
 const useWebSocketConnection = ({
-  serverUrl = BASE_WS,
   onMessageReceived,
   onLocationReceived,
   onNotificationReceived,
@@ -40,11 +40,15 @@ const useWebSocketConnection = ({
 }: WebSocketConfig): WebSocketHookResult => {
   const [stompClient, setStompClient] = useState<Client | null>(null);
   const [connected, setConnected] = useState<boolean>(false);
+  const [connecting, setConnecting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    setConnecting(true); // Set connecting to true when starting the connection
+
     const client = new Client({
-      webSocketFactory: () => new SockJS(serverUrl),
+      brokerURL: 'ws://buddybound-app-790723374073.asia-southeast1.run.app/ws',
+      webSocketFactory: () => new SockJS(BASE_WS),
       debug: (str) => {
         if (debug) {
           console.log('STOMP: ' + str);
@@ -56,23 +60,27 @@ const useWebSocketConnection = ({
     });
 
     client.onConnect = (frame: Frame) => {
+      setConnecting(false); // Connection established
       setConnected(true);
       setError(null);
       console.log('Connected:', frame);
     };
 
     client.onStompError = (frame: Frame) => {
+      setConnecting(false); // Stop connecting on error
       const errorMessage = frame.headers?.message || 'Unknown STOMP error';
       setError(errorMessage);
       console.error('STOMP error:', frame);
     };
 
     client.onWebSocketError = (event: Event) => {
+      setConnecting(false); // Stop connecting on error
       setError('WebSocket connection error');
       console.error('WebSocket error:', event);
     };
 
     client.onDisconnect = () => {
+      setConnecting(false); // Stop connecting if disconnected
       setConnected(false);
       console.log('Disconnected');
     };
@@ -85,7 +93,7 @@ const useWebSocketConnection = ({
         client.deactivate();
       }
     };
-  }, [serverUrl, debug, reconnectDelay, heartbeatIncoming, heartbeatOutgoing]);
+  }, [debug, reconnectDelay, heartbeatIncoming, heartbeatOutgoing]);
 
   const subscribeToGroup = (groupId: number) => {
     if (stompClient && connected && onMessageReceived) {
@@ -130,6 +138,7 @@ const useWebSocketConnection = ({
 
   return {
     connected,
+    connecting,
     error,
     sendMessage,
     stompClient,

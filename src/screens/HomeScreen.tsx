@@ -13,6 +13,8 @@ import { TBuddy, TFamily } from '../types/group.type';
 import { GroupApi } from '../api/group.api';
 import { TSetting } from '../types/setting.type';
 import { UserApi } from '../api/user.api';
+import useWebSocketConnection from '../hooks/useWebsocket';
+import { TLocation } from '../types/location.type';
 
 const HomeScreen = ({ navigation }: TabsScreenProps) => {
   // const [settings, setSettings] = useState<TSetting>({locationEnabled: true, locationHistoryEnabled: true, contactEnabled: true});

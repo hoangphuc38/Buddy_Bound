@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from 'react';
 import { TUser } from '../types/user.type';
-import { getData } from '../helpers/asyncStorage';
+import { getData, storeData } from '../helpers/asyncStorage';
 
 export type UserContextType = {
     user?: TUser;
@@ -12,8 +12,13 @@ export const UserContext = createContext<UserContextType>({ setUser: () => {}});
 export const UserProvider = ({ children }) => {
     const [user, setUser] = useState<TUser | null>(null);
 
-    const handleSetUser = (item: TUser) => {
-        setUser(item);
+    const handleSetUser = async (item: TUser) => {
+        try {
+            await storeData({ value: item, item: 'user' });
+            setUser(item);
+        } catch (error) {
+            console.error('Error storing token:', error);
+        }
     };
 
     useEffect(() => {

@@ -5,6 +5,10 @@ import React from 'react';
 export class BaseMarker implements MarkerComponent {
     constructor(private coordinate: BuddyBoundCoordinate) {}
 
+    getCoordinate(): BuddyBoundCoordinate {
+        return this.coordinate;
+    }
+
     render(): JSX.Element {
         return (
             <MarkerView

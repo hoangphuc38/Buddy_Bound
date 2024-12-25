@@ -58,6 +58,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const signOut = async () => {
     try {
       await removeData({ item: 'token' });
+      await removeData({ item: 'user'});
       setToken(null);
       setUser(null);
       httpClient.setAccessToken('');

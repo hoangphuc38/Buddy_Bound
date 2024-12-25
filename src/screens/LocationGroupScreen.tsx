@@ -24,7 +24,7 @@ import {
   faPlus,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { NewspaperIcon } from 'react-native-heroicons/solid';
 import BottomSheet, { BottomSheetMethods } from '@devvie/bottom-sheet';
 import GroupMember from '../components/GroupMember';
@@ -43,7 +43,6 @@ import Mapbox, { Camera, MapView, MarkerView } from '@rnmapbox/maps';
 import { LocationHistoryApi } from '../api/location-history.api';
 import { TLocation } from '../types/location.type';
 import Geolocation from '@react-native-community/geolocation';
-import { TimeFormatter } from '../helpers';
 import { TPost } from '../types/post.type';
 import { TMemorablePlace } from '../types/location-history.type';
 import { PostApi } from '../api/post.api';
@@ -51,7 +50,10 @@ import { MemorablePlaceApi } from '../api/memorablePlace.api';
 import useWebSocketConnection from '../hooks/useWebsocket';
 import { renderMarkers } from '../pattern/decorator';
 import { UserContext } from '../contexts/user-context';
+import Config from 'react-native-config';
 
+
+Mapbox.setAccessToken(Config.MAPBOX_PB_TOKEN || 'pk.eyJ1IjoicGh1bGUyMzMzIiwiYSI6ImNtMHpna2l1azA1dDIya3B1bXRzMm5jcXMifQ.PPE8QVyyUoOSOXfwSg33hA');
 const LocationGroupScreen = ({
   route,
   navigation,
@@ -92,9 +94,6 @@ const LocationGroupScreen = ({
       console.log('Location received for group:', groupId, location);
     },
     debug: true,
-    reconnectDelay: 5000,
-    heartbeatIncoming: 4000,
-    heartbeatOutgoing: 4000,
   });
 
   const fetchMap = async () => {
@@ -289,6 +288,17 @@ const LocationGroupScreen = ({
     });
   };
 
+  const handleNavigateToMemberLocation = (item: TMember) => {
+    console.log(item.user.fullName);
+    const location = memberLocations.filter((value) => value.user?.id === item.user.id).at(0);
+    if (!location?.longitude || !location?.latitude) {
+      sheetRef.current.close();
+      return;
+    }
+    setSelectedMemberLocation(location);
+    sheetRef.current.close();
+  };
+
   const handleSendInviation = async () => {
     let body: TInviteGroup = {
       id: groupID,
@@ -314,6 +324,17 @@ const LocationGroupScreen = ({
     }
   };
 
+  const centerCoordinate = useMemo(() => {
+    if (
+      selectedMemberLocation &&
+      selectedMemberLocation.longitude !== undefined &&
+      selectedMemberLocation.latitude !== undefined
+    ) {
+      return [selectedMemberLocation.longitude, selectedMemberLocation.latitude];
+    }
+    return [10.769505599915275, 106.66807324372434];
+  }, [selectedMemberLocation]);
+
   return (
     <>
       <View className="flex flex-1 h-full w-full">
@@ -327,16 +348,14 @@ const LocationGroupScreen = ({
             attributionEnabled={true}
             logoEnabled={true}
           >
-            <Camera
-              zoomLevel={15}
-              centerCoordinate={
-                selectedMemberLocation
-                  ? [selectedMemberLocation.longitude, selectedMemberLocation.latitude]
-                  : [10.769505599915275, 106.66807324372434]
-              }
-              animationMode={'flyTo'}
-              animationDuration={6000}
-            />
+            {!loading && (
+              <Camera
+                zoomLevel={15}
+                centerCoordinate={centerCoordinate}
+                animationMode={'flyTo'}
+                animationDuration={1000}
+              />
+            )}
             {!loading && (
               <>
                 {renderMarkers({
@@ -350,7 +369,7 @@ const LocationGroupScreen = ({
                   data: groupPosts,
                 })}
                 {renderMarkers({
-                  isShown: showMemorableDestinations,
+                  isShown: true,
                   type: 'Destination',
                   data: memorableDestinations,
                 })}
@@ -506,7 +525,7 @@ const LocationGroupScreen = ({
                 <FlatList
                   data={groupMembers}
                   keyExtractor={(item, index) => index.toString()}
-                  renderItem={({ item }) => <GroupMember item={item} />}
+                  renderItem={({ item }) => <GroupMember item={item} onNavigate={() => handleNavigateToMemberLocation(item)}/>}
                   showsHorizontalScrollIndicator={false}
                 />
                 <TouchableOpacity
@@ -563,7 +582,7 @@ const LocationGroupScreen = ({
                 <FlatList
                   data={groupMembers.slice(0, 3)}
                   keyExtractor={(item, index) => index.toString()}
-                  renderItem={({ item }) => <GroupMember item={item} />}
+                  renderItem={({ item }) => <GroupMember item={item} onNavigate={() => handleNavigateToMemberLocation(item)}/>}
                   showsHorizontalScrollIndicator={false}
                 />
                 <TouchableOpacity onPress={() => setIsSeeAll('groupMembers')}>
