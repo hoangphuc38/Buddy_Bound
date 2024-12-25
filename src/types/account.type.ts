@@ -1,29 +1,38 @@
-import { TRole } from './role.type';
-import { TUser } from './user.type';
+import {TRole} from './role.type';
+import {TUser} from './user.type';
 
 export type TLoginPost = {
-    email: string,
-    password: string
-}
+  email: string;
+  password: string;
+};
 
 export type TAuth = {
-    account: TAccount,
-    access_token: string,
-    refresh_token: string
-}
+  account: TAccount;
+  access_token: string;
+  refresh_token: string;
+};
 
 export type TSignUp = {
-    email: string,
-    password: string,
-    fullName: string,
-    gender: boolean,
-    phoneNumber: string,
-    birthday: string
-}
+  email: string;
+  password: string;
+  fullName: string;
+  gender: boolean;
+  phoneNumber: string;
+  birthday: string;
+};
 
 export type TAccount = {
-    id: number,
-    email: string,
-    user: TUser,
-    role: TRole
-}
+  id: number;
+  email: string;
+  user: TUser;
+  role: TRole;
+};
+
+export type TEmail = {
+  email: string;
+};
+
+export type TVerify = {
+  code: string;
+  email: string;
+};

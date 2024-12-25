@@ -5,10 +5,15 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import {ForgetPassScreenProps} from '../types/navigator.type';
 import {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
+
+import {AuthApi} from '../api/auth.api';
+import {faL} from '@fortawesome/free-solid-svg-icons';
 
 const back = require('../assets/images/back-vector.png');
 const nextIcon = require('../assets/images/next-icon.png');
@@ -18,11 +23,89 @@ const checkIcon = require('../assets/images/check-icon.png');
 const ForgetPassScreen = ({navigation}: ForgetPassScreenProps) => {
   // State để quản lý bước hiện tại
   const [currentStep, setCurrentStep] = useState(1);
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [param, setParam] = useState('');
+  const [keyboardType, setKeyboardType] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const [password, setPassword] = useState('');
+  const [confirmPass, setConfirmPass] = useState('');
+
+  // Hàm kiểm tra email hợp lệ
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
   // Hàm chuyển bước
-  const handleNext = () => {
-    if (currentStep < 3) {
-      setCurrentStep(currentStep + 1);
+  const handleNext = async () => {
+    if (currentStep === 1) {
+      if (!validateEmail(email)) {
+        setEmailError('Invalid email format');
+        return;
+      } else {
+        try {
+          setLoading(true);
+          const response = await AuthApi.forgetPass({
+            email: email as string,
+          });
+          setParam(email);
+          setEmail('');
+          setKeyboardType('numeric');
+          setLoading(false);
+          setCurrentStep(currentStep + 1);
+        } catch (error) {
+          Alert.alert('failed');
+        }
+        setEmailError('');
+      }
+    } else if (currentStep === 2) {
+      if (email === '' || !email) {
+        setEmailError('Please type OTP');
+      } else {
+        try {
+          setLoading(true);
+          const response = await AuthApi.verifyCode({
+            code: email as string,
+            email: param as string,
+          });
+          setKeyboardType('');
+          setEmail('');
+          setLoading(false);
+          setCurrentStep(currentStep + 1);
+        } catch (error) {
+          Alert.alert('failed');
+          setLoading(false);
+        }
+        setEmailError('');
+      }
+    } else if (currentStep === 3) {
+      if (!password || !confirmPass) {
+        setEmailError('Please fill all needed information');
+      }
+      else {
+        if (confirmPass !== password)
+        {
+          setEmailError('Password did not match')
+        }
+        else {
+          try {
+            setLoading(true);
+            const response = await AuthApi.changePass({
+              email: param as string,
+              password: password as string,
+            });
+            setKeyboardType('');
+            setEmail('');
+            setLoading(false);
+          } catch (error) {
+            Alert.alert('failed');
+            setLoading(false);
+          }
+          setEmailError('');
+        }
+      }
     }
   };
 
@@ -61,74 +144,121 @@ const ForgetPassScreen = ({navigation}: ForgetPassScreenProps) => {
   const currentData = steps[currentStep - 1];
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView className="flex-1 bg-[#FEFDFD]">
       <TouchableOpacity
-        style={styles.backBtnBackground}
+        className="h-[35] w-[35] bg-[#2C7CC133] rounded-full mt-[40] absolute left-[25] items-center justify-center"
         onPress={() => navigation.pop()}>
-        <Image source={back} style={styles.backVector} />
+        <Image source={back} className="h-[17] w-[10]" />
       </TouchableOpacity>
-      <View style={styles.content}>
+      <View className="mt-[40] w-full items-center justify-center">
         {/* tiêu đề */}
-        <Text style={{fontSize: 24, fontWeight: 600, color: '#2C7CC1'}}>
+        <Text className="text-[#2C7CC1] font-interBold" style={{fontSize: 24}}>
           {currentData.title}
         </Text>
         {/* ảnh */}
-        <View style={styles.imgContainer}>
-          <Image style={styles.img} source={currentData.image} />
+        <View className="w-[175] h-[175] mt-[10]">
+          <Image
+            className="w-full h-full"
+            resizeMode="contain"
+            source={currentData.image}
+          />
         </View>
         {/* nhập liệu */}
-        <View style={styles.form}>
+        <View className="w-full px-[36]">
           {currentStep === 3 ? (
             <>
-              <View style={styles.textInput}>
+              <View
+                className={`${emailError === '' ? 'bg-[#2C7CC133]' : 'bg-[#fdb5b5]'} px-[20] rounded-lg flex-row items-center`}>
                 <TextInput
                   placeholder={currentData.placeholder}
-                  placeholderTextColor="#2C7CC1"
+                  placeholderTextColor={emailError === '' ? '#2C7CC1' : '#FE5C5C'}
                   multiline={false}
-                  style={styles.inputStyle}
+                  secureTextEntry
+                  value={password}
+                  onChangeText={e => setPassword(e)}
+                  className={`font-interBold h-[50] text-sm flex-1  ${
+                    emailError === '' ? 'text-[#2C7CC1]' : 'text-[#FE5C5C]'
+                  }`}
                 />
               </View>
-              <View style={styles.textInput}>
+              <View className={`${emailError === '' ? 'bg-[#2C7CC133]' : 'bg-[#fdb5b5]'} px-[20] rounded-lg flex-row items-center mt-2`}>
                 <TextInput
                   placeholder={currentData.placeholderConfirm}
-                  placeholderTextColor="#2C7CC1"
+                  placeholderTextColor={emailError === '' ? '#2C7CC1' : '#FE5C5C'}
                   multiline={false}
-                  style={styles.inputStyle}
+                  secureTextEntry
+                  value={confirmPass}
+                  onChangeText={e => setConfirmPass(e)}
+                  className={`font-interBold h-[50] text-sm flex-1  ${
+                    emailError === '' ? 'text-[#2C7CC1]' : 'text-[#FE5C5C]'
+                  }`}
                 />
               </View>
             </>
           ) : (
-            <View style={styles.textInput}>
+            <View
+              className={`px-[20] rounded-lg flex-row items-center ${
+                emailError === '' ? 'bg-[#2C7CC133]' : 'bg-[#fdb5b5]'
+              }`}>
               <TextInput
                 placeholder={currentData.placeholder}
-                placeholderTextColor="#2C7CC1"
+                placeholderTextColor={emailError === '' ? '#2C7CC1' : '#FE5C5C'}
                 multiline={false}
-                style={styles.inputStyle}
+                className={`font-interBold h-[50] text-sm flex-1  ${
+                  emailError === '' ? 'text-[#2C7CC1]' : 'text-[#FE5C5C]'
+                }`}
+                value={email}
+                keyboardType={keyboardType}
+                onChangeText={e => setEmail(e)}
               />
             </View>
           )}
+          {emailError && (
+            <Text className=" text-red-500 mt-[5]">{emailError}</Text>
+          )}
           {/* nút chuyển bước */}
-          <View style={styles.btnContainer}>
+          <View
+            className="mt-[10] justify-between flex-row w-full items-center"
+            style={{gap: 8}}>
             {currentData.showPrevious && (
-              <TouchableOpacity style={styles.btnPrev} onPress={handlePrevious}>
-                <View style={styles.btnContent}>
-                  <View style={{height: 14, width: 15}}>
-                    <Image source={preIcon} style={styles.img} />
+              <TouchableOpacity
+                className="flex-1 rounded-3xl justify-center items-center bg-[#125B9A]"
+                onPress={handlePrevious}>
+                <View
+                  style={{gap: 5}}
+                  className="py-[15] flex-row justify-center items-center">
+                  <View className="h-[14] w-[15]">
+                    <Image
+                      source={preIcon}
+                      resizeMode="contain"
+                      className="w-full h-full"
+                    />
                   </View>
-                  <Text style={styles.btnText}>Previous</Text>
+                  <Text className="text-white font-interBold text-base">
+                    Previous
+                  </Text>
                 </View>
               </TouchableOpacity>
             )}
-            <TouchableOpacity style={styles.btnNext} onPress={handleNext}>
-              <View style={styles.btnContent}>
-                <Text style={styles.btnText}>
+            <TouchableOpacity
+              className="flex-1 rounded-3xl justify-center items-center bg-[#125B9A]"
+              onPress={handleNext}>
+              <View
+                style={{gap: 5}}
+                className="py-[15] flex-row justify-center items-center">
+                <Text className="text-white font-interBold text-base">
                   {currentData.showDone ? 'Done' : 'Next'}
                 </Text>
-                <View style={{height: 14, width: 15}}>
-                  <Image
-                    source={currentData.showDone ? checkIcon : nextIcon}
-                    style={styles.img}
-                  />
+                <View className="h-[14] w-[15]">
+                  {!loading ? (
+                    <Image
+                      source={currentData.showDone ? checkIcon : nextIcon}
+                      resizeMode="contain"
+                      className="w-full h-full"
+                    />
+                  ) : (
+                    <ActivityIndicator size={'small'} color={'#fff'} />
+                  )}
                 </View>
               </View>
             </TouchableOpacity>
@@ -136,18 +266,15 @@ const ForgetPassScreen = ({navigation}: ForgetPassScreenProps) => {
         </View>
       </View>
       <View
+        className="flex-row absolute bottom-[20] self-center"
         style={{
-          flexDirection: 'row',
           gap: 5,
-          position: 'absolute',
-          bottom: 50,
-          alignSelf: 'center',
         }}>
-        <Text style={{color: 'rgba(0, 0, 0, 0.6)', fontWeight: 500}}>
+        <Text className="text-[#00000099] font-interMedium">
           Don't have account?
         </Text>
         <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-          <Text style={{color: '#2C7CC1', fontWeight: 700}}>Sign Up</Text>
+          <Text className="font-interBold text-[#2C7CC1]">Sign Up</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -155,89 +282,3 @@ const ForgetPassScreen = ({navigation}: ForgetPassScreenProps) => {
 };
 
 export default ForgetPassScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FEFDFD',
-  },
-  backBtnBackground: {
-    height: 35,
-    width: 35,
-    backgroundColor: 'rgba(44, 124, 193, 0.2)',
-    borderRadius: '50%',
-    marginTop: 70,
-    position: 'absolute',
-    left: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  img: {
-    height: '100%',
-    width: '100%',
-    resizeMode: 'contain',
-  },
-  backVector: {
-    height: 17,
-    width: 10,
-  },
-  content: {
-    marginTop: 70,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-  },
-  imgContainer: {
-    marginTop: 10,
-    height: 195,
-    width: 195,
-  },
-  textInput: {
-    backgroundColor: 'rgba(44, 124, 193, 0.2)',
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  form: {
-    width: '100%',
-    paddingHorizontal: 36,
-    gap: 8,
-  },
-  btnNext: {
-    backgroundColor: '#125B9A',
-    borderRadius: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-  },
-  btnPrev: {
-    flex: 1,
-    backgroundColor: '#125B9A',
-    borderRadius: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  btnContainer: {
-    marginTop: 10,
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    width: '100%',
-    alignItems: 'center',
-    gap: 10,
-  },
-  inputStyle: {
-    fontSize: 14,
-    fontWeight: 600,
-    color: '#2C7CC1',
-    height: 50,
-  },
-  btnText: {color: '#fff', fontSize: 16, fontWeight: '600'},
-  btnContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 5,
-    paddingVertical: 15,
-  },
-});

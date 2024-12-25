@@ -53,7 +53,7 @@ const CreateAccInfoScreen = ({
           birthday: dateOfBirth as string,
         });
         Alert.alert('success');
-        navigation.push('LogIn')
+        navigation.push('AddContact');
       } catch (error) {
         Alert.alert('failed');
       }

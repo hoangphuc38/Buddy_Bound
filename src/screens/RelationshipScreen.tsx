@@ -126,10 +126,11 @@ const RelationshipScreen = ({navigation}: TabsScreenProps) => {
 
   const renderItem = ({item}: {item: (typeof mockData)[0]}) => (
     <TouchableOpacity className="w-full rounded-lg px-[13] py-[9] justify-between items-center flex-row">
-      <View className="items-center flex-row gap-[10]">
+      <View className="items-center flex-row" style={{gap: 10}}>
         <Image
           source={{uri: item.avt}}
-          className="w-[55] h-[55] border-[#2C7CC1] rounded-full" />
+          className="w-[55] h-[55] border-[#2C7CC1] rounded-full"
+        />
         <View>
           <Text className="font-interBold">{item.name}</Text>
           <Text className="">{item.phone}</Text>
@@ -143,10 +144,7 @@ const RelationshipScreen = ({navigation}: TabsScreenProps) => {
     <View className=" flex-1 pl-5 pr-5 flex items-center">
       <View className=" w-full mt-3 justify-between items-center flex-row">
         <TouchableOpacity className="w-[25] h-[25]" onPress={toggleSideBar}>
-          <Image
-            source={menu}
-            className="w-full h-full"
-            resizeMode="contain" />
+          <Image source={menu} className="w-full h-full" resizeMode="contain" />
         </TouchableOpacity>
         <Text className="font-interBold text-2xl font-bold text-[#2C7CC1]">
           Relationship
@@ -157,7 +155,8 @@ const RelationshipScreen = ({navigation}: TabsScreenProps) => {
           <Image
             source={addUserGroup}
             className="w-[15] h-[15]"
-            resizeMode="contain" />
+            resizeMode="contain"
+          />
         </TouchableOpacity>
       </View>
       {/* family and friend tag */}
@@ -197,7 +196,8 @@ const RelationshipScreen = ({navigation}: TabsScreenProps) => {
             data={friendData}
             keyExtractor={item => item.id.toString()}
             renderItem={renderItem}
-            showsVerticalScrollIndicator={false} />
+            showsVerticalScrollIndicator={false}
+          />
         </View>
       ) : (
         <View className="mt-[20] w-full">
@@ -205,7 +205,8 @@ const RelationshipScreen = ({navigation}: TabsScreenProps) => {
             data={familyData}
             keyExtractor={item => item.id.toString()}
             renderItem={renderItem}
-            showsVerticalScrollIndicator={false} />
+            showsVerticalScrollIndicator={false}
+          />
         </View>
       )}
       <SideBar
