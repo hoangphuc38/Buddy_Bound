@@ -10,12 +10,13 @@ import { TimeFormatter } from '../helpers';
 
 interface NotificationItemProps {
     item: TNotification
+    onPress: () => void
 }
 
 const NotificationItem = (data: NotificationItemProps) => {
     const { sender, message, isRead, notificationType, createdAt } = data.item;
     const getCorrectIcon = (type: 'COMMENT' | 'RELATIONSHIP_REQUEST' | 'GROUP_POST' | 'GROUP_INVITATION') => {
-        switch(type) {
+        switch (type) {
             case 'COMMENT':
                 return <Comment width={20} height={20} />;
             case 'GROUP_INVITATION':
@@ -27,14 +28,15 @@ const NotificationItem = (data: NotificationItemProps) => {
         }
     };
     return (
-        <TouchableOpacity className="flex justify-center py-1 px-2">
+        <TouchableOpacity onPress={data.onPress}
+            className="flex justify-center py-1 px-2">
             <View className="flex flex-row justify-between">
                 <View className="flex flex-row space-x-2">
                     <View className="h-[60px] w-[60px] flex items-center justify-top">
                         <View className="relative h-full w-full flex items-center">
                             <Image
-                                source={{uri: sender.avatar}}
-                                style={{height: 50, width: 50, borderRadius: 30}}
+                                source={{ uri: sender.avatar }}
+                                style={{ height: 50, width: 50, borderRadius: 30 }}
                             />
                             <View className="p-[5px] bg-primary rounded-full absolute bottom-0 right-0">
                                 {getCorrectIcon(notificationType)}
@@ -43,7 +45,7 @@ const NotificationItem = (data: NotificationItemProps) => {
                     </View>
                     <View className={'max-w-[270px]'}>
                         <Text className={`${isRead && 'text-gray-400'} text-interRegular break-word leading-5 max-w-[100%]`}>
-                            { message }
+                            {message}
                         </Text>
                         <Text className={`${!isRead ? 'text-primary font-interMedium' : 'text-gray-500 font-interRegular'} text-[13px]`}>{TimeFormatter.format(createdAt)}</Text>
                     </View>

@@ -29,6 +29,8 @@ import HistoryLocation from '../screens/HistoryLocation';
 import ChatScreen from '../screens/ChatScreen';
 import { useAuth } from '../contexts/auth-context';
 import AddAlbum from '../screens/AddAlbum';
+import RelationshipRequestScreen from '../screens/RelationshipRequestScreen';
+import LimitedPeopleScreen from '../screens/LimitedPeopleScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -57,30 +59,32 @@ const Navigator = () => {
   }
   return (
     <NavigationContainer theme={theme}>
-      <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
         {token !== null ?
           <>
-        <Stack.Screen name="Tabs" component={Tabs} />
-        <Stack.Screen name="NewRelationship" component={NewRelationshipScreen}/>
-        <Stack.Screen name="SetNewRelationship" component={SetNewRelationshipScreen}/>
-        <Stack.Screen name="LocationBuddy" component={LocationBuddyScreen} />
-        <Stack.Screen name="LocationGroup" component={LocationGroupScreen} />
-        <Stack.Screen name="NewPost" component={NewPostScreen} />
-        <Stack.Screen name="PostOfGroup" component={PostOfGroupScreen} />
-        <Stack.Screen name="LocationHistoryScreen" component={HistoryLocation} />
-        <Stack.Screen name="PermissionScreen" component={PermissionsScreen} />
-        <Stack.Screen name="NewGroupScreen" component={NewGroupScreen} />
-        <Stack.Screen name="AlbumStorageScreen" component={AlbumStorage} />
-        <Stack.Screen name="AlbumDetailsScreen" component={AlbumDetailsScreen} />
-        <Stack.Screen name="ChatScreen" component={ChatScreen} />
-        <Stack.Screen name="PostDetail" component={PostDetailScreen} options={{
-            gestureEnabled: true,
-            gestureDirection: 'vertical',
-            animation: 'slide_from_bottom',
-          }}/>
-        <Stack.Screen name="MemorablePlaces" component={MemorablePlaceScreen} />
-        <Stack.Screen name="NewMemorable" component={NewMemorablePlaceScreen} />
-        <Stack.Screen name="AddAlbum" component={AddAlbum} />
+            <Stack.Screen name="Tabs" component={Tabs} />
+            <Stack.Screen name="NewRelationship" component={NewRelationshipScreen} />
+            <Stack.Screen name="SetNewRelationship" component={SetNewRelationshipScreen} />
+            <Stack.Screen name="LocationBuddy" component={LocationBuddyScreen} />
+            <Stack.Screen name="LocationGroup" component={LocationGroupScreen} />
+            <Stack.Screen name="NewPost" component={NewPostScreen} />
+            <Stack.Screen name="PostOfGroup" component={PostOfGroupScreen} />
+            <Stack.Screen name="LocationHistoryScreen" component={HistoryLocation} />
+            <Stack.Screen name="PermissionScreen" component={PermissionsScreen} />
+            <Stack.Screen name="NewGroupScreen" component={NewGroupScreen} />
+            <Stack.Screen name="AlbumStorageScreen" component={AlbumStorage} />
+            <Stack.Screen name="AlbumDetailsScreen" component={AlbumDetailsScreen} />
+            <Stack.Screen name="ChatScreen" component={ChatScreen} />
+            <Stack.Screen name="PostDetail" component={PostDetailScreen} options={{
+              gestureEnabled: true,
+              gestureDirection: 'vertical',
+              animation: 'slide_from_bottom',
+            }} />
+            <Stack.Screen name="MemorablePlaces" component={MemorablePlaceScreen} />
+            <Stack.Screen name="NewMemorable" component={NewMemorablePlaceScreen} />
+            <Stack.Screen name="AddAlbum" component={AddAlbum} />
+            <Stack.Screen name='RelationshipRequest' component={RelationshipRequestScreen} />
+            <Stack.Screen name='LimitedPeople' component={LimitedPeopleScreen} />
           </>
           :
           <>

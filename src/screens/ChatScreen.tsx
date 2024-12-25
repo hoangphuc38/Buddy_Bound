@@ -1,122 +1,171 @@
-import React, { useState } from 'react';
-import { FlatList, Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import AngleLeft from '../assets/icons/angle-left.svg';
-import Map from '../assets/icons/map.svg';
-import { useInput } from '../hooks/useInput';
+import React, { useEffect, useState } from 'react';
+import { FlatList, Image, Keyboard, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import { ChatScreenProps } from '../types/navigator.type';
+import Message from '../components/Message';
 import Send from '../assets/icons/send.svg';
+import ChatHeader from '../components/ChatHeader';
+import { TMessage, TSendMessage } from '../types/message.type';
+import { MessageApi } from '../api/message.api';
+import { Asset } from 'react-native-image-picker';
+import { useInput } from '../hooks/useInput';
+import { XMarkIcon } from 'react-native-heroicons/outline';
+import { TCreateImage } from '../types/image.type';
+import useWebSocketConnection from '../hooks/useWebsocket';
 
-const items: number[] = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17];
+const ChatScreen = ({ navigation, route }: ChatScreenProps) => {
+    const { groupId, user } = route.params;
 
-const ChatScreen = ({ navigation }: ChatScreenProps) => {
-    const handleBack = () => {
-        navigation.pop();
-    };
-    return (
-        <View className="flex flex-col h-full relative">
-            <ChatHeader back={handleBack} />
-            <FlatList
-                    className="top-[90px] mx-4 w-full"
-                    data={items}
-                    renderItem={(item: number) => (
-                        <Message  />
-                      )}
-                    keyExtractor={(item) => item}
-                />
-            <MessageInput />
-        </View>
-    );
-};
+    const [messages, setMessages] = useState<TMessage[]>([]);
+    const [imageList, setImageList] = useState<Asset[]>([]);
+    const [text, setText] = useState<string>("");
+    const [isFocused, setIsFocused] = useState(false);
 
-const MessageInput = () => {
     const {
         value: messageValue,
         handleInputChange: handleMessageChange,
         setEnteredValue: setMessageValue,
         hasError: messageHasError,
-      } = useInput({
-          defaultValue: '',
-          validationFn: (emailText) => emailText !== '' && emailText !== undefined && emailText?.length > 0,
-      });
+    } = useInput({
+        defaultValue: '',
+        validationFn: (emailText) => emailText !== '' && emailText !== undefined && emailText?.length > 0,
+    });
+
+    const handleNewMessage = (groupId: number, message: TMessage) => {
+        setMessages(prevMessages => [...prevMessages, message]);
+    };
+
+    const { connected, subscribeToGroup } = useWebSocketConnection({
+        onMessageReceived: handleNewMessage,
+        debug: true,
+    });
+
+    // Kết nối WebSocket khi component mount
+    useEffect(() => {
+        if (connected) {
+            subscribeToGroup(groupId);
+        }
+    }, [connected, groupId]);
+
+    useEffect(() => {
+        const fetchAPI = async () => {
+            try {
+                const { data } = await MessageApi.getAll(0, 20, groupId);
+                console.log("message: ", data);
+                setMessages(data);
+            }
+            catch (err) {
+                console.log("MessageErr: ", err);
+            }
+        }
+
+        fetchAPI();
+    }, [])
+
+    const handleBack = () => {
+        navigation.pop();
+    };
+
+    const handleRemoveImage = (fileName: string | undefined) => {
+        setImageList(prev =>
+            prev.filter((item, index) => item.fileName !== fileName),
+        );
+    };
+
+    const handleSendMessage = async () => {
+        Keyboard.dismiss();
+
+        if ((!messageValue || messageValue.trim() === "") && (!imageList || imageList.length === 0)) {
+            return;
+        }
+
+        const stringDto: TSendMessage = {
+            groupId: groupId,
+            content: messageValue
+        }
+
+        const images: TCreateImage[] = imageList ? imageList.map(item => ({
+            uri: item.uri,
+            name: item.fileName,
+            type: item.type,
+        })) : [];
+
+        console.log("CheckImage: ", images);
+
+        try {
+            const { data } = await MessageApi.send(stringDto, images);
+
+            setMessages(prevMessages => [...prevMessages, data]);
+
+            setMessageValue('');
+            setImageList([]);
+        }
+        catch (err) {
+            console.log("SendErr: ", err);
+        }
+    }
 
     return (
-        <View className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3">
-            <View className="flex flex-row items-center space-x-3">
-                <TextInput
-                    className="flex-1 bg-gray-100 rounded-full px-4 py-2 font-interLight"
-                    placeholder="Type a message..."
-                    value={messageValue}
-                    onChange={handleMessageChange}
-                    multiline
-                />
-                <TouchableOpacity
-                    className="bg-blue-500 w-10 h-10 rounded-full items-center justify-center"
-                    onPress={() => {
-                        // Handle send message
-                        setMessageValue('');
-                    }}
-                >
-                    <Send width={20} height={20} />
-                </TouchableOpacity>
-            </View>
-        </View>
-    );
-};
+        <View className="flex flex-col h-full relative">
+            <ChatHeader back={handleBack} item={user} />
+            <FlatList
+                className="top-[90px] px-4 w-full"
+                data={messages}
+                renderItem={({ item }) => (
+                    <Message message={item} idSender={1} />
+                )}
+                keyExtractor={(item) => item.id.toString()}
+                contentContainerStyle={{ paddingBottom: 170 }}
+            />
 
-interface ChatHeaderProps {
-    back: () => void
-}
-
-const ChatHeader = ({ back }: ChatHeaderProps) => {
-    return (
-        <View className="overflow-hidden pb-5 absolute top-0 right-0 left-0">
-            <View className="w-full px-4 py-2 h-[90px] flex flex-row justify-between items-center border-b border-slate-200">
-                <View className="flex flex-row space-x-4 items-center">
-                    <TouchableOpacity onPress={back} className="p-2 items-center justify-center bg-blue-200 rounded-full">
-                        <AngleLeft width={17} height={17} />
-                    </TouchableOpacity>
-                    <View className="flex flex-row items-center space-x-2">
-                        <Image
-                            className="h-[55px] w-[55px] rounded-full"
-                            source={{uri: 'https://i.guim.co.uk/img/media/67944850a1b5ebd6a0fba9e3528d448ebe360c60/359_0_2469_1482/master/2469.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=03f3e07a7f367f36a738f1ad8132b3bb'}}
+            <TouchableWithoutFeedback onPress={() => {
+                Keyboard.dismiss();
+                setIsFocused(false);
+            }}>
+                <View className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3">
+                    {imageList.length > 0 && (
+                        <FlatList
+                            data={imageList}
+                            horizontal
+                            keyExtractor={(item, index) => index.toString()}
+                            contentContainerStyle={{ paddingBottom: 10 }}
+                            renderItem={({ item }) => (
+                                <View className="relative mr-2">
+                                    <Image
+                                        source={{ uri: item.uri }}
+                                        className="w-16 h-16 rounded-lg"
+                                    />
+                                    <TouchableOpacity
+                                        onPress={() => handleRemoveImage(item.fileName)}
+                                        className="absolute top-0 right-0 p-1 bg-black/50 rounded-full"
+                                    >
+                                        <XMarkIcon size={16} color="white" />
+                                    </TouchableOpacity>
+                                </View>
+                            )}
                         />
-                        <View>
-                            <Text className="font-interBold text-[16px]">Andy</Text>
-                            <Text className="font-interLight text-[13px] text-gray-600">Acquaintance</Text>
-                        </View>
+                    )}
+                    <View className="flex flex-row items-center">
+                        <TextInput
+                            className="flex-1 bg-gray-100 rounded-full px-4 py-2 font-interLight mr-3"
+                            placeholder="Type a message..."
+                            placeholderTextColor="black"
+                            value={messageValue}
+                            onChange={handleMessageChange}
+                            multiline
+                            onFocus={() => setIsFocused(true)}
+                            onBlur={() => setIsFocused(false)}
+                        />
+
+                        <TouchableOpacity
+                            className="bg-blue-500 w-10 h-10 rounded-full items-center justify-center"
+                            onPress={() => handleSendMessage()}
+                        >
+                            <Send width={20} height={20} />
+                        </TouchableOpacity>
                     </View>
                 </View>
-                <TouchableOpacity>
-                    <Map width={40} height={40} />
-                </TouchableOpacity>
-            </View>
+            </TouchableWithoutFeedback>
         </View>
-    );
-};
-
-
-const Message = () => {
-    const [showTime, setShowTime] = useState<boolean>(false);
-    return (
-       <View className="flex flex-row space-x-3 my-1 w-full max-w-[70%]">
-            <View className="flex items-center justify-end">
-                <Image
-                    className="h-[40px] w-[40px] rounded-full"
-                    source={{uri: 'https://i.guim.co.uk/img/media/67944850a1b5ebd6a0fba9e3528d448ebe360c60/359_0_2469_1482/master/2469.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=03f3e07a7f367f36a738f1ad8132b3bb'}}
-                />
-            </View>
-            <View className="flex flex-col space-y-1 items-start">
-                <Text className="font-interLight text-[13px] ml-2">Hoàng Phúc</Text>
-                <View className="flex flex-row">
-                    <TouchableOpacity onPress={() => setShowTime(!showTime)} className="bg-[#D9D9D9] px-4 py-4 rounded-2xl">
-                        <Text className="font-interLight leading-5">Xin chao ban nha van de la nha minh co viec nen minh khong the sap xep di duoc</Text>
-                    </TouchableOpacity>
-                    <View className="flex justify-end items-end">
-                        {showTime && <Text className="font-interLight text-[12px] ml-2">4m</Text>}
-                    </View>
-                </View>
-            </View>
-       </View>
     );
 };
 
