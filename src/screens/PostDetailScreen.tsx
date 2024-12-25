@@ -6,10 +6,11 @@ import {
   Text,
   TouchableOpacity,
   View,
+  NativeSyntheticEvent,
+  TextInputChangeEventData,
 } from 'react-native';
 import { PostDetailProps, RootStackParamList } from '../types/navigator.type';
 import { RouteProp } from '@react-navigation/native';
-import mockData from '../mock/mockData';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { ChatBubbleOvalLeftEllipsisIcon } from 'react-native-heroicons/solid';
@@ -19,6 +20,9 @@ import CommentItem from '../components/CommentItem';
 import CommentInput from '../components/CommentInput';
 import { TPost } from '../types/post.type';
 import { PostApi } from '../api/post.api';
+import { TAddComment, TComment } from '../types/comment.type';
+import { CommentApi } from '../api/comment.api';
+import React from 'react';
 
 const { width, height } = Dimensions.get('window');
 
@@ -53,18 +57,20 @@ const PostDetailScreen = ({
   route,
   navigation,
 }: PostDetailProps & { route: RouteProp<RootStackParamList, 'PostDetail'> }) => {
-  const { comments } = mockData;
   const sheetRef = useRef<BottomSheetMethods>(null);
   const { postID } = route.params;
 
   const [detailPost, setDetailPost] = useState<TPost>(null);
+  const [comments, setComments] = useState<TComment[]>([]);
+  const [content, setContent] = useState<string>("");
 
   useEffect(() => {
     const fecthAPI = async () => {
       try {
         const { data } = await PostApi.getDetail(postID);
+        const { data: comment } = await CommentApi.getAllComment(postID);
+        setComments(comment);
         setDetailPost(data);
-        console.log("check: ", data.commentCount);
       }
       catch (error) {
         console.log("Err: ", error);
@@ -73,6 +79,37 @@ const PostDetailScreen = ({
 
     fecthAPI();
   }, [postID])
+
+  const handleOnChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
+    setContent(e.nativeEvent.text);
+  }
+
+  const handeAddComment = async () => {
+    let body: TAddComment = {
+      postId: postID,
+      content: content,
+    }
+    try {
+      const { data } = await CommentApi.commentPost(body);
+
+      setComments(prevComments => [...prevComments, data]);
+
+      setDetailPost(prevPost => ({
+        ...prevPost,
+        commentCount: (prevPost.commentCount || 0) + 1
+      }));
+
+      setContent("");
+    }
+    catch (error) {
+      console.log("err: ", error);
+    }
+  }
+
+  const handleOpenComment = () => {
+    console.log("check: ", sheetRef);
+    sheetRef.current.open();
+  }
 
   if (!detailPost) {
     return (
@@ -129,25 +166,24 @@ const PostDetailScreen = ({
                 {timeAgo(detailPost?.createdAt)}
               </Text>
             </View>
-            {/* <Text className="font-interLight text-white text-[9px]">
-              tại {detailPost.location}
-            </Text> */}
           </View>
         </View>
 
         <TouchableOpacity
-          onPress={() => sheetRef.current?.open()}
+          onPress={handleOpenComment}
           className="absolute left-3 bottom-2 flex-row gap-1 items-center justify-center">
-          <Text className="font-bold text-white text-title">
+          <Text className="font-interBold text-white text-title">
             {detailPost.commentCount ? detailPost.commentCount : 0}
           </Text>
-          <ChatBubbleOvalLeftEllipsisIcon size={18} color="white" />
+          <TouchableOpacity>
+            <ChatBubbleOvalLeftEllipsisIcon size={18} color="white" />
+          </TouchableOpacity>
         </TouchableOpacity>
         {
           detailPost.firstComment && <View className="absolute inset-x-0 bottom-3">
             <View className="flex">
               <Text className="font-interBold text-white text-[10px] text-center">
-                {detailPost.firstComment.content}
+                {detailPost.firstComment.member.user.fullName}
               </Text>
               <Text className="font-interRegular text-white text-[10px] text-center">
                 has recently commented this post
@@ -162,16 +198,33 @@ const PostDetailScreen = ({
         height="100%"
         style={{ backgroundColor: 'white' }}>
         <View className="h-full px-4 pb-[30px] bg-white">
-          <FlatList
-            data={comments}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => <CommentItem item={item} />}
-            showsHorizontalScrollIndicator={false}
-          />
+          {
+            comments.length > 0 ? (
+              <FlatList
+                data={comments}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => <CommentItem item={item} />}
+                showsHorizontalScrollIndicator={false}
+              />
+            ) : (
+              <Text className='text-center font-interRegular text-placeHolder'>Be the first one to comment this post</Text>
+            )
+          }
+
           <CommentInput
-            containerStyle={{ marginBottom: 20 }}
+            containerStyle={{
+              marginBottom: 20,
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              bottom: 30,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
             placeholder="Comment something ..."
-            onPress={text => console.log(text)}
+            value={content}
+            onChange={handleOnChange}
+            onPress={handeAddComment}
           />
         </View>
       </BottomSheet>

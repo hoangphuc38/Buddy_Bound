@@ -25,7 +25,7 @@ export type TFamily = {
 export type TGroup = {
     buddies: TBuddy[];
     families: TFamily[];
-    friends: [];
+    friends: TFamily[];
 }
 
 export type TInviteGroup = {
@@ -37,8 +37,8 @@ export type TInviteGroup = {
 }
 
 export type TCreateGroup = {
-    groupName: string,
-    groupDescription: string,
-    groupType: string,
-    userIds: number[]
+    groupName?: string;
+    groupDescription?: string;
+    userIds: number[];
+    groupType: "FAMILY" | "FRIEND" | "ONE_TO_ONE" | string
 }

@@ -1,5 +1,5 @@
-import { TImage } from './image.type';
-import { TMember } from './member.type';
+import { TImage } from "./image.type"
+import { TMember } from "./member.type"
 
 export type TMessage = {
     id: number,
@@ -8,5 +8,15 @@ export type TMessage = {
     content: string,
     images: TImage[],
     createdAt: string,
-    updatedAt: string
+    updatadAt: string,
+}
+
+export type TRequestMessage = {
+    page: number,
+    size: number,
+}
+
+export type TSendMessage = {
+    groupId: number,
+    content: string | undefined,
 }

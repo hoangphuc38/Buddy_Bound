@@ -18,7 +18,7 @@ const BuddyItem = ({ press, horizontal, item }: IBuddyItem) => {
           source={{ uri: item.userDto.avatar }}
           style={{ height: 60, width: 60, borderRadius: 30 }}
         />
-        <Text className="text-normal text-main">{item.userDto.fullName}</Text>
+        <Text className="font-interRegular text-normal text-main">{item.userDto.fullName}</Text>
       </TouchableOpacity>
     );
   } else {

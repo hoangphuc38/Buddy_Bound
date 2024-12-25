@@ -2,11 +2,11 @@ import { faCircleMinus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useState } from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
-import { TBuddy } from '../types/group.type';
+import { TMember } from '../types/member.type';
 
 interface ILimitedItem {
   press: () => void;
-  item: TBuddy;
+  item: TMember;
 }
 
 const LimitedItem = ({ item, press }: ILimitedItem) => {
@@ -28,10 +28,10 @@ const LimitedItem = ({ item, press }: ILimitedItem) => {
       </TouchableOpacity>
       <View className="flex flex-row items-center space-x-2">
         <Image
-          source={{ uri: item.userDto.avatar }}
+          source={{ uri: item.user.avatar }}
           style={{ height: 40, width: 40, borderRadius: 10 }}
         />
-        <Text className="text-medium text-main">{item.userDto.fullName}</Text>
+        <Text className="text-medium text-main">{item.user.fullName}</Text>
       </View>
     </View>
   );

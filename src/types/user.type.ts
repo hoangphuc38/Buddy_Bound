@@ -5,5 +5,6 @@ export type TUser = {
     fullName: string,
     avatar: string,
     gender: boolean,
-    birthday: string
+    birthday: string,
+    phoneNumber: string,
 }

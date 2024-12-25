@@ -32,14 +32,12 @@ import LimitedItem from '../components/LimitedItem';
 import { TBuddy } from '../types/group.type';
 import { GroupApi } from '../api/group.api';
 import { PostApi } from '../api/post.api';
-import { TCreatePost, TPost } from '../types/post.type';
+import { TCreatePost } from '../types/post.type';
 import { useInput } from '../hooks/useInput';
-import { Validator } from '../helpers/validator';
 import { TMember } from '../types/member.type';
 import GroupMember from '../components/GroupMember';
 import { toast, ToastOptions } from '@baronha/ting';
-import { TCreateImage } from '../types/image.type';
-import { useAuth } from '../contexts/auth-context';
+import React from 'react';
 
 const NewPostScreen = ({
   route,
@@ -277,7 +275,7 @@ const NewPostScreen = ({
             <FlatList
               data={groupMembers}
               keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => <GroupMember item={item} onPress={() => addToLimitList(item.user.id)} />}
+              renderItem={({ item }) => <LimitedItem item={item} press={() => addToLimitList(item.user.id)} />}
               showsHorizontalScrollIndicator={false}
             />
             <TouchableOpacity

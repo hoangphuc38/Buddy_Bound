@@ -60,21 +60,26 @@ const PostGroupItem = ({ press, item }: IPostGroupItem) => {
           colors={['rgba(0, 0, 0, 0.4)', 'rgba(0, 0, 0, 0.0)']}
           style={styles.gradient}
         />
-        <View className="absolute top-2 left-2 flex-row gap-2 items-center">
-          <Image
-            source={{ uri: item.member.user.avatar }}
-            style={{ width: 30, height: 30, borderRadius: 50, borderWidth: 2, borderColor: '#FF6600' }}
-          />
-          <View className="flex">
-            <View className="flex flex-row">
-              <Text className="font-interBold text-white text-[11px] mr-2">
-                {item.member.user.fullName}
-              </Text>
-              <Text className="font-interBold text-white text-[11px]">
-                {timeAgo(item.createdAt)}
-              </Text>
+        <View className="absolute top-2 left-2 right-2 flex-row items-center justify-between">
+          <View className='flex-row items-center space-x-2'>
+            <Image
+              source={{ uri: item.member.user.avatar }}
+              style={{ width: 30, height: 30, borderRadius: 50, borderWidth: 2, borderColor: '#FF6600' }}
+            />
+            <View className="flex">
+              <View className="flex flex-row">
+                <Text className="font-interBold text-white text-[11px] mr-2">
+                  {item.member.user.fullName}
+                </Text>
+                <Text className="font-interBold text-white text-[11px]">
+                  {timeAgo(item.createdAt)}
+                </Text>
+              </View>
             </View>
           </View>
+          <TouchableOpacity>
+            <Text className='text-white font-interBold text-[11px]'>See in map</Text>
+          </TouchableOpacity>
         </View>
       </ImageBackground>
     </TouchableOpacity>

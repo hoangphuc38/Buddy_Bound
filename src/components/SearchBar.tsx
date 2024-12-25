@@ -27,20 +27,20 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
   return (
     <View
-      className="flex-row items-center bg-backButton rounded-[10px] px-2"
+      className="flex-row items-center bg-gray-100 rounded-[10px] px-2 py-[2]"
       style={containerStyle}>
       <TextInput
         value={value}
         onChangeText={onSearch}
         placeholder={placeholder}
-        className="flex-1 mr-2 text-primary"
+        className="flex-1 mr-2 text-main"
         style={inputStyle}
         clearButtonMode="while-editing"
-        placeholderTextColor="#2C7CC1"
+        placeholderTextColor="black"
       />
 
       <TouchableOpacity onPress={() => onSearch}>
-        <FontAwesomeIcon icon={faMagnifyingGlass} size={20} color="#2C7CC1" />
+        <FontAwesomeIcon icon={faMagnifyingGlass} size={20} color="black" />
       </TouchableOpacity>
     </View>
   );
