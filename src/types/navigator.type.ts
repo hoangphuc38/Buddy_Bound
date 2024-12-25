@@ -22,6 +22,7 @@ export type RootStackParamList = {
   AlbumStorageScreen: undefined;
   AlbumDetailsScreen: { albumId: number };
   NewGroupScreen: undefined;
+  CreateAccInfo: {email: string, password: string};
   AddAlbum: { isEditMode: boolean, albumId?: number };
   ChatScreen: { groupId: number, user?: TBuddy };
   RelationshipRequest: { referenceId?: number }
@@ -96,6 +97,7 @@ export type AlbumDetailsScreenProps = NativeStackScreenProps<RootStackParamList,
 export type NewGroupScreenProps = NativeStackScreenProps<RootStackParamList, 'NewGroupScreen'>
 export type ChatScreenProps = NativeStackScreenProps<RootStackParamList, 'ChatScreen'>
 export type AddAlbumProps = NativeStackScreenProps<RootStackParamList, 'AddAlbum'>
+export type CreateAccInfoProps = NativeStackScreenProps<RootStackParamList, 'CreateAccInfo'>
 export type RelationshipRequestScreenProps = NativeStackScreenProps<RootStackParamList, 'RelationshipRequest'>
 export type LimitedPeopleScreenProps = NativeStackScreenProps<RootStackParamList, 'LimitedPeople'>
 //Continue when declare new screens

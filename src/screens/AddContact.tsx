@@ -7,74 +7,98 @@ import {
   Image,
   FlatList,
   Modal,
+  Platform,
+  PermissionsAndroid,
+  ActivityIndicator,
 } from 'react-native';
 import {AddContactScreenProps} from '../types/navigator.type';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Search from '../components/search';
+import Contacts from 'react-native-contacts';
+import {UserApi} from '../api/user.api';
+import {TUser} from '../types/user.type';
 
 const nextIcon = require('../assets/images/next-icon.png');
 
-const mockData = {
-  users: [
-    {
-      id: 1,
-      name: 'John Doe',
-      email: 'johndoe@example.com',
-      phone: '0961826917',
-      role: 'Parent',
-      location: {
-        latitude: 37.7749,
-        longitude: -122.4194,
-      },
-      profileImage: 'https://randomuser.me/api/portraits/men/1.jpg',
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      email: 'janesmith@example.com',
-      phone: '0905564414',
-      role: 'Child',
-      location: {
-        latitude: 34.0522,
-        longitude: -118.2437,
-      },
-      profileImage: 'https://randomuser.me/api/portraits/women/2.jpg',
-    },
-  ],
-  groups: [
-    {
-      id: 1,
-      name: 'Family Group',
-      type: 'Family',
-      members: [1, 2],
-      createdAt: '2024-11-01T12:00:00Z',
-    },
-  ],
-  notifications: [
-    {
-      id: 1,
-      title: 'SOS Alert',
-      message: 'Jane sent an SOS from 34.0522, -118.2437',
-      timestamp: '2024-11-25T14:00:00Z',
-      type: 'SOS',
-    },
-  ],
-  safeZones: [
-    {
-      id: 1,
-      name: 'Home',
-      radius: 500, // in meters
-      center: {
-        latitude: 37.7749,
-        longitude: -122.4194,
-      },
-      createdBy: 1,
-    },
-  ],
-};
-
 const AddContactScreen = ({navigation}: AddContactScreenProps) => {
+  const [loading, setLoading] = useState(false);
+
+  const [phoneNumbers, setPhoneNumbers] = useState([]);
+
+  const [users, setUsers] = useState<TUser[]>([]);
+
+  const [recommendUsers, setRecommendUsers] = useState<TUser[]>([]);
+
+  //Lấy số điện thoại
+  const requestContactsPermission = async () => {
+    if (Platform.OS === 'android') {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
+        {
+          title: 'Contacts Permission',
+          message: 'This app would like to access your contacts.',
+          buttonPositive: 'Please accept',
+        },
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    } else {
+      // iOS permissions are handled automatically
+      return true;
+    }
+  };
+
+  const fetchContacts = async () => {
+    const permissionGranted = await requestContactsPermission();
+    if (permissionGranted) {
+      Contacts.getAll()
+        .then(contacts => {
+          const numbers = contacts
+            .filter(contact => contact.phoneNumbers.length > 0)
+            .map(contact => {
+              // Lấy số điện thoại đầu tiên và loại bỏ khoảng trắng
+              let number = contact.phoneNumbers[0].number.replace(/\s+/g, ''); // Loại bỏ khoảng trắng
+              // Chuyển đổi +84 thành 0
+              if (number.startsWith('+84')) {
+                number = '0' + number.slice(3); // Thay thế +84 bằng 0
+              }
+              return number;
+            });
+          setPhoneNumbers(numbers);
+        })
+        .catch(error => {
+          console.error('Error fetching contacts:', error);
+        });
+    } else {
+      console.log('Contacts permission denied');
+    }
+  };
+
+  const fetchAllUsers = async () => {
+    try {
+      setLoading(true);
+      const {data} = await UserApi.getUsers('');
+      const filteredUsers = data.filter(user =>
+        phoneNumbers.includes(user.phoneNumber),
+      );
+      setRecommendUsers(filteredUsers);
+      setLoading(false);
+    } catch (error) {
+      console.log('Cannot get users');
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchContacts();
+  }, []);
+
+  useEffect(() => {
+    if (phoneNumbers.length > 0) {
+      fetchAllUsers();
+    }
+  }, [phoneNumbers]); // Gọi fetchAllUsers khi phoneNumbers thay đổi
+
   const [addedUsers, setAddedUsers] = useState<number[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState<
@@ -110,17 +134,17 @@ const AddContactScreen = ({navigation}: AddContactScreenProps) => {
     setModalVisible(false);
   };
 
-  const Item = ({item}: {item: (typeof mockData.users)[0]}) => {
+  const Item = ({item}) => {
     const isAdded = addedUsers.includes(item.id);
     return (
       <View style={styles.userItem}>
         <View style={{flexDirection: 'row', gap: 5}}>
           <View style={styles.avtContainer}>
-            <Image source={{uri: item.profileImage}} style={styles.img} />
+            <Image source={{uri: item.avatar}} style={styles.img} />
           </View>
           <View style={styles.userInfo}>
-            <Text style={styles.userName}>{item.name}</Text>
-            <Text style={styles.userPhone}>{item.phone}</Text>
+            <Text style={styles.userName}>{item.fullName}</Text>
+            <Text style={styles.userPhone}>{item.phoneNumber}</Text>
           </View>
         </View>
         <TouchableOpacity
@@ -149,12 +173,19 @@ const AddContactScreen = ({navigation}: AddContactScreenProps) => {
           </Text>
         </View>
         <Search placeholder="Search..." onSearch={handleSearch} />
-        <FlatList
-          data={mockData.users}
-          renderItem={Item}
-          keyExtractor={item => item.id.toString()}
-          style={styles.userList}
-        />
+        {loading ? (
+          <ActivityIndicator
+            className="mt-2"
+            size={'small'}
+            color={'#2C7CC1'}></ActivityIndicator>
+        ) : (
+          <FlatList
+            data={recommendUsers}
+            renderItem={Item}
+            keyExtractor={item => item.id.toString()}
+            style={styles.userList}
+          />
+        )}
       </View>
       <View style={styles.continueBtn}>
         <TouchableOpacity style={styles.btnNext}>
@@ -191,7 +222,8 @@ const AddContactScreen = ({navigation}: AddContactScreenProps) => {
                         backgroundColor:
                           relationship === 'Friend' ? '#125B9A' : '#d9d9d9',
                       },
-                    ]} />
+                    ]}
+                  />
                   <Text
                     style={[
                       styles.radioLabel,
@@ -216,7 +248,8 @@ const AddContactScreen = ({navigation}: AddContactScreenProps) => {
                             ? '#125B9A'
                             : '#d9d9d9',
                       },
-                    ]} />
+                    ]}
+                  />
                   <Text
                     style={[
                       styles.radioLabel,
@@ -242,7 +275,8 @@ const AddContactScreen = ({navigation}: AddContactScreenProps) => {
                             ? '#125B9A'
                             : '#d9d9d9',
                       },
-                    ]} />
+                    ]}
+                  />
                   <Text style={styles.radioLabel}>Family (Parent-Child)</Text>
                 </TouchableOpacity>
 
@@ -264,7 +298,8 @@ const AddContactScreen = ({navigation}: AddContactScreenProps) => {
                                   ? '#125B9A'
                                   : '#d9d9d9',
                             },
-                          ]} />
+                          ]}
+                        />
                         <Text
                           style={[
                             styles.radioLabel,
@@ -288,7 +323,8 @@ const AddContactScreen = ({navigation}: AddContactScreenProps) => {
                               backgroundColor:
                                 parentChild === 'Child' ? '#125B9A' : '#d9d9d9',
                             },
-                          ]} />
+                          ]}
+                        />
                         <Text
                           style={[
                             styles.radioLabel,

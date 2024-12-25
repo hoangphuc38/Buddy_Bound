@@ -106,10 +106,7 @@ const RelationshipScreen = ({ navigation }: TabsScreenProps) => {
     <View className=" flex-1 pl-5 pr-5 flex items-center">
       <View className=" w-full mt-3 justify-between items-center flex-row">
         <TouchableOpacity className="w-[25] h-[25]" onPress={toggleSideBar}>
-          <Image
-            source={menu}
-            className="w-full h-full"
-            resizeMode="contain" />
+          <Image source={menu} className="w-full h-full" resizeMode="contain" />
         </TouchableOpacity>
         <Text className="font-interBold text-2xl font-bold text-[#2C7CC1]">
           Relationship
@@ -120,7 +117,8 @@ const RelationshipScreen = ({ navigation }: TabsScreenProps) => {
           <Image
             source={addUserGroup}
             className="w-[15] h-[15]"
-            resizeMode="contain" />
+            resizeMode="contain"
+          />
         </TouchableOpacity>
       </View>
       {/* family and friend tag */}
@@ -163,7 +161,8 @@ const RelationshipScreen = ({ navigation }: TabsScreenProps) => {
             data={filteredData}
             keyExtractor={item => item.id.toString()}
             renderItem={renderItem}
-            showsVerticalScrollIndicator={false} />
+            showsVerticalScrollIndicator={false}
+          />
         </View>
       )}
       <SideBar

@@ -14,152 +14,196 @@ const register = require('../assets/images/register-icon.png');
 const back = require('../assets/images/back-vector.png');
 const email = require('../assets/images/email-icon.png');
 const pasword = require('../assets/images/lock-icon.png');
-const user = require('../assets/images/user-icon.png');
 const google = require('../assets/images/google-icon.png');
 
 const RegisterScreen = ({navigation}: RegisterScreenProps) => {
+  const [emailInput, setEmailInput] = useState('');
+  const [passwordInput, setPasswordInput] = useState('');
+  const [confirmPasswordInput, setConfirmPasswordInput] = useState('');
+
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
+
+  const handleSignUp = () => {
+    let valid = true;
+
+    // Reset errors
+    setEmailError('');
+    setPasswordError('');
+    setConfirmPasswordError('');
+
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailInput) {
+      setEmailError('Email is required');
+      valid = false;
+    } else if (!emailRegex.test(emailInput)) {
+      setEmailError('Invalid email format');
+      valid = false;
+    }
+
+    // Validate password
+    if (!passwordInput) {
+      setPasswordError('Password is required');
+      valid = false;
+    }
+
+    // Validate confirm password
+    if (!confirmPasswordInput) {
+      setConfirmPasswordError('Please confirm your password');
+      valid = false;
+    } else if (passwordInput && confirmPasswordInput !== passwordInput) {
+      setConfirmPasswordError('Passwords do not match');
+      valid = false;
+    }
+
+    if (valid) {
+      navigation.push('CreateAccInfo', {email: emailInput, password: passwordInput});
+    }
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView className="flex-1 bg-[#FEFDFD]">
       <TouchableOpacity
-        style={styles.backBtnBackground}
+        className="h-[35] w-[35] bg-[#2C7CC133] rounded-full mt-[70] relative left-[25] items-center justify-center"
         onPress={() => navigation.pop()}>
-        <Image source={back} style={styles.backVector} />
+        <Image source={back} className="h-[17] w-[10]" />
       </TouchableOpacity>
-      <View style={styles.contentContainer}>
-        <View
-          style={{
-            flexDirection: 'row',
-          }}>
+      <View className="mt-[20] items-center justify-center">
+        <View className="flex-row">
           <Text
+            className="text-[#2C7CC1] font-[600]"
             style={{
-              color: '#2C7CC1',
               fontSize: 35,
-              fontWeight: 600,
             }}>
             Register
           </Text>
-          <View style={{height: 50, width: 40}}>
-            <Image source={register} style={styles.img} />
+          <View className="h-[50] w-[40]">
+            <Image
+              source={register}
+              resizeMode="contain"
+              className="w-full h-full"
+            />
           </View>
         </View>
         {/* form đăng ký */}
-        <View style={styles.form}>
-          {/* username */}
-          <View style={styles.textInput}>
-            <View style={{height: 13, width: 13}}>
-              <Image source={user} style={styles.icon} />
-            </View>
-            <View style={styles.textInputContainer}>
-              <TextInput
-                placeholder="User name"
-                placeholderTextColor={'#2C7CC1'}
-                multiline={false}
-                style={{
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: '#2C7CC1',
-                  height: 50,
-                }}
+        <View className="mt-[40] px-[36] w-full">
+          {/* email */}
+          <View className="bg-[#2C7CC133] flex-row items-center px-[20] rounded-lg mb-[8]">
+            <View className="h-[13] w-[13]">
+              <Image
+                source={email}
+                resizeMode="contain"
+                className="h-full w-full"
               />
             </View>
-          </View>
-          {/* email */}
-          <View style={styles.textInput}>
-            <View style={{height: 13, width: 13}}>
-              <Image source={email} style={styles.icon} />
-            </View>
-            <View style={styles.textInputContainer}>
+            <View className="ml-[10] w-full">
               <TextInput
                 placeholder="Email"
                 placeholderTextColor={'#2C7CC1'}
+                value={emailInput}
+                onChangeText={setEmailInput}
                 multiline={false}
-                style={{
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: '#2C7CC1',
-                  height: 50,
-                }}
+                className="text-interBold font-[600] text-sm leading-[0] w-full text-[#2C7CC1] h-[50]"
               />
             </View>
           </View>
+          {emailError ? (
+            <Text className="text-[#FF0000] text-sm mt-[-5] mb-[8]">
+              {emailError}
+            </Text>
+          ) : null}
+
           {/* password */}
-          <View style={styles.textInput}>
-            <View style={{height: 13, width: 13}}>
-              <Image source={pasword} style={styles.icon} />
+          <View className="bg-[#2C7CC133] flex-row items-center px-[20] rounded-lg mb-[8]">
+            <View className="h-[13] w-[13]">
+              <Image
+                source={pasword}
+                resizeMode="contain"
+                className="h-full w-full"
+              />
             </View>
-            <View style={styles.textInputContainer}>
+            <View className="ml-[10] w-full">
               <TextInput
                 placeholder="Password"
                 placeholderTextColor={'#2C7CC1'}
                 secureTextEntry
+                value={passwordInput}
+                onChangeText={setPasswordInput}
                 multiline={false}
-                style={{
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: '#2C7CC1',
-                  height: 50,
-                }}
+                className="text-interBold font-[600] text-sm leading-[0] w-full text-[#2C7CC1] h-[50]"
               />
             </View>
           </View>
+          {passwordError ? (
+            <Text className="text-[#FF0000] text-sm mt-[-5] mb-[8]">
+              {passwordError}
+            </Text>
+          ) : null}
+
           {/* confirm pass */}
-          <View style={styles.textInput}>
-            <View style={{height: 13, width: 13}}>
-              <Image source={pasword} style={styles.icon} />
+          <View className="bg-[#2C7CC133] flex-row items-center px-[20] rounded-lg">
+            <View className="h-[13] w-[13]">
+              <Image
+                source={pasword}
+                resizeMode="contain"
+                className="h-full w-full"
+              />
             </View>
-            <View style={styles.textInputContainer}>
+            <View className="ml-[10] w-full">
               <TextInput
                 placeholder="Repeat your password"
                 placeholderTextColor={'#2C7CC1'}
                 secureTextEntry
+                value={confirmPasswordInput}
+                onChangeText={setConfirmPasswordInput}
                 multiline={false}
-                style={{
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: '#2C7CC1',
-                  height: 50,
-                }}
+                className="text-interBold font-[600] text-sm leading-[0] w-full text-[#2C7CC1] h-[50]"
               />
             </View>
           </View>
-          {/* nút signUP */}
-          <TouchableOpacity style={styles.btnSignUp}>
+          {confirmPasswordError ? (
+            <Text className="text-[#FF0000] text-sm mt-[3] mb-[8]">
+              {confirmPasswordError}
+            </Text>
+          ) : null}
+
+          <TouchableOpacity
+            className="w-full py-[15] bg-[#125B9A] mt-[30]"
+            style={{borderRadius: 30}}
+            onPress={handleSignUp}>
             <Text
+              className="text-center text-[#fff] font-interBold font-[700]"
               style={{
-                textAlign: 'center',
-                color: '#fff',
                 fontSize: 17,
-                fontWeight: 700,
               }}>
               Sign Up
             </Text>
           </TouchableOpacity>
+          {/* nút signUP */}
         </View>
         {/* continue with */}
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginTop: 60,
-          }}>
-          <View style={styles.dash} />
-          <Text style={{marginLeft: 5, marginRight: 5, fontWeight: 500}}>
-            Or Continue With
-          </Text>
-          <View style={styles.dash} />
+        <View className="flex-row items-center justify-center mt-[60]">
+          <View className="w-[80] h-[2] bg-[#00000080]" />
+          <Text className="ml-[5] mr-[5] font-[500]">Or Continue With</Text>
+          <View className="w-[80] h-[2] bg-[#00000080]" />
         </View>
         {/* google */}
-        <TouchableOpacity style={styles.googleSignInBtn}>
-          <Image source={google} style={styles.img} />
+        <TouchableOpacity className="mt-[20] w-[45] h-[45] border-[#d9d9d9] border-2 rounded-full p-[5]">
+          <Image
+            source={google}
+            className="w-full h-full"
+            resizeMode="contain"
+          />
         </TouchableOpacity>
         {/* login */}
-        <View style={{flexDirection: 'row', gap: 5, marginTop: 80}}>
-          <Text style={{color: 'rgba(0, 0, 0, 0.6)', fontWeight: 500}}>
+        <View className="flex-row gap-[5] mt-[80]">
+          <Text className="font-[500] text-[#00000099]">
             Already have an account?
           </Text>
           <TouchableOpacity>
-            <Text style={{color: '#2C7CC1', fontWeight: 700}}>Login</Text>
+            <Text className="text-[#2C7CC1] font-[700]">Login</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -168,77 +212,3 @@ const RegisterScreen = ({navigation}: RegisterScreenProps) => {
 };
 
 export default RegisterScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FEFDFD',
-  },
-  backBtnBackground: {
-    height: 35,
-    width: 35,
-    backgroundColor: 'rgba(44, 124, 193, 0.2)',
-    borderRadius: '50%',
-    marginTop: 70,
-    position: 'relative',
-    left: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  img: {
-    height: '100%',
-    width: '100%',
-    resizeMode: 'contain',
-  },
-  backVector: {
-    height: 17,
-    width: 10,
-  },
-  contentContainer: {
-    marginTop: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  form: {
-    marginTop: 40,
-    width: '100%',
-    paddingHorizontal: 36,
-    gap: 8,
-  },
-  textInput: {
-    backgroundColor: 'rgba(44, 124, 193, 0.2)',
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  icon: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'contain',
-  },
-  textInputContainer: {
-    marginLeft: 10,
-  },
-  btnSignUp: {
-    width: '100%',
-    paddingVertical: 15,
-    backgroundColor: '#125B9A',
-    borderRadius: 30,
-    marginTop: 20,
-  },
-  dash: {
-    width: 80,
-    height: 2,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  googleSignInBtn: {
-    marginTop: 20,
-    height: 45,
-    width: 45,
-    borderColor: '#d9d9d9',
-    borderWidth: 1.5,
-    borderRadius: '50%',
-    padding: 5,
-  },
-});
