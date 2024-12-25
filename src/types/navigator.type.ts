@@ -1,4 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { TBuddy } from './group.type';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -8,8 +9,8 @@ export type RootStackParamList = {
   ForgetPass: undefined;
   AddContact: undefined;
   NewRelationship: undefined;
-  SetNewRelationship: undefined;
-  LocationBuddy: { userID: number };
+  SetNewRelationship: { relationshipType: string, detailRelationship: string };
+  LocationBuddy: { userID: number, user?: TBuddy };
   LocationGroup: { groupID: number, groupType: string };
   NewPost: { groupID: number };
   PostOfGroup: { groupID: number };
@@ -19,11 +20,13 @@ export type RootStackParamList = {
   PermissionScreen: undefined;
   LocationHistoryScreen: undefined;
   AlbumStorageScreen: undefined;
-  AlbumDetailsScreen: undefined;
+  AlbumDetailsScreen: { albumId: number };
   NewGroupScreen: undefined;
-  ChatScreen: undefined;
-  AddAlbum: undefined;
   CreateAccInfo: {email: string, password: string};
+  AddAlbum: { isEditMode: boolean, albumId?: number };
+  ChatScreen: { groupId: number, user?: TBuddy };
+  RelationshipRequest: { referenceId?: number }
+  LimitedPeople: undefined;
   //Declare new screen with needed parameters
 };
 
@@ -95,6 +98,8 @@ export type NewGroupScreenProps = NativeStackScreenProps<RootStackParamList, 'Ne
 export type ChatScreenProps = NativeStackScreenProps<RootStackParamList, 'ChatScreen'>
 export type AddAlbumProps = NativeStackScreenProps<RootStackParamList, 'AddAlbum'>
 export type CreateAccInfoProps = NativeStackScreenProps<RootStackParamList, 'CreateAccInfo'>
+export type RelationshipRequestScreenProps = NativeStackScreenProps<RootStackParamList, 'RelationshipRequest'>
+export type LimitedPeopleScreenProps = NativeStackScreenProps<RootStackParamList, 'LimitedPeople'>
 //Continue when declare new screens
 
 export type BottomTabParamList = {

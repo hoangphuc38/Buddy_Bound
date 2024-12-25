@@ -1,19 +1,21 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Animated, Dimensions } from 'react-native';
 import { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 const { width } = Dimensions.get('window');
 
-const SideBar = ({ 
-  items, 
-  onItemPress, 
-  isVisible, 
-  onClose 
-}: { 
-  items: string[]; 
-  onItemPress: (item: string) => void; 
-  isVisible: boolean; 
-  onClose: () => void; 
+const SideBar = ({
+  items,
+  onItemPress,
+  isVisible,
+  onClose
+}: {
+  items: string[];
+  onItemPress: (item: string) => void;
+  isVisible: boolean;
+  onClose: () => void;
 }) => {
   const translateX = useState(new Animated.Value(-width))[0];
 
@@ -37,27 +39,23 @@ const SideBar = ({
   return (
     <Animated.View
       style={[{ width: width * 0.8, transform: [{ translateX }] }]}
-      className='z-10 absolute top-0 left-0 h-full bg-gray-800'>
+      className='z-10 absolute top-0 left-0 h-full bg-[#125B9A]'>
       <View className='flex-1 p-5'>
-        <Text className='text-white text-xl font-bold mb-5'>SideBar</Text>
-
+        <View className='flex-row w-full mb-3'>
+          <TouchableOpacity className='absolute right-0' onPress={onClose}>
+            <FontAwesomeIcon icon={faXmark} color='white' size={16} />
+          </TouchableOpacity>
+        </View>
         {items.map((item, index) => (
           <TouchableOpacity
             key={index}
             onPress={() => {
               onItemPress(item);
-              onClose();
             }}
-            className='mb-4 p-3 bg-gray-700 rounded'>
-            <Text className='text-white text-base'>{item}</Text>
+            className='mb-4 p-3'>
+            <Text className='text-white text-base font-interMedium'>{item}</Text>
           </TouchableOpacity>
         ))}
-
-        <TouchableOpacity
-          onPress={onClose}
-          className='mt-auto p-3 bg-red-600 rounded'>
-          <Text className='text-white text-center text-base'>Close</Text>
-        </TouchableOpacity>
       </View>
     </Animated.View>
   );

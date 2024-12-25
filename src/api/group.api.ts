@@ -1,5 +1,5 @@
 import http from '../helpers/axiosConfig';
-import { TGroup, TInviteGroup } from '../types/group.type';
+import { TCreateGroup, TGroup, TInviteGroup } from '../types/group.type';
 import { TMember } from '../types/member.type';
 import { TSuccessResponse } from '../types/response.type';
 
@@ -22,5 +22,14 @@ export class GroupApi {
     static async inviteGroup(body: TInviteGroup): Promise<TSuccessResponse<null>> {
         const response = await http.put('/group/invite', body);
         return response.data;
+    }
+
+    static async createGroup(body: TCreateGroup): Promise<TSuccessResponse<TGroup>> {
+<<<<<<< HEAD
+        return (await http.post('/group/create', body)).data;
+=======
+        const response = await http.post('/group/create', body);
+        return response.data;
+>>>>>>> 5916045b8b771512d6ebc403e71c1a3bfcbe660a
     }
 }

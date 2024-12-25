@@ -32,14 +32,12 @@ import LimitedItem from '../components/LimitedItem';
 import { TBuddy } from '../types/group.type';
 import { GroupApi } from '../api/group.api';
 import { PostApi } from '../api/post.api';
-import { TCreatePost, TPost } from '../types/post.type';
+import { TCreatePost } from '../types/post.type';
 import { useInput } from '../hooks/useInput';
-import { Validator } from '../helpers/validator';
 import { TMember } from '../types/member.type';
 import GroupMember from '../components/GroupMember';
 import { toast, ToastOptions } from '@baronha/ting';
-import { TCreateImage } from '../types/image.type';
-import { useAuth } from '../contexts/auth-context';
+import React from 'react';
 
 const NewPostScreen = ({
   route,
@@ -191,7 +189,8 @@ const NewPostScreen = ({
       <Header
         title="New post"
         onBack={() => navigation.pop()}
-        onPrimaryAction={() => { }}
+        primaryText="Post"
+        onPrimaryAction={handleNewPost}
       />
       <View className="flex flex-1 mt-6">
         <View className="flex flex-row space-x-2 px-4 mb-5">
@@ -210,7 +209,7 @@ const NewPostScreen = ({
           </View>
         </View>
 
-        <View className='px-4'>
+        <View className="px-4">
           {!isImage ? (
             <View className="rounded-lg py-8 items-center justify-center" style={{ borderStyle: 'dashed', borderRadius: 1, borderWidth: 1 }}>
               <View className="bg-gray-100 p-4 rounded-full">
@@ -251,16 +250,6 @@ const NewPostScreen = ({
           </View>
         </View>
 
-        {/* <View className="flex items-center gap-4">
-          <TouchableOpacity onPress={handleNewPost}
-            className="w-[80%] items-center py-[10px] bg-primary rounded-[10px]">
-            <Text className="text-white font-bold text-title">Save</Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="w-[80%] items-center py-[9px] bg-white rounded-[10px] border border-primary">
-            <Text className="text-primary font-bold text-title">Cancel</Text>
-          </TouchableOpacity>
-        </View> */}
-
         <Modal isOpen={openOption}>
           <View className="bg-white w-full px-4 py-8 rounded-xl">
             <TouchableOpacity
@@ -286,7 +275,7 @@ const NewPostScreen = ({
             <FlatList
               data={groupMembers}
               keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => <GroupMember item={item} onPress={() => addToLimitList(item.user.id)} />}
+              renderItem={({ item }) => <LimitedItem item={item} press={() => addToLimitList(item.user.id)} />}
               showsHorizontalScrollIndicator={false}
             />
             <TouchableOpacity

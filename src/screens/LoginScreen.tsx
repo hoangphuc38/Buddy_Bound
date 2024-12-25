@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   TextInput,
 } from 'react-native';
-import {useState} from 'react';
+import {useContext, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {LogInScreenProps} from '../types/navigator.type';
 import React from 'react';
@@ -15,6 +15,7 @@ import { ToastOptions, toast } from '@baronha/ting';
 import { useInput } from '../hooks/useInput';
 import { Validator } from '../helpers/validator';
 import { AuthApi } from '../api/auth.api';
+import { UserContext } from '../contexts/user-context';
 
 const backgroundImg = require('../assets/images/login-background.png');
 const email = require('../assets/images/email-icon.png');
@@ -23,6 +24,7 @@ const pasword = require('../assets/images/lock-icon.png');
 const LoginScreen = ({navigation}: LogInScreenProps) => {
   const [isChecked, setIsChecked] = useState(false);
   const { signIn } = useAuth();
+  const { setUser } = useContext(UserContext);
 
   const handleLogin = async () => {
     try {
@@ -36,6 +38,7 @@ const LoginScreen = ({navigation}: LogInScreenProps) => {
             setEmailValue('');
             setPasswordValue('');
             signIn(`Bearer ${refresh_token}`);
+            setUser(user);
 
             const options: ToastOptions = {
               title: 'Login',
@@ -46,7 +49,7 @@ const LoginScreen = ({navigation}: LogInScreenProps) => {
             toast(options);
         }
     } catch (error) {
-        console.error('Login failed:', error);
+        console.log('Login failed:', error);
     }
 };
 

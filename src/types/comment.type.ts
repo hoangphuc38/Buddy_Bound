@@ -7,3 +7,8 @@ export type TComment = {
     content: string,
     createdAt: string
 }
+
+export type TAddComment = {
+    postId: number,
+    content: string,
+}
