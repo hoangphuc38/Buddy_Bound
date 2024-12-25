@@ -59,6 +59,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       await removeData({ item: 'token' });
       setToken(null);
+      setUser(null);
       httpClient.setAccessToken('');
     } catch (error) {
       console.error('Error removing token:', error);

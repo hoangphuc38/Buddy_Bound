@@ -27,7 +27,11 @@ const PermissionsScreen = ({ navigation }: PermissionScreenProps) => {
 
   const handlePermissionChange = (key: keyof TSetting, value: boolean) => {
     if (!settings) {return;}
-    const updatedSettings = { ...settings, [key]: value };
+    const updatedSettings = {
+      ...settings,
+      [key]: value,
+      ...(key === 'locationEnabled' && !value && { locationHistoryEnabled: false }),
+    };
     setSettings(updatedSettings);
   };
 

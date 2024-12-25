@@ -10,16 +10,16 @@ interface WebSocketHookResult {
   error: string | null;
   sendMessage: (destination: string, message: unknown) => void;
   stompClient: Client | null;
-  subscribeToGroup: (groupId: string) => void;
-  subscribeToLocation: (groupId: string) => void;
-  subscribeToNotifications: (userId: string) => void;
+  subscribeToGroup: (groupId: number) => void;
+  subscribeToLocation: (groupId: number) => void;
+  subscribeToNotifications: (userId: number) => void;
 }
 
 interface WebSocketConfig {
   serverUrl?: string;
-  onMessageReceived?: (groupId: string, message: TMessage) => void;
-  onLocationReceived?: (groupId: string, location: TLocation) => void;
-  onNotificationReceived?: (userId: string, notification: TNotification) => void;
+  onMessageReceived?: (groupId: number, message: TMessage) => void;
+  onLocationReceived?: (groupId: number, location: TLocation) => void;
+  onNotificationReceived?: (userId: number, notification: TNotification) => void;
   debug?: boolean;
   reconnectDelay?: number;
   heartbeatIncoming?: number;
@@ -87,7 +87,7 @@ const useWebSocketConnection = ({
     };
   }, [serverUrl, debug, reconnectDelay, heartbeatIncoming, heartbeatOutgoing]);
 
-  const subscribeToGroup = (groupId: string) => {
+  const subscribeToGroup = (groupId: number) => {
     if (stompClient && connected && onMessageReceived) {
       const topic = `/topic/group/messages/${groupId}`;
       stompClient.subscribe(topic, (message: Message) => {
@@ -97,7 +97,7 @@ const useWebSocketConnection = ({
     }
   };
 
-  const subscribeToLocation = (groupId: string) => {
+  const subscribeToLocation = (groupId: number) => {
     if (stompClient && connected && onLocationReceived) {
       const topic = `/topic/group/location/${groupId}`;
       stompClient.subscribe(topic, (message: Message) => {
@@ -107,7 +107,7 @@ const useWebSocketConnection = ({
     }
   };
 
-  const subscribeToNotifications = (userId: string) => {
+  const subscribeToNotifications = (userId: number) => {
     if (stompClient && connected && onNotificationReceived) {
       const topic = `/topic/notification/users/${userId}`;
       stompClient.subscribe(topic, (message: Message) => {

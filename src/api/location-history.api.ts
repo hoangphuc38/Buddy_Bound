@@ -20,7 +20,7 @@ export class LocationHistoryApi {
         }));
     }
 
-    static async getMemberLocation(userId: number): Promise<TSuccessResponse<TLocation>> {
+    static async getMemberLocation(userId: number | null): Promise<TSuccessResponse<TLocation>> {
         return (await http.get(`/location/getUserLocation/${userId}`)).data;
     }
 }

@@ -8,7 +8,6 @@ import axios from 'axios';
 export class PostApi {
     static async getAll(groupId: number): Promise<TSuccessResponse<TPost[]>> {
         const response = await http.get(`/posts/get-all?groupId=${groupId}&isExpired=false`);
-        console.log(response.data);
         return response.data;
     }
 

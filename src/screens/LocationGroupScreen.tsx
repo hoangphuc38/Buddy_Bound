@@ -1,4 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
+  ActivityIndicator,
   Animated,
   FlatList,
   Image,
@@ -22,7 +24,7 @@ import {
   faPlus,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { NewspaperIcon } from 'react-native-heroicons/solid';
 import BottomSheet, { BottomSheetMethods } from '@devvie/bottom-sheet';
 import GroupMember from '../components/GroupMember';
@@ -46,6 +48,9 @@ import { TPost } from '../types/post.type';
 import { TMemorablePlace } from '../types/location-history.type';
 import { PostApi } from '../api/post.api';
 import { MemorablePlaceApi } from '../api/memorablePlace.api';
+import useWebSocketConnection from '../hooks/useWebsocket';
+import { renderMarkers } from '../pattern/decorator';
+import { UserContext } from '../contexts/user-context';
 
 const LocationGroupScreen = ({
   route,
@@ -53,6 +58,7 @@ const LocationGroupScreen = ({
 }: LocationGroupScreenProps & {
   route: RouteProp<RootStackParamList, 'LocationGroup'>;
 }) => {
+  const { user } = useContext(UserContext);
   const { groupID, groupType } = route.params;
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isSeeAll, setIsSeeAll] = useState<string | null>(null);
@@ -64,6 +70,7 @@ const LocationGroupScreen = ({
   const [showPosts, setShowPosts] = useState<boolean>(true);
   const [showMembers, setShowMembers] = useState<boolean>(true);
   const [showMemorableDestinations, setShowMemorableDestinations] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   //for map
   const [groupPosts, setGroupPosts] = useState<TPost[]>([]);
@@ -76,23 +83,40 @@ const LocationGroupScreen = ({
 
   const sheetRef = useRef<BottomSheetMethods>(null);
 
+  //websocket
+  const {
+    connected,
+    subscribeToLocation,
+  } = useWebSocketConnection({
+    onLocationReceived: (groupId: number, location: TLocation) => {
+      console.log('Location received for group:', groupId, location);
+    },
+    debug: true,
+    reconnectDelay: 5000,
+    heartbeatIncoming: 4000,
+    heartbeatOutgoing: 4000,
+  });
+
   const fetchMap = async () => {
     try {
-      const { data: posts } = await PostApi.getAll(groupID);
-      const { data: memorableList } = await MemorablePlaceApi.getAll();
-      const { data: locations } = await LocationHistoryApi.getUserLocations(groupID);
-      setGroupPosts(posts);
-      setMemberLocations(locations);
-      setMemorableDestinations(memorableList);
+      const [postsResponse, memorableResponse, locationsResponse, currentLocationResponse] =
+        await Promise.all([
+          PostApi.getAll(groupID),
+          MemorablePlaceApi.getAll(),
+          LocationHistoryApi.getUserLocations(groupID),
+          LocationHistoryApi.getMemberLocation(user?.id as number),
+        ]);
+
+      return {
+        posts: postsResponse.data,
+        locations: locationsResponse.data,
+        memorablePlaces: memorableResponse.data,
+        currentLocation: currentLocationResponse.data,
+      };
     } catch (error) {
-      console.log('err: ', error);
+      console.log('Error fetching map data:', error);
+      throw error;
     }
-  };
-
-  const renderMemberMarkers = async () => {
-    if (!showMembers) {return null;}
-
-    // return memberLocations.map();
   };
 
   const buttonAnimations = [
@@ -185,37 +209,40 @@ const LocationGroupScreen = ({
   }, [isSeeAll]);
 
   useEffect(() => {
-    const fetchAPI = async () => {
+    if (connected) {
+      subscribeToLocation(groupID);
+    }
+  }, [connected, groupID]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
       try {
-        const { data } = await GroupApi.getMembers(groupID);
-        const { data: approval } = await GroupApi.getWaitingApproval(groupID);
-        setGroupMembers(data);
-        setApprovalMembers(approval);
-      }
-      catch (error) {
-        console.log('err: ', error);
+        const [
+          membersResponse,
+          approvalResponse,
+          mapData,
+        ] = await Promise.all([
+          GroupApi.getMembers(groupID),
+          GroupApi.getWaitingApproval(groupID),
+          fetchMap(),
+        ]);
+
+        setSelectedMemberLocation(mapData.currentLocation);
+        setMemberLocations(mapData.locations);
+        setMemorableDestinations(mapData.memorablePlaces);
+        setGroupPosts(mapData.posts);
+        setGroupMembers(membersResponse.data);
+        setApprovalMembers(approvalResponse.data);
+      } catch (error) {
+        console.log('Error fetching data:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    const getAllRelationshipsByType = async () => {
-      try {
-        const { data } = await RelationshipApi.getRelationshipsByType({ type: groupType });
-        setAllRelatedUsers(data.map((value) => value.receiver));
-      }
-      catch (error) {
-        console.log('err: ', error);
-      }
-    };
-
-    fetchAPI();
-    getAllRelationshipsByType();
-  }, [groupID, groupType]);
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchMap();
-    }, [])
-  );
+    fetchData();
+  }, [groupID]);
 
   useEffect(() => {
     const initializeMap = async () => {
@@ -223,13 +250,18 @@ const LocationGroupScreen = ({
         await Mapbox.setTelemetryEnabled(false);
         setIsMapReady(true);
       } catch (error) {
-          console.error('Error initializing map:', error);
+        console.error('Error initializing map:', error);
       }
     };
+
     initializeMap();
+  }, []);
+
+  useEffect(() => {
     const intervalId = setInterval(() => {
       Geolocation.getCurrentPosition(
         async (position) => {
+          console.log(position);
           await LocationHistoryApi.updateLocation(position.coords.latitude, position.coords.longitude);
         },
         (error) => {
@@ -240,6 +272,12 @@ const LocationGroupScreen = ({
     }, 180000);
     return () => clearInterval(intervalId);
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchMap();
+    }, [])
+  );
 
   const addToInvitedList = (id: number) => {
     setInvitedBuddies(prevList => {
@@ -279,54 +317,52 @@ const LocationGroupScreen = ({
   return (
     <>
       <View className="flex flex-1 h-full w-full">
-        {/* Place maps area*/}
         <View style={{ flex: 1 }}>
-                <MapView
-                    style={{ flex: 1 }}
-                    zoomEnabled={true}
-                    styleURL="mapbox://styles/mapbox/outdoors-v12"
-                    rotateEnabled={true}
-                    attributionEnabled={true}
-                    logoEnabled={true}
-                >
-                    <Camera
-                        zoomLevel={15}
-                        centerCoordinate={
-                            memberLocations?.length
-                                ? [memberLocations[0].longitude, memberLocations[0].latitude]
-                                : [10.181667, 36.806389]
-                        }
-                        animationMode={'flyTo'}
-                        animationDuration={6000}
-                    />
-                    {memberLocations?.map((location) => (
-                        <MarkerView
-                        key={location.id.toString()}
-                        coordinate={[location.longitude, location.latitude]}
-                        anchor={{ x: 0.5, y: 0.5 }}
-                    >
-                        <View className="flex items-center justify-center space-y-1">
-                            <View className="px-6 py-2 flex flex-col items-center justify-center bg-white rounded-full">
-                              <Text className="font-interRegular">{location.user?.fullName}</Text>
-                              <Text className="text-[10px]">{TimeFormatter.format(location.timestamp)}</Text>
-                            </View>
-                            <Image
-                                source={{ uri: location.user && location.user.avatar }}
-                                style={{
-                                    width: 40,
-                                    height: 40,
-                                    borderRadius: 20,
-                                    borderWidth: 2,
-                                    borderColor: '#FF6600',
-                                }}
-                            />
-                        </View>
-                    </MarkerView>
-                    ))}
-                </MapView>
-            </View>
-
-        {/* Place maps area*/}
+        {isMapReady ? (
+          <MapView
+            style={{ flex: 1 }}
+            zoomEnabled={true}
+            styleURL="mapbox://styles/mapbox/outdoors-v12"
+            rotateEnabled={true}
+            attributionEnabled={true}
+            logoEnabled={true}
+          >
+            <Camera
+              zoomLevel={15}
+              centerCoordinate={
+                selectedMemberLocation
+                  ? [selectedMemberLocation.longitude, selectedMemberLocation.latitude]
+                  : [10.769505599915275, 106.66807324372434]
+              }
+              animationMode={'flyTo'}
+              animationDuration={6000}
+            />
+            {!loading && (
+              <>
+                {renderMarkers({
+                  isShown: showMembers,
+                  type: 'User',
+                  data: memberLocations,
+                })}
+                {renderMarkers({
+                  isShown: showPosts,
+                  type: 'Post',
+                  data: groupPosts,
+                })}
+                {renderMarkers({
+                  isShown: showMemorableDestinations,
+                  type: 'Destination',
+                  data: memorableDestinations,
+                })}
+              </>
+            )}
+          </MapView>
+        ) : (
+          <View className="flex flex-1 justify-center items-center">
+            <ActivityIndicator size="large" color="#2C7CC1" />
+          </View>
+        )}
+        </View>
         <TouchableOpacity
           onPress={() => navigation.pop()}
           className="absolute left-3 top-3 bg-backButton w-[33px] h-[33px] rounded-full items-center justify-center">

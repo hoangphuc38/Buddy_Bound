@@ -1,4 +1,4 @@
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, PermissionsAndroid, Text, TouchableOpacity, View } from 'react-native';
 import { TabsScreenProps } from '../types/navigator.type';
 import React, { useEffect, useState } from 'react';
 import BuddyItem from '../components/BuddyItem';
@@ -11,13 +11,48 @@ import SearchBar from '../components/SearchBar';
 import Header from '../components/Header';
 import { TBuddy, TFamily } from '../types/group.type';
 import { GroupApi } from '../api/group.api';
+import { TSetting } from '../types/setting.type';
+import { UserApi } from '../api/user.api';
 
 const HomeScreen = ({ navigation }: TabsScreenProps) => {
+  // const [settings, setSettings] = useState<TSetting>({locationEnabled: true, locationHistoryEnabled: true, contactEnabled: true});
   const [allBuddy, setAllBuddy] = useState<boolean>(false);
   const [allGroup, setAllGroup] = useState<boolean>(false);
   const [buddies, setBuddies] = useState<TBuddy[]>([]);
   const [groups, setGroups] = useState<TFamily[]>([]);
   const [searchText, setSearchText] = useState<string>('');
+
+  // const requestPermissions = async () => {
+  //   try {
+  //     const contactGranted = await PermissionsAndroid.request(
+  //       PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
+  //       {
+  //         title: 'Buddy Bound Contact Permission',
+  //         message: 'The app needs access to your Contact to help you connect your relatives or friends based on your contact.',
+  //         buttonNegative: 'Cancel',
+  //         buttonPositive: 'OK',
+  //       },
+  //     );
+
+  //     const locationGranted = await PermissionsAndroid.request(
+  //       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+  //       {
+  //         title: 'Buddy Bound Location Permission',
+  //         message: 'The app needs access to your Location to help you connect your relatives or friends on map.',
+  //         buttonNegative: 'Cancel',
+  //         buttonPositive: 'OK',
+  //       }
+  //     );
+
+  //     if (contactGranted === PermissionsAndroid.RESULTS.GRANTED) {
+  //       setSettings(...settings, {
+  //         contactEnabled: true,
+  //       });
+  //     }
+  //   } catch (error){
+  //     console.log('err: ', error);
+  //   }
+  // };
 
   useEffect(() => {
     const fetch = async () => {

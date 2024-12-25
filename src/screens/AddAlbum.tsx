@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Header from '../components/Header';
 import { AddAlbumProps, RootStackParamList } from '../types/navigator.type';
 import { ActivityIndicator, FlatList, Text, TextInput, View } from 'react-native';
@@ -10,6 +10,7 @@ import { AlbumApi } from '../api/album.api';
 import { TAlbum, TCreateAlbum } from '../types/album.type';
 import { toast, ToastOptions } from '@baronha/ting';
 import { RouteProp } from '@react-navigation/native';
+import { UserContext } from '../contexts/user-context';
 
 const AddAlbum = ({
     route,

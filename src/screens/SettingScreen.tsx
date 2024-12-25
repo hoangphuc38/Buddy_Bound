@@ -31,7 +31,7 @@ const SettingScreen = ({ navigation }: TabsScreenProps) => {
     {
       Icon: Location,
       text: 'Memorable destinations',
-      onClick: () => navigation.push('NewGroupScreen'),
+      onClick: () => navigation.push('MemorablePlaces'),
     },
   ];
   return (
