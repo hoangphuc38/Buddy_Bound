@@ -14,7 +14,6 @@ const NotificationScreen = ({ navigation }: TabsScreenProps) => {
     try {
       const { data } = await NotificationApi.getAll();
       setItems(data);
-      console.log("noti: ", data);
     }
     catch (err) {
       console.log("err: ", err)
@@ -28,8 +27,6 @@ const NotificationScreen = ({ navigation }: TabsScreenProps) => {
   const handleMarkAsRead = async (id: number, type: 'COMMENT' | 'RELATIONSHIP_REQUEST' | 'GROUP_POST' | 'GROUP_INVITATION', referenceId: number, groupType: string) => {
     try {
       await NotificationApi.markAsRead(id);
-      console.log("check: ", type);
-      console.log("check group type: ", groupType);
       switch (type) {
         case 'COMMENT':
           navigation.push('PostDetail', { postID: referenceId });
@@ -38,9 +35,10 @@ const NotificationScreen = ({ navigation }: TabsScreenProps) => {
           navigation.push('LocationGroup', { groupID: referenceId, groupType: groupType });
           break;
         case 'RELATIONSHIP_REQUEST':
-        //navigation.push('Request')
+          navigation.push('RelationshipRequest', { referenceId: referenceId });
+          break;
         case 'GROUP_POST':
-          navigation.push('PostOfGroup', { groupID: referenceId });
+          navigation.push('PostDetail', { postID: referenceId });
           break;
       }
     }

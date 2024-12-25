@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import SideBar from '../components/SideBar';
 import { TRelationship } from '../types/relationship.type';
 import { RelationshipApi } from '../api/relationship.api';
+import { useFocusEffect } from '@react-navigation/native';
+import React from 'react';
 
 const menu = require('../assets/images/menu.png');
 const addUserGroup = require('../assets/images/add-user-group.png');
@@ -16,23 +18,28 @@ const RelationshipScreen = ({ navigation }: TabsScreenProps) => {
   const [searchText, setSearchText] = useState<string>('');
   const [isSideBarVisible, setSideBarVisible] = useState(false);
 
-  useEffect(() => {
-    const fetchAPI = async () => {
-      try {
-        setLoading(true);
-        const { data } = await RelationshipApi.getRelationshipsByType({ type: activeTag });
-        console.log("check: ", data);
-        setData(data);
-        setLoading(false);
-      }
-      catch (err) {
-        console.log("Err: ", err);
-        setLoading(false);
-      }
+  const fetchAPI = async () => {
+    try {
+      setLoading(true);
+      const { data } = await RelationshipApi.getRelationshipsByType({ type: activeTag });
+      setData(data);
+      setLoading(false);
     }
+    catch (err) {
+      console.log("Err: ", err);
+      setLoading(false);
+    }
+  }
 
+  useEffect(() => {
     fetchAPI();
   }, [activeTag])
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchAPI();
+    }, [])
+  );
 
   const handleSearch = (text: string) => {
     setSearchText(text)
@@ -77,7 +84,7 @@ const RelationshipScreen = ({ navigation }: TabsScreenProps) => {
   };
 
   const renderItem = ({ item }: { item: TRelationship }) => (
-    <TouchableOpacity className="w-full rounded-lg px-[13] py-[9] justify-between items-center flex-row">
+    <TouchableOpacity className="w-full rounded-lg py-[9] justify-between items-center flex-row">
       <View className="items-center flex-row gap-[10]">
         <Image
           source={{ uri: item.receiver.avatar }}

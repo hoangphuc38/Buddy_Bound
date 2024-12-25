@@ -22,4 +22,14 @@ export class RelationshipApi {
         const response = await http.get('/relationship/get-all-restricted-user');
         return response.data;
     }
+
+    static async getPendingRelationship(): Promise<TSuccessResponse<TRelationship[]>> {
+        const response = await http.get('/relationship/get-pending-relationship');
+        return response.data;
+    }
+
+    static async acceptRequest(relationshipId: number): Promise<TSuccessResponse<null>> {
+        const response = await http.put(`/relationship/accept-invitation/${relationshipId}`);
+        return response.data;
+    }
 }

@@ -10,6 +10,7 @@ export type TRelationship = {
     id: number,
     receiver: TUser,
     familyType: string,
+    friendType: string,
     senderRole: string,
     receiverRole: string,
     createdAt: string,

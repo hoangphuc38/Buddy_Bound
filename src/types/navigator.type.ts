@@ -1,4 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { TBuddy } from './group.type';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -9,7 +10,7 @@ export type RootStackParamList = {
   AddContact: undefined;
   NewRelationship: undefined;
   SetNewRelationship: { relationshipType: string, detailRelationship: string };
-  LocationBuddy: { userID: number };
+  LocationBuddy: { userID: number, user?: TBuddy };
   LocationGroup: { groupID: number, groupType: string };
   NewPost: { groupID: number };
   PostOfGroup: { groupID: number };
@@ -21,7 +22,7 @@ export type RootStackParamList = {
   AlbumStorageScreen: undefined;
   AlbumDetailsScreen: undefined;
   NewGroupScreen: undefined;
-  ChatScreen: undefined;
+  ChatScreen: { groupId: number, user?: TBuddy };
   AddAlbum: undefined;
   RelationshipRequest: { referenceId?: number }
   LimitedPeople: undefined;

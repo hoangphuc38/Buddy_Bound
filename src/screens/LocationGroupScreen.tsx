@@ -201,6 +201,17 @@ const LocationGroupScreen = ({
       groupDescription: "",
     }
 
+    if (invitedBuddies.length === 0) {
+      const options: ToastOptions = {
+        title: 'Invite buddies',
+        message: 'You need to select buddies to invite',
+        preset: 'spinner',
+        backgroundColor: '#e2e8f0',
+      };
+      toast(options);
+      return;
+    }
+
     try {
       await GroupApi.inviteGroup(body);
 
@@ -258,7 +269,7 @@ const LocationGroupScreen = ({
                   right: 12,
                 },
               ]}>
-              <TouchableOpacity onPress={() => navigation.push('ChatScreen')} className="bg-primary w-[40px] h-[40px] rounded-full items-center justify-center">
+              <TouchableOpacity onPress={() => navigation.push('ChatScreen', { groupId: groupID })} className="bg-primary w-[40px] h-[40px] rounded-full items-center justify-center">
                 <FontAwesomeIcon icon={faMessage} size={17} color="white" />
               </TouchableOpacity>
             </Animated.View>
@@ -345,7 +356,7 @@ const LocationGroupScreen = ({
           />
 
           <FlatList
-            data={allRelatedUsers.filter(user => !groupMembers.some(member => member.id === user.id))}
+            data={allRelatedUsers.filter(user => !groupMembers.some(member => member.user.id === user.id))}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) => (
               <MemberItem
@@ -381,12 +392,29 @@ const LocationGroupScreen = ({
 
             {isSeeAll === 'groupMembers' && (
               <>
+                <TouchableOpacity
+                  onPress={() => setIsSeeAll(null)}
+                  className="mb-4 flex-row items-center">
+                  <FontAwesomeIcon
+                    icon={faArrowLeft}
+                    size={15}
+                    color="#535862"
+                  />
+                  <Text className="text-[#535862] text-normal font-bold ml-2">
+                    Back to List
+                  </Text>
+                </TouchableOpacity>
                 <FlatList
                   data={groupMembers}
                   keyExtractor={(item, index) => index.toString()}
                   renderItem={({ item }) => <GroupMember item={item} />}
                   showsHorizontalScrollIndicator={false}
                 />
+              </>
+            )}
+
+            {isSeeAll === 'approvalMembers' && (
+              <>
                 <TouchableOpacity
                   onPress={() => setIsSeeAll(null)}
                   className="mb-4 flex-row items-center">
@@ -399,29 +427,12 @@ const LocationGroupScreen = ({
                     Back to List
                   </Text>
                 </TouchableOpacity>
-              </>
-            )}
-
-            {isSeeAll === 'approvalMembers' && (
-              <>
                 <FlatList
                   data={approvalMembers}
                   keyExtractor={(item, index) => index.toString()}
                   renderItem={({ item }) => <ApprovalMember item={item} />}
                   showsHorizontalScrollIndicator={false}
                 />
-                <TouchableOpacity
-                  onPress={() => setIsSeeAll(null)}
-                  className="mb-4 flex-row items-center">
-                  <FontAwesomeIcon
-                    icon={faArrowLeft}
-                    size={15}
-                    color="#535862"
-                  />
-                  <Text className="text-[#535862] text-normal font-bold ml-2">
-                    Back to List
-                  </Text>
-                </TouchableOpacity>
               </>
             )}
 

@@ -28,13 +28,13 @@ const RequestItem = ({ item, onAccept, onReject }: IRequestItem) => {
     return (
         <View className="flex-row w-full items-center space-x-3">
             <Image
-                source={{ uri: 'https://th.bing.com/th/id/OIP.klxNCgcMlcIo20ExtOdjVQHaHZ?rs=1&pid=ImgDetMain' }}
+                source={{ uri: item.receiver.avatar }}
                 style={{ height: 80, width: 80, borderRadius: 50, borderWidth: 2, borderColor: "#2C7CC1" }}
             />
             <View className="flex justify-between flex-1 space-y-2">
                 <Text className="text-[#7C7979] text-[14px] leading-5">
-                    <Text className="font-interBold text-black">Hoang Phuc</Text> has requested for relationship:
-                    <Text className="font-interBold text-black"> Friend (Work friends)</Text>
+                    <Text className="font-interBold text-black">{item.receiver.fullName}</Text> has requested for relationship:
+                    <Text className="font-interBold text-black"> {item.friendType}</Text>
                 </Text>
 
                 <View className="flex-row justify-between">

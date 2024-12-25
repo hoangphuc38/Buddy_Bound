@@ -19,6 +19,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faFilter, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { Modal } from '../components/Modal';
 import CustomButton, { ButtonProps } from '../components/CustomButton';
+import React from 'react';
 
 const MemorablePlaceScreen = ({
   route,
