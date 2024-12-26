@@ -47,10 +47,12 @@ git clone https://github.com/hoangphuc38/Buddy_Bound
 npm install
 ```
 **6. Ensure your environment has been set up to able to run React Native app**
+
 **7.1 Run the app on Android emulator**
 ```bash
 npm run android
 ```
+
 **7.2 Run the app on real Android devices**
 ```bash
 npx react-native run-android
