@@ -59,7 +59,7 @@ npx react-native run-android
 ```
 ## Contributors
 [hoangphuc38](https://github.com/hoangphuc38) Email: 21522471@uit.edu.vn  
-[DKhiem017](https://github.com/DKhiem017) Email: 21522115@uit.edu.vn  
+[DKhiem017](https://github.com/DKhiem017) Email: 21522215@uit.edu.vn  
 [PhuGHs](https://github.com/PhuGHs) Email: 21522466@uit.edu.vn
 
 If you have any questions, suggestions, or need assistance, please feel free to contact us using the above information.
