@@ -34,7 +34,7 @@ Clone and run Buddy Bound Api from [BuddyBoundAPI](https://github.com/hoangphuc3
 
 **2. Ensure that you have installed Docker**
 
-**3. Go to "docker-compose.yml", run** 
+**3. Go to command line, run** 
 ```bash
 docker compose -f "docker-compose.yaml" up -d --build
 ```
