@@ -14,12 +14,11 @@ import {
 import {AddContactScreenProps} from '../types/navigator.type';
 import {useState, useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import Search from '../components/search';
 import Contacts from 'react-native-contacts';
 import {UserApi} from '../api/user.api';
 import {TUser} from '../types/user.type';
-
-const nextIcon = require('../assets/images/next-icon.png');
+import Header from '../components/Header';
+import SearchBar from 'react-native-dynamic-search-bar';
 
 const AddContactScreen = ({navigation}: AddContactScreenProps) => {
   const [loading, setLoading] = useState(false);
@@ -157,27 +156,25 @@ const AddContactScreen = ({navigation}: AddContactScreenProps) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Add your Buddy</Text>
+    <>
+      <Header title="Buddy contacts" onBack={() => navigation.pop()} />
+      <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <View style={{width: '100%'}}>
           <Text
-            style={{
-              textAlign: 'left',
-              color: '#2C7CC1',
-              fontSize: 17,
-              fontWeight: 500,
-              marginBottom: 5,
-            }}>
+            className="font-interMedium text-gray-700">
             Find your buddy in your contact
           </Text>
         </View>
-        <Search placeholder="Search..." onSearch={handleSearch} />
+        <SearchBar style={{ height: 40, width: '100%' }}
+                textInputStyle={{ fontSize: 16 }}
+                className="bg-gray-100 rounded-full my-4"
+                placeholderTextColor="#6b7280" onChangeText={(text) => handleSearch(text)} />
         {loading ? (
           <ActivityIndicator
             className="mt-2"
             size={'small'}
-            color={'#2C7CC1'}></ActivityIndicator>
+            color={'#2C7CC1'} />
         ) : (
           <FlatList
             data={recommendUsers}
@@ -186,16 +183,6 @@ const AddContactScreen = ({navigation}: AddContactScreenProps) => {
             style={styles.userList}
           />
         )}
-      </View>
-      <View style={styles.continueBtn}>
-        <TouchableOpacity style={styles.btnNext}>
-          <View style={styles.btnContent}>
-            <Text style={styles.btnText}>Continue</Text>
-            <View style={{height: 14, width: 15}}>
-              <Image source={nextIcon} style={styles.img} />
-            </View>
-          </View>
-        </TouchableOpacity>
       </View>
       {/* Modal */}
       {selectedUser && (
@@ -360,6 +347,7 @@ const AddContactScreen = ({navigation}: AddContactScreenProps) => {
         </Modal>
       )}
     </SafeAreaView>
+    </>
   );
 };
 

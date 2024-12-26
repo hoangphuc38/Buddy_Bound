@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import SockJS from 'sockjs-client';
-import { Client, Frame, Message } from '@stomp/stompjs';
+import { Client, Frame, Message, Versions } from '@stomp/stompjs';
 import { TLocation } from '../types/location.type';
 import { TNotification } from '../types/notification.type';
 import { TMessage } from '../types/message.type';
@@ -44,14 +44,13 @@ const useWebSocketConnection = ({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setConnecting(true); // Set connecting to true when starting the connection
+    setConnecting(true);
 
     const client = new Client({
-      brokerURL: 'ws://buddybound-app-790723374073.asia-southeast1.run.app/ws',
       webSocketFactory: () => new SockJS(BASE_WS),
       debug: (str) => {
         if (debug) {
-          console.log('STOMP: ' + str);
+          console.log('STOMP 123: ' + str);
         }
       },
       reconnectDelay,

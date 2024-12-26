@@ -8,3 +8,8 @@ export type TUser = {
   gender: boolean;
   birthday: string;
 };
+
+export type TBlockedUser = {
+  id: number,
+  blockedUser: TUser
+}

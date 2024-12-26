@@ -8,10 +8,10 @@ import {
   MemorablePlacesProps,
   RootStackParamList,
 } from '../types/navigator.type';
-import { RouteProp } from '@react-navigation/native';
+import { RouteProp, useFocusEffect } from '@react-navigation/native';
 import MemorableItem from '../components/MemorableItem';
 import Header from '../components/Header';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { TMemorablePlace } from '../types/location-history.type';
 import { MemorablePlaceApi } from '../api/memorablePlace.api';
 import SearchBar from '../components/SearchBar';
@@ -28,8 +28,8 @@ const MemorablePlaceScreen = ({
   route: RouteProp<RootStackParamList, 'MemorablePlaces'>;
 }) => {
   const [memorablePlaces, setMemorablePlaces] = useState<TMemorablePlace[]>([]);
-  const [searchText, setSearchText] = useState<string>("");
-  const [selectedFilter, setSelectedFilter] = useState<string>("");
+  const [searchText, setSearchText] = useState<string>('');
+  const [selectedFilter, setSelectedFilter] = useState<string>('');
   const [isFilterModalVisible, setIsFilterModalVisible] = useState<boolean>(false);
   const [buttons, setButtons] = useState<ButtonProps[]>([
     {
@@ -54,19 +54,22 @@ const MemorablePlaceScreen = ({
     },
   ]);
 
-  useEffect(() => {
-    const fetchAPI = async () => {
-      try {
-        const { data } = await MemorablePlaceApi.getAll();
-        setMemorablePlaces(data);
-      }
-      catch (error) {
-        console.log("err: ", error);
-      }
+  const fetchAPI = async () => {
+    try {
+      const { data } = await MemorablePlaceApi.getAll();
+      setMemorablePlaces(data);
     }
+    catch (error) {
+      console.log('err: ', error);
+    }
+  };
 
-    fetchAPI();
-  }, [])
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchAPI();
+    }, [])
+  );
 
   const filteredPlaces = memorablePlaces.filter((place) => {
     const matchesSearch = searchText ? place.note.toLowerCase().includes(searchText.toLowerCase()) : true;
@@ -93,11 +96,11 @@ const MemorablePlaceScreen = ({
 
   return (
     <>
-      <Header title='Memorable Places'
+      <Header title="Memorable Places"
         onBack={() => navigation.pop()} />
       <View className="flex flex-1 mt-4">
-        <View className='flex px-4 flex-row justify-between space-x-1'>
-          <View className='flex w-[87%]'>
+        <View className="flex px-4 flex-row justify-between space-x-1">
+          <View className="flex w-[87%]">
             <SearchBar
               containerStyle={{ marginBottom: 20 }}
               placeholder="Search your place ..."
@@ -115,7 +118,7 @@ const MemorablePlaceScreen = ({
 
         <Modal isOpen={isFilterModalVisible}>
           <View className="bg-white w-full h-[40%] p-4  rounded-xl">
-            <View className='flex flex-row mb-4'>
+            <View className="flex flex-row mb-4">
               <TouchableOpacity
                 onPress={closeFilterModal}
                 className="absolute top-0 right-0 bg-backButton w-[20px] h-[20px] rounded-full items-center justify-center">
@@ -144,9 +147,7 @@ const MemorablePlaceScreen = ({
             renderItem={({ item }) => (
               <MemorableItem
                 item={item}
-                press={() => {
-                  navigation.push('PostDetail', { postID: item.id });
-                }}
+                press={() => {}}
               />
             )}
             showsVerticalScrollIndicator={false}

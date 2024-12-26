@@ -51,7 +51,7 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
   );
 
   const HandleClickBuddy = (item: TBuddy) => {
-    navigation.push('LocationBuddy', { userID: item.id, user: item });
+    navigation.push('LocationBuddy', { userID: item.id, user: item, groupID: item.id });
     setAllBuddy(!allBuddy);
   };
 
@@ -107,7 +107,7 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
                         <BuddyItem
                           item={item}
                           press={() => {
-                            navigation.push('LocationBuddy', { userID: item.id, user: item });
+                            navigation.push('LocationBuddy', { userID: item.id, user: item, groupID: item.id});
                           }}
                         />
                       )}

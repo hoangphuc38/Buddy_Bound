@@ -56,7 +56,8 @@ const ForgetPassScreen = ({navigation}: ForgetPassScreenProps) => {
           setLoading(false);
           setCurrentStep(currentStep + 1);
         } catch (error) {
-          Alert.alert('failed');
+          console.log(error);
+          setLoading(false);
         }
         setEmailError('');
       }
@@ -75,7 +76,6 @@ const ForgetPassScreen = ({navigation}: ForgetPassScreenProps) => {
           setLoading(false);
           setCurrentStep(currentStep + 1);
         } catch (error) {
-          Alert.alert('failed');
           setLoading(false);
         }
         setEmailError('');
@@ -87,7 +87,7 @@ const ForgetPassScreen = ({navigation}: ForgetPassScreenProps) => {
       else {
         if (confirmPass !== password)
         {
-          setEmailError('Password did not match')
+          setEmailError('Password did not match');
         }
         else {
           try {
@@ -99,8 +99,8 @@ const ForgetPassScreen = ({navigation}: ForgetPassScreenProps) => {
             setKeyboardType('');
             setEmail('');
             setLoading(false);
+            navigation.navigate('LogIn');
           } catch (error) {
-            Alert.alert('failed');
             setLoading(false);
           }
           setEmailError('');

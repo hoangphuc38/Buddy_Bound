@@ -37,12 +37,11 @@ import SearchBar from '../components/SearchBar';
 import MemberItem from '../components/MemberItem';
 import { RelationshipApi } from '../api/relationship.api';
 import { TUser } from '../types/user.type';
-import { TFamily, TGroup, TInviteGroup } from '../types/group.type';
+import { TInviteGroup } from '../types/group.type';
 import { toast, ToastOptions } from '@baronha/ting';
-import Mapbox, { Camera, MapView, MarkerView } from '@rnmapbox/maps';
+import Mapbox, { Camera, MapView } from '@rnmapbox/maps';
 import { LocationHistoryApi } from '../api/location-history.api';
 import { TLocation } from '../types/location.type';
-import Geolocation from '@react-native-community/geolocation';
 import { TPost } from '../types/post.type';
 import { TMemorablePlace } from '../types/location-history.type';
 import { PostApi } from '../api/post.api';
@@ -85,25 +84,38 @@ const LocationGroupScreen = ({
 
   const sheetRef = useRef<BottomSheetMethods>(null);
 
-  //websocket
   const {
     connected,
     subscribeToLocation,
   } = useWebSocketConnection({
     onLocationReceived: (groupId: number, location: TLocation) => {
-      console.log('Location received for group:', groupId, location);
+      setMemberLocations((prev) => {
+        return prev.map((oldLocation) => {
+          if (oldLocation.user?.id === location.user?.id) {
+            return { ...oldLocation, ...location };
+          }
+          return oldLocation;
+        });
+      });
     },
     debug: true,
   });
 
+  useEffect(() => {
+    if (connected) {
+      subscribeToLocation(groupID);
+    }
+  });
+
   const fetchMap = async () => {
     try {
-      const [postsResponse, memorableResponse, locationsResponse, currentLocationResponse] =
+      const [postsResponse, memorableResponse, locationsResponse, currentLocationResponse, relationships] =
         await Promise.all([
           PostApi.getAll(groupID),
           MemorablePlaceApi.getAll(),
           LocationHistoryApi.getUserLocations(groupID),
           LocationHistoryApi.getMemberLocation(user?.id as number),
+          RelationshipApi.getRelationshipsByType({ type: groupType }),
         ]);
 
       return {
@@ -111,6 +123,7 @@ const LocationGroupScreen = ({
         locations: locationsResponse.data,
         memorablePlaces: memorableResponse.data,
         currentLocation: currentLocationResponse.data,
+        relationships: relationships.data,
       };
     } catch (error) {
       console.log('Error fetching map data:', error);
@@ -208,12 +221,6 @@ const LocationGroupScreen = ({
   }, [isSeeAll]);
 
   useEffect(() => {
-    if (connected) {
-      subscribeToLocation(groupID);
-    }
-  }, [connected, groupID]);
-
-  useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
@@ -233,8 +240,11 @@ const LocationGroupScreen = ({
         setGroupPosts(mapData.posts);
         setGroupMembers(membersResponse.data);
         setApprovalMembers(approvalResponse.data);
+        setAllRelatedUsers(mapData.relationships.map((value) => value.receiver));
       } catch (error) {
         console.log('Error fetching data:', error);
+        setLoading(false);
+        navigation.pop();
       } finally {
         setLoading(false);
       }
@@ -255,28 +265,6 @@ const LocationGroupScreen = ({
 
     initializeMap();
   }, []);
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      Geolocation.getCurrentPosition(
-        async (position) => {
-          console.log(position);
-          await LocationHistoryApi.updateLocation(position.coords.latitude, position.coords.longitude);
-        },
-        (error) => {
-          console.log('Error getting location: ', error);
-        },
-        {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000}
-      );
-    }, 180000);
-    return () => clearInterval(intervalId);
-  }, []);
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchMap();
-    }, [])
-  );
 
   const addToInvitedList = (id: number) => {
     setInvitedBuddies(prevList => {
@@ -335,6 +323,38 @@ const LocationGroupScreen = ({
     }
   };
 
+  const handleApprove = async (userId: number, type: 'approve' | 'reject') => {
+    try {
+      console.log(userId);
+      setLoading(true);
+      if (type === 'approve') {
+        await GroupApi.approve({ userId: userId, groupId: groupID });
+        const options: ToastOptions = {
+          title: 'Approve member!',
+          message: 'Approve successfully!',
+          preset: 'done',
+          backgroundColor: '#e2e8f0',
+        };
+        toast(options);
+      } else {
+        await GroupApi.reject({ userId: userId, groupId: groupID });
+        const options: ToastOptions = {
+          title: 'Reject member',
+          message: 'Reject successfully!',
+          preset: 'done',
+          backgroundColor: '#e2e8f0',
+        };
+        toast(options);
+      }
+
+      setLoading(false);
+    }
+    catch (error) {
+      console.log('err: ', error);
+      setLoading(false);
+    }
+  };
+
   const centerCoordinate = useMemo(() => {
     if (
       selectedMemberLocation &&
@@ -377,6 +397,7 @@ const LocationGroupScreen = ({
                 {renderMarkers({
                   isShown: showPosts,
                   type: 'Post',
+                  navigation: navigation,
                   data: groupPosts,
                 })}
                 {renderMarkers({
@@ -502,6 +523,7 @@ const LocationGroupScreen = ({
             renderItem={({ item }) => (
               <MemberItem
                 horizontal
+                isInvited={invitedBuddies.some((value) => value === item.id)}
                 item={item}
                 press={() => addToInvitedList(item.id)}
               />
@@ -571,7 +593,7 @@ const LocationGroupScreen = ({
                 <FlatList
                   data={approvalMembers}
                   keyExtractor={(item, index) => index.toString()}
-                  renderItem={({ item }) => <ApprovalMember item={item} />}
+                  renderItem={({ item }) => <ApprovalMember approve={() => handleApprove(item.user.id, 'approve')} reject={() => handleApprove(item.user.id, 'reject')}  item={item} />}
                   showsHorizontalScrollIndicator={false}
                 />
               </>
@@ -605,7 +627,7 @@ const LocationGroupScreen = ({
                 <FlatList
                   data={approvalMembers.slice(0, 2)}
                   keyExtractor={(item, index) => index.toString()}
-                  renderItem={({ item }) => <ApprovalMember item={item} />}
+                  renderItem={({ item }) => <ApprovalMember approve={() => handleApprove(item.user.id, 'approve')} reject={() => handleApprove(item.user.id, 'reject')} item={item} />}
                   showsHorizontalScrollIndicator={false}
                 />
                 <TouchableOpacity

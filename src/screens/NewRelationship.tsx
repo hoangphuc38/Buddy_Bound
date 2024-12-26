@@ -64,13 +64,13 @@ const NewRelationshipScreen = ({ navigation }: NewRelationshipScreenProps) => {
 
   return (
     <>
-      <Header title='New Relationship'
+      <Header title="New Relationship"
         onBack={() => navigation.pop()}
       />
 
       <View style={styles.container}>
         <View style={styles.content}>
-          <Text style={styles.typeOfRelationshipText} className='font-interMedium'>
+          <Text style={styles.typeOfRelationshipText} className="font-interMedium">
             Choose your type of relationship
           </Text>
           <View>
@@ -112,17 +112,17 @@ const NewRelationshipScreen = ({ navigation }: NewRelationshipScreenProps) => {
             <Animated.View
               style={[styles.cbbOptions, { height: animationValueFamily }]}>
               <TouchableOpacity
-                onPress={() => navigation.push('SetNewRelationship', { relationshipType: "FAMILY", detailRelationship: "Parent-Child" })}
+                onPress={() => navigation.push('SetNewRelationship', { relationshipType: 'FAMILY', detailRelationship: 'PARENT_CHILD' })}
                 style={styles.cbbItem}>
                 <Text style={styles.itemText}>Parent-Child</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => navigation.push('SetNewRelationship', { relationshipType: "FAMILY", detailRelationship: "Spouse" })}
+                onPress={() => navigation.push('SetNewRelationship', { relationshipType: 'FAMILY', detailRelationship: 'SPOUSE' })}
                 style={styles.cbbItem}>
                 <Text style={styles.itemText}>Spouse</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => navigation.push('SetNewRelationship', { relationshipType: "FAMILY", detailRelationship: "Sibling" })}
+                onPress={() => navigation.push('SetNewRelationship', { relationshipType: 'FAMILY', detailRelationship: 'SIBLING' })}
                 style={styles.cbbItem}>
                 <Text style={styles.itemText}>Sibling</Text>
               </TouchableOpacity>
@@ -168,22 +168,22 @@ const NewRelationshipScreen = ({ navigation }: NewRelationshipScreenProps) => {
             <Animated.View
               style={[styles.cbbOptions, { height: animationValueFriend }]}>
               <TouchableOpacity
-                onPress={() => navigation.push('SetNewRelationship', { relationshipType: "FRIEND", detailRelationship: "Acquaintances" })}
+                onPress={() => navigation.push('SetNewRelationship', { relationshipType: 'FRIEND', detailRelationship: 'ACQUAINTANCES' })}
                 style={styles.cbbItem}>
                 <Text style={styles.itemText}>Acquaintances</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => navigation.push('SetNewRelationship', { relationshipType: "FRIEND", detailRelationship: "Work friends" })}
+                onPress={() => navigation.push('SetNewRelationship', { relationshipType: 'FRIEND', detailRelationship: 'WORK_FRIENDS' })}
                 style={styles.cbbItem}>
                 <Text style={styles.itemText}>Work friends</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => navigation.push('SetNewRelationship', { relationshipType: "FRIEND", detailRelationship: "Casual friends" })}
+                onPress={() => navigation.push('SetNewRelationship', { relationshipType: 'FRIEND', detailRelationship: 'CASUAL_FRIENDS' })}
                 style={styles.cbbItem}>
                 <Text style={styles.itemText}>Casual friends</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => navigation.push('SetNewRelationship', { relationshipType: "FRIEND", detailRelationship: "Close friends" })}
+                onPress={() => navigation.push('SetNewRelationship', { relationshipType: 'FRIEND', detailRelationship: 'CLOSE_FRIENDS' })}
                 style={styles.cbbItem}>
                 <Text style={styles.itemText}>Close friends</Text>
               </TouchableOpacity>

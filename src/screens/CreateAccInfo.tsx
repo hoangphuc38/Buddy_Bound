@@ -13,6 +13,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {CreateAccInfoProps, RootStackParamList} from '../types/navigator.type';
 import {RouteProp} from '@react-navigation/native';
 import {AuthApi} from '../api/auth.api';
+import { toast, ToastOptions } from '@baronha/ting';
 
 const register = require('../assets/images/register-icon.png');
 const back = require('../assets/images/back-vector.png');
@@ -44,7 +45,7 @@ const CreateAccInfoScreen = ({
       setErrorMessage('Please fill in all fields.');
     } else {
       try {
-        const response = await AuthApi.signup({
+        await AuthApi.signup({
           email: email as string,
           password: password as string,
           fullName: userName as string,
@@ -52,10 +53,16 @@ const CreateAccInfoScreen = ({
           phoneNumber: phoneNum as string,
           birthday: dateOfBirth as string,
         });
-        Alert.alert('success');
-        navigation.push('AddContact');
+        const options: ToastOptions = {
+                        title: 'Register',
+                        message: 'Successfully',
+                        preset: 'done',
+                        backgroundColor: '#e2e8f0',
+                      };
+        toast(options);
+        navigation.navigate('LogIn');
       } catch (error) {
-        Alert.alert('failed');
+        console.log(error);
       }
     }
   };
@@ -161,7 +168,7 @@ const CreateAccInfoScreen = ({
                 source={calendar}
                 resizeMode="contain"
                 className="w-full h-full"
-                style={{tintColor: '#2C7CC1'}}></Image>
+                style={{tintColor: '#2C7CC1'}} />
             </TouchableOpacity>
             <DatePicker
               modal

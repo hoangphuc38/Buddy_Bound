@@ -3,11 +3,13 @@ import { TMember } from '../types/member.type';
 
 interface IApprovalMember {
   item: TMember;
+  approve: () => void;
+  reject: () => void;
 }
 
-const ApprovalMember = ({ item, handlePress }: IApprovalMember) => {
+const ApprovalMember = ({ item, approve, reject }: IApprovalMember) => {
   return (
-    <TouchableOpacity className="flex flex-row items-center justify-between mb-4 gap-[20px]">
+    <View className="flex flex-row items-center justify-between mb-4 gap-[20px]">
       <View className="flex flex-row items-center">
         <Image
           source={{ uri: item.user.avatar }}
@@ -24,10 +26,10 @@ const ApprovalMember = ({ item, handlePress }: IApprovalMember) => {
         </View>
       </View>
       <View className="flex flex-row">
-        <Text className="text-primary text-[12px] font-medium mr-4">Approve</Text>
-        <Text className="text-secondary text-[12px] font-medium">Decline</Text>
+        <TouchableOpacity onPress={approve}><Text className="text-primary text-[12px] font-medium mr-4">Approve</Text></TouchableOpacity>
+        <TouchableOpacity onPress={reject}><Text className="text-secondary text-[12px] font-medium">Decline</Text></TouchableOpacity>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 

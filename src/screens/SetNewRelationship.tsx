@@ -26,7 +26,7 @@ const SetNewRelationshipScreen = ({
 }: SetNewRelationshipScreenProps) => {
   const { relationshipType, detailRelationship } = route.params;
 
-  const [searchText, setSearchText] = useState<string>("");
+  const [searchText, setSearchText] = useState<string>('');
   const [users, setUsers] = useState<TUser[]>([]);
   const [selectedMembers, setSelectedMembers] = useState<TUser[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -44,13 +44,13 @@ const SetNewRelationshipScreen = ({
         setLoading(false);
       }
       catch (err) {
-        console.log("err: ", err);
+        console.log('err: ', err);
         setLoading(false);
       }
-    }
+    };
 
     fetchAPI();
-  }, [searchText])
+  }, [searchText]);
 
   const handleAddPeople = (item: TUser) => {
     setSelectedUser(item);
@@ -61,61 +61,66 @@ const SetNewRelationshipScreen = ({
     if (isSelected) {
       setSelectedMembers(prev => prev.filter(member => member.id !== item.id));
     }
-  }
+  };
 
   const handleChooseRole = (selectedParent: string) => {
     setParent(selectedParent);
 
-    if (selectedParent === "Father" || selectedParent === "Mother") {
-      setReceiverRole("Child");
+    if (selectedParent === 'Father' || selectedParent === 'Mother') {
+      setReceiverRole('Child');
     }
 
-    else if (selectedParent === "Child") {
-      setReceiverRole("Father");
+    else if (selectedParent === 'Child') {
+      setReceiverRole('Father');
     }
-  }
+  };
 
   const handleChooseReceiverRole = (role: string) => {
-    if (parent === "Child" && (role === "Father" || role === "Mother")) {
+    if (parent === 'Child' && (role === 'Father' || role === 'Mother')) {
       setReceiverRole(role);
     }
-  }
+  };
 
   const handleSend = async () => {
     if (selectedUser) {
       try {
         setLoading(true);
-        if (detailRelationship === "Parent-Child") {
+        if (detailRelationship === 'Parent-Child') {
           let body: TNewRelationship = {
             receiverId: selectedUser.id,
-            relationshipType: relationshipType.toUpperCase(),
-            familyType: "PARENT_CHILD",
-            senderRole: parent.toUpperCase(),
-            receiverRole: receiverRole.toUpperCase(),
-          }
+            relationshipType: relationshipType,
+            familyType: 'PARENT_CHILD',
+            senderRole: parent,
+            receiverRole: receiverRole,
+          };
           await RelationshipApi.newRelationship(body);
         }
-        else if (relationshipType === "FAMILY") {
+        else if (relationshipType === 'FAMILY') {
           let body: TNewRelationship = {
             receiverId: selectedUser.id,
-            relationshipType: relationshipType.toUpperCase(),
-            familyType: detailRelationship.toUpperCase()
-          }
+            relationshipType: relationshipType,
+            familyType: detailRelationship,
+            senderRole: detailRelationship,
+            receiverRole: detailRelationship,
+          };
+          console.log(body);
           await RelationshipApi.newRelationship(body);
         }
         else {
           let body: TNewRelationship = {
             receiverId: selectedUser.id,
-            relationshipType: relationshipType.toUpperCase(),
-            friendType: detailRelationship.toUpperCase(),
-          }
+            relationshipType: relationshipType,
+            friendType: detailRelationship,
+            senderRole: detailRelationship,
+            receiverRole: detailRelationship,
+          };
           await RelationshipApi.newRelationship(body);
         }
 
         let group: TCreateGroup = {
           userIds: [selectedUser.id],
-          groupType: "ONE_TO_ONE"
-        }
+          groupType: 'ONE_TO_ONE',
+        };
 
         await GroupApi.createGroup(group);
 
@@ -132,7 +137,7 @@ const SetNewRelationshipScreen = ({
         setLoading(false);
       }
       catch (error) {
-        console.log("err: ", error);
+        console.log('err: ', error);
         setLoading(false);
       }
     }
@@ -145,7 +150,7 @@ const SetNewRelationshipScreen = ({
 
   return (
     <>
-      <Header title='New Relationship'
+      <Header title="New Relationship"
         onBack={() => navigation.pop()}
       />
 
@@ -155,15 +160,15 @@ const SetNewRelationshipScreen = ({
             <Text className="font-interMedium text-black text-base">
               Set new relationship with buddies
             </Text>
-            <View className='w-full mt-[15] mb-4'>
-              <SearchBar placeholder='Search by name or phone number' onSearch={text => setSearchText(text)} value={searchText}></SearchBar>
+            <View className="w-full mt-[15] mb-4">
+              <SearchBar placeholder="Search by name or phone number" onSearch={text => setSearchText(text)} value={searchText} />
             </View>
             {/* list user */}
             {
               loading ? (
-                <View className='flex flex-1 justify-center items-center'>
-                  <ActivityIndicator style={{ display: 'flex', justifyContent: "center", alignItems: 'center' }}
-                    size='small'
+                <View className="flex flex-1 justify-center items-center">
+                  <ActivityIndicator style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                    size="small"
                     color="#2C7CC1"
                   />
                 </View>
@@ -184,50 +189,50 @@ const SetNewRelationshipScreen = ({
         </View>
 
         <Modal isOpen={modalVisible}>
-          <View className='bg-white w-full h-[50%] p-4 rounded-xl relative'>
-            <View className='relative h-full'>
-              <Text className='font-interMedium text-[20px] text-center mb-4'>Relationship Request</Text>
-              <Text className='font-interRegular leading-5'>Hi <Text className='font-interBold'>{selectedUser?.fullName}</Text>, i want to set relationship with you as {relationshipType} ({detailRelationship})</Text>
+          <View className="bg-white w-full h-[50%] p-4 rounded-xl relative">
+            <View className="relative h-full">
+              <Text className="font-interMedium text-[20px] text-center mb-4">Relationship Request</Text>
+              <Text className="font-interRegular leading-5">Hi <Text className="font-interBold">{selectedUser?.fullName}</Text>, i want to set relationship with you as {relationshipType} ({detailRelationship})</Text>
 
               {
                 detailRelationship === 'Parent-Child' && (
                   <>
-                    <Text className='mt-4 mb-2'>For detail, you are</Text>
-                    <View className='flex-row items-center space-x-[50px]'>
+                    <Text className="mt-4 mb-2">For detail, you are</Text>
+                    <View className="flex-row items-center space-x-[50px]">
                       <TouchableOpacity onPress={() => handleChooseRole('Father')}
-                        className='flex-row space-x-2 items-center'>
+                        className="flex-row space-x-2 items-center">
                         <View className={parent === 'Father' ? 'w-[15px] h-[15px] rounded-full bg-primary' : 'w-[15px] h-[15px] rounded-full bg-main'} />
                         <Text className={parent === 'Father' ? 'font-interMedium text-primary' : 'font-interMedium text-main'}>Father</Text>
                       </TouchableOpacity>
 
                       <TouchableOpacity onPress={() => handleChooseRole('Mother')}
-                        className='flex-row space-x-2 items-center'>
+                        className="flex-row space-x-2 items-center">
                         <View className={parent === 'Mother' ? 'w-[15px] h-[15px] rounded-full bg-primary' : 'w-[15px] h-[15px] rounded-full bg-main'} />
                         <Text className={parent === 'Mother' ? 'font-interMedium text-primary' : 'font-interMedium text-main'}>Mother</Text>
                       </TouchableOpacity>
 
                       <TouchableOpacity onPress={() => handleChooseRole('Child')}
-                        className='flex-row space-x-2 items-center'>
+                        className="flex-row space-x-2 items-center">
                         <View className={parent === 'Child' ? 'w-[15px] h-[15px] rounded-full bg-primary' : 'w-[15px] h-[15px] rounded-full bg-main'} />
                         <Text className={parent === 'Child' ? 'font-interMedium text-primary' : 'font-interMedium text-main'}>Child</Text>
                       </TouchableOpacity>
                     </View>
-                    <Text className='mt-4 mb-2'>For detail, <Text className='font-interBold'>{selectedUser?.fullName}</Text> is</Text>
-                    <View className='flex-row items-center space-x-[50px]'>
+                    <Text className="mt-4 mb-2">For detail, <Text className="font-interBold">{selectedUser?.fullName}</Text> is</Text>
+                    <View className="flex-row items-center space-x-[50px]">
                       <TouchableOpacity onPress={() => handleChooseReceiverRole('Father')}
-                        className='flex-row space-x-2 items-center'>
+                        className="flex-row space-x-2 items-center">
                         <View className={receiverRole === 'Father' ? 'w-[15px] h-[15px] rounded-full bg-primary' : 'w-[15px] h-[15px] rounded-full bg-main'} />
                         <Text className={receiverRole === 'Father' ? 'font-interMedium text-primary' : 'font-interMedium text-main'}>Father</Text>
                       </TouchableOpacity>
 
                       <TouchableOpacity onPress={() => handleChooseReceiverRole('Mother')}
-                        className='flex-row space-x-2 items-center'>
+                        className="flex-row space-x-2 items-center">
                         <View className={receiverRole === 'Mother' ? 'w-[15px] h-[15px] rounded-full bg-primary' : 'w-[15px] h-[15px] rounded-full bg-main'} />
                         <Text className={receiverRole === 'Mother' ? 'font-interMedium text-primary' : 'font-interMedium text-main'}>Mother</Text>
                       </TouchableOpacity>
 
                       <TouchableOpacity onPress={() => handleChooseReceiverRole('Child')}
-                        className='flex-row space-x-2 items-center'>
+                        className="flex-row space-x-2 items-center">
                         <View className={receiverRole === 'Child' ? 'w-[15px] h-[15px] rounded-full bg-primary' : 'w-[15px] h-[15px] rounded-full bg-main'} />
                         <Text className={receiverRole === 'Child' ? 'font-interMedium text-primary' : 'font-interMedium text-main'}>Child</Text>
                       </TouchableOpacity>
@@ -236,15 +241,15 @@ const SetNewRelationshipScreen = ({
                 )
               }
               <TouchableOpacity onPress={handleSend}
-                className='w-full absolute bottom-[45px] rounded-[5px] py-2 bg-primary'
+                className="w-full absolute bottom-[45px] rounded-[5px] py-2 bg-primary"
               >
-                <Text className='text-white font-interBold text-center'>Send</Text>
+                <Text className="text-white font-interBold text-center">Send</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={handleCancel}
-                className='w-full absolute bottom-0 rounded-[5px] py-2'
+                className="w-full absolute bottom-0 rounded-[5px] py-2"
                 style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}
               >
-                <Text className='text-white font-interBold text-center'>Cancel</Text>
+                <Text className="text-white font-interBold text-center">Cancel</Text>
               </TouchableOpacity>
             </View>
           </View>

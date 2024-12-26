@@ -83,7 +83,6 @@ const Navigator = () => {
         <Stack.Screen name="MemorablePlaces" component={MemorablePlaceScreen} />
         <Stack.Screen name="NewMemorable" component={NewMemorablePlaceScreen} />
         <Stack.Screen name="AddAlbum" component={AddAlbum} />
-        <Stack.Screen name="CreateAccInfo" component={CreateAccInfoScreen}/>
         <Stack.Screen name="AddContact" component={AddContactScreen}/>
         <Stack.Screen name="RelationshipRequest" component={RelationshipRequestScreen} />
         <Stack.Screen name="LimitedPeople" component={LimitedPeopleScreen} />
@@ -95,7 +94,6 @@ const Navigator = () => {
             <Stack.Screen name="Register" component={RegisterScreen} />
             <Stack.Screen name="CreateAccInfo" component={CreateAccInfoScreen}/>
             <Stack.Screen name="ForgetPass" component={ForgetPassScreen} />
-            <Stack.Screen name="AddContact" component={AddContactScreen} />
           </>
         }
       </Stack.Navigator>

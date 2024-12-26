@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FlatList, Image, Keyboard, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import { ChatScreenProps } from '../types/navigator.type';
 import Message from '../components/Message';
@@ -11,6 +11,7 @@ import { useInput } from '../hooks/useInput';
 import { XMarkIcon } from 'react-native-heroicons/outline';
 import { TCreateImage } from '../types/image.type';
 import useWebSocketConnection from '../hooks/useWebsocket';
+import { UserContext } from '../contexts/user-context';
 
 const ChatScreen = ({ navigation, route }: ChatScreenProps) => {
     const { groupId, user, group } = route.params;
@@ -19,6 +20,7 @@ const ChatScreen = ({ navigation, route }: ChatScreenProps) => {
     const [imageList, setImageList] = useState<Asset[]>([]);
     const [text, setText] = useState<string>('');
     const [isFocused, setIsFocused] = useState(false);
+    const { user: currentUser } = useContext(UserContext);
 
     const {
         value: messageValue,
@@ -31,6 +33,9 @@ const ChatScreen = ({ navigation, route }: ChatScreenProps) => {
     });
 
     const handleNewMessage = (groupId: number, message: TMessage) => {
+        if (message.member.user.id === currentUser?.id) {
+            return;
+        }
         setMessages(prevMessages => [...prevMessages, message]);
     };
 
@@ -89,8 +94,6 @@ const ChatScreen = ({ navigation, route }: ChatScreenProps) => {
             type: item.type,
         })) : [];
 
-        console.log('CheckImage: ', images);
-
         try {
             const { data } = await MessageApi.send(stringDto, images);
 
@@ -111,7 +114,7 @@ const ChatScreen = ({ navigation, route }: ChatScreenProps) => {
                 className="top-[90px] px-4 w-full"
                 data={messages}
                 renderItem={({ item }) => (
-                    <Message message={item} idSender={1} />
+                    <Message message={item} isSender={user?.id === item.member.user.id} />
                 )}
                 keyExtractor={(item) => item.id.toString()}
                 contentContainerStyle={{ paddingBottom: 170 }}

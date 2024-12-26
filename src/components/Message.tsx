@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
-import { TMessage } from "../types/message.type";
+import { useState } from 'react';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { TMessage } from '../types/message.type';
 
 interface TMessageItem {
     message: TMessage,
-    idSender: number
+    isSender: boolean
 }
 
 function formatTimeToMMHH(timeString: string) {
@@ -16,13 +16,12 @@ function formatTimeToMMHH(timeString: string) {
     return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
 }
 
-const Message = ({ message, idSender }: TMessageItem) => {
+const Message = ({ message, isSender }: TMessageItem) => {
     const [showTime, setShowTime] = useState<boolean>(false);
-    const isSender = message.member.user.id === idSender;
 
     return (
         <View className={`flex flex-row ${isSender ? 'justify-end' : 'justify-start'} w-full`}>
-            <View className={`flex flex-row space-x-3 my-1 max-w-[70%]`}>
+            <View className={'flex flex-row space-x-3 my-1 max-w-[70%]'}>
                 {!isSender && (
                     <View className="flex items-center justify-end">
                         <Image

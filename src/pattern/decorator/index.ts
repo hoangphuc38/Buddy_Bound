@@ -26,13 +26,14 @@ export const createPostMarker = (post: TPost, onPress: () => void): MarkerCompon
 interface IMarker<T> {
   isShown: boolean;
   type: 'User' | 'Post' | 'Destination';
+  navigation?: any;
   data: T[];
 }
 
 export const renderMarkers = <T extends TLocation | TPost | TMemorablePlace>(
   markerList: IMarker<T>
 ): JSX.Element[] | null => {
-  const { isShown, type, data } = markerList;
+  const { isShown, type, data, navigation } = markerList;
 
   if (!isShown) {return null;}
 
@@ -45,7 +46,9 @@ export const renderMarkers = <T extends TLocation | TPost | TMemorablePlace>(
           user: (item as TLocation).user as TUser,
         }).render();
       case 'Post':
-        return createPostMarker(item as TPost, () => {}).render();
+        return createPostMarker(item as TPost, () => {
+          navigation.push('PostDetail', { postID: item.id });
+        }).render();
       case 'Destination':
         return createDestinationMarker(item as TMemorablePlace, () => {}).render();
       default:

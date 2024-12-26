@@ -14,6 +14,16 @@ export class GroupApi {
         return response.data;
     }
 
+    static async approve(data: {groupId: number, userId: number}): Promise<TSuccessResponse<void>> {
+        const response = await http.put('/group/members/approve', data);
+        return response.data;
+    }
+
+    static async reject(data: {groupId: number, userId: number}): Promise<TSuccessResponse<void>> {
+        const response = await http.put('/group/members/reject', data);
+        return response.data;
+    }
+
     static async getWaitingApproval(groupId: number): Promise<TSuccessResponse<TMember[]>> {
         const response = await http.get(`/group/getMembers?groupId=${groupId}&isApproved=false`);
         return response.data;

@@ -9,10 +9,10 @@ export type TLocationHistory = {
 }
 
 export type TMemorablePlace = {
-    id: number;
+    id?: number;
     note: string;
     locationType: string;
     latitude: number,
     longitude: number,
-    createdAt: string
+    createdAt?: string
 }

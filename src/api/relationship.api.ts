@@ -1,6 +1,7 @@
 import http from '../helpers/axiosConfig';
 import { TNewRelationship, TRelationship, TUserRelationship } from '../types/relationship.type';
 import { TSuccessResponse } from '../types/response.type';
+import { TBlockedUser } from '../types/user.type';
 
 export class RelationshipApi {
     static async getRelationshipsByType(params: TUserRelationship): Promise<TSuccessResponse<TRelationship[]>> {
@@ -13,12 +14,23 @@ export class RelationshipApi {
         })).data;
     }
 
+    static async limitRelationship(blockedUserId?: number, id?: number): Promise<TSuccessResponse<void>> {
+        if (id) {
+            return (await http.post('/relationship/update-restriction', {
+                id,
+            })).data;
+        }
+        return (await http.post('/relationship/update-restriction', {
+            blockedUserId,
+        })).data;
+    }
+
     static async newRelationship(body: TNewRelationship): Promise<TSuccessResponse<null>> {
         const response = await http.post('/relationship/add', body);
         return response.data;
     }
 
-    static async getLimitedPeople(): Promise<TSuccessResponse<TRelationship[]>> {
+    static async getLimitedPeople(): Promise<TSuccessResponse<TBlockedUser[]>> {
         const response = await http.get('/relationship/get-all-restricted-user');
         return response.data;
     }

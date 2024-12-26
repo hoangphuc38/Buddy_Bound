@@ -5,7 +5,21 @@ import { TSuccessResponse } from '../types/response.type';
 
 export class LocationHistoryApi {
     static async get(startDate?: string, endDate?: string): Promise<TSuccessResponse<TLocationHistory[]>> {
-        const response = await http.get('/location-history/get-location');
+        let url = '/location-history/get-location';
+        const params: string[] = [];
+
+        if (startDate) {
+            params.push(`startDate=${startDate}`);
+        }
+        if (endDate) {
+            params.push(`endDate=${endDate}`);
+        }
+
+        if (params.length > 0) {
+            url += `?${params.join('&')}`;
+        }
+
+        const response = await http.get(url);
         return response.data;
     }
 

@@ -7,6 +7,8 @@ import { TRelationship } from '../types/relationship.type';
 import { RelationshipApi } from '../api/relationship.api';
 import { useFocusEffect } from '@react-navigation/native';
 import React from 'react';
+import ConfirmationDialog from '../components/ConfirmationDialog';
+import { toast, ToastOptions } from '@baronha/ting';
 
 const menu = require('../assets/images/menu.png');
 const addUserGroup = require('../assets/images/add-user-group.png');
@@ -17,6 +19,8 @@ const RelationshipScreen = ({ navigation }: TabsScreenProps) => {
   const [activeTag, setActiveTag] = useState<string>('FRIEND');
   const [searchText, setSearchText] = useState<string>('');
   const [isSideBarVisible, setSideBarVisible] = useState(false);
+  const [isDialogVisible, setDialogVisible] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<number>();
 
   const fetchAPI = async () => {
     try {
@@ -26,14 +30,35 @@ const RelationshipScreen = ({ navigation }: TabsScreenProps) => {
       setLoading(false);
     }
     catch (err) {
-      console.log("Err: ", err);
+      console.log('Err: ', err);
       setLoading(false);
     }
-  }
+  };
+
+  const handleConfirm = async () => {
+    try {
+      if (selectedUserId) {
+        setLoading(true);
+        await RelationshipApi.limitRelationship(selectedUserId);
+      }
+      const options: ToastOptions = {
+        title: 'Limit relationship',
+        message: 'Limit successfully',
+        preset: 'done',
+        backgroundColor: '#e2e8f0',
+      };
+      toast(options);
+      setLoading(false);
+      setDialogVisible(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchAPI();
-  }, [activeTag])
+  }, [activeTag]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -42,22 +67,27 @@ const RelationshipScreen = ({ navigation }: TabsScreenProps) => {
   );
 
   const handleSearch = (text: string) => {
-    setSearchText(text)
+    setSearchText(text);
   };
 
   const handleItemPress = (item: string) => {
     switch (item) {
-      case "Limited People List":
+      case 'Limited People List':
         navigation.push('LimitedPeople');
         setSideBarVisible(!isSideBarVisible);
         break;
-      case "New Group":
-        navigation.push("NewGroupScreen");
+      case 'New Group':
+        navigation.push('NewGroupScreen');
         setSideBarVisible(!isSideBarVisible);
         break;
-      case "Relationship Request":
+      case 'Relationship Request':
         navigation.push('RelationshipRequest', {});
         setSideBarVisible(!isSideBarVisible);
+        break;
+      case 'Contact':
+          navigation.push('AddContact');
+          setSideBarVisible(!isSideBarVisible);
+          break;
     }
   };
 
@@ -84,7 +114,10 @@ const RelationshipScreen = ({ navigation }: TabsScreenProps) => {
   };
 
   const renderItem = ({ item }: { item: TRelationship }) => (
-    <TouchableOpacity className="w-full rounded-lg py-[9] justify-between items-center flex-row">
+    <TouchableOpacity className="w-full rounded-lg py-[9] justify-between items-center flex-row" onLongPress={() => {
+      setDialogVisible(true);
+      setSelectedUserId(item.receiver.id);
+    }}>
       <View className="items-center flex-row gap-[10]">
         <Image
           source={{ uri: item.receiver.avatar }}
@@ -103,7 +136,17 @@ const RelationshipScreen = ({ navigation }: TabsScreenProps) => {
   );
 
   return (
-    <View className=" flex-1 pl-5 pr-5 flex items-center">
+    <>
+      <ConfirmationDialog
+                visible={isDialogVisible}
+                title="Restrict relationship"
+                message="Are you sure you limit this relationship?"
+                onConfirm={handleConfirm}
+                onCancel={() => setDialogVisible(false)}
+                confirmText="Yes"
+                cancelText="No"
+            />
+            <View className=" flex-1 pl-5 pr-5 flex items-center">
       <View className=" w-full mt-3 justify-between items-center flex-row">
         <TouchableOpacity className="w-[25] h-[25]" onPress={toggleSideBar}>
           <Image source={menu} className="w-full h-full" resizeMode="contain" />
@@ -150,8 +193,8 @@ const RelationshipScreen = ({ navigation }: TabsScreenProps) => {
       {/* friend list */}
       {loading ? (
         <View className="mt-[20] flex-1 w-full items-center justify-center">
-          <ActivityIndicator style={{ display: 'flex', justifyContent: "center", alignItems: 'center' }}
-            size='small'
+          <ActivityIndicator style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            size="small"
             color="#2C7CC1"
           />
         </View>
@@ -166,12 +209,14 @@ const RelationshipScreen = ({ navigation }: TabsScreenProps) => {
         </View>
       )}
       <SideBar
-        items={['Limited People List', 'New Group', 'Relationship Request']}
+        items={['Limited People List', 'New Group', 'Relationship Request', 'Contact']}
         onItemPress={handleItemPress}
         isVisible={isSideBarVisible}
         onClose={toggleSideBar}
       />
     </View>
+    </>
+
   );
 };
 

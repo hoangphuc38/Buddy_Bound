@@ -33,10 +33,6 @@ const NotificationScreen = ({ navigation }: TabsScreenProps) => {
       await NotificationApi.markAsRead(id);
       switch (type) {
         case 'COMMENT':
-          const { data } = await PostApi.getDetail(referenceId);
-          if (!data.image) {
-            return;
-          }
           navigation.push('PostDetail', { postID: referenceId });
           break;
         case 'GROUP_INVITATION':
@@ -46,6 +42,10 @@ const NotificationScreen = ({ navigation }: TabsScreenProps) => {
           navigation.push('RelationshipRequest', { referenceId: referenceId });
           break;
         case 'GROUP_POST':
+          const { data } = await PostApi.getDetail(referenceId);
+          if (data.image === null) {
+            return;
+          }
           navigation.push('PostDetail', { postID: referenceId });
           break;
       }
