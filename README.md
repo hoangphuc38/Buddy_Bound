@@ -1,79 +1,63 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Buddy Bound
+* The project for Mobile and Pervasive Computing (Course SE405 | UIT)
+* Guided by Msc. Nguyễn Tấn Toàn
+<p align="center">
+<img src="https://res.cloudinary.com/dzvruudmw/image/upload/v1735231702/MapLocation_mpvhnd.jpg" />
+</p>
+ 
+## Introduction
+Welcome to Buddy Bound project! This project is a mobile application developed to help users connect with people in family and friends by real-time tracking location. Moreover, the application also provides a place for storing and sharing moments by creating posts and showing the locations of posts on the map of group.   
+## Features
+* **Login/Register account**.
+* **Location Tracking**.
+* **Location History:** System automatically stores individual locations every hour. Afte 2 days, there will be a notification sent to user to determine if locations continue to be saved
+* **Relationship Management:**: Set up relationship (Friend, Family) with other users. Besides, application also provides limit users function that prevent them see individual location on the map
+* **Group Management:** Allow user to create groups with 2 types: Friend and Family
+* **Setting management:** Manage user's permissions such as location tracking, contact in mobile
+* **Post Management:** Alow user to create posts and share in the group with locations on the map. Members in the group can see and comment the posts
+* **Album Management:** Users can create album from posts in certain period of time, search album by time of created date
+* **Memorable Places Management:** Provide management functionalities such as adding, deleting, editing memorable places on the map with notes
+## Some Screens of the application
+* Login Screen
+<p align="center">
+<img src="https://res.cloudinary.com/dzvruudmw/image/upload/v1735233711/LoginScreen_rkvin1.png" />
+</p>
+* Home Screen
+<p align="center">
+<img src="https://res.cloudinary.com/dzvruudmw/image/upload/v1735233698/HomeScreen_o3j1eq.jpg" />
+</p>
+ 
+## Getting Started
+**1. Clone Buddy Bound Api**  
 
-# Getting Started
+Clone and run Buddy Bound Api from [BuddyBoundAPI](https://github.com/hoangphuc38/PlantStoreAPI.git)  
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+**2. Ensure that you have installed Docker**
 
-## Step 1: Start the Metro Server
-
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
-
-To start Metro, run the following command from the _root_ of your React Native project:
-
+**3. Go to "docker-compose.yml", run** 
 ```bash
-# using npm
-npm start
-
-# OR using Yarn
-yarn start
+docker compose -f "docker-compose.yaml" up -d --build
 ```
-
-## Step 2: Start your Application
-
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
-
-### For Android
-
+**4. Clone the project**
 ```bash
-# using npm
+git clone https://github.com/hoangphuc38/Buddy_Bound
+```
+**5. Install npm dependencies**
+```bash
+npm install
+```
+**6. Ensure your environment has been set up to able to run React Native app**
+**7.1 Run the app on Android emulator**
+```bash
 npm run android
-
-# OR using Yarn
-yarn android
 ```
-
-### For iOS
-
+**7.2 Run the app on real Android devices**
 ```bash
-# using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
+npx react-native run-android
 ```
+## Contributors
+[hoangphuc38](https://github.com/hoangphuc38) Email: 21522471@uit.edu.vn  
+[DKhiem017](https://github.com/DKhiem017) Email: 21522115@uit.edu.vn  
+[PhuGHs](https://github.com/PhuGHs) Email: 21522466@uit.edu.vn
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
-
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
-
-## Step 3: Modifying your App
-
-Now that you have successfully run the app, let's modify it.
-
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
-
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+If you have any questions, suggestions, or need assistance, please feel free to contact us using the above information.
