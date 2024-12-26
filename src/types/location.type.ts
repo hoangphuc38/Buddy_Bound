@@ -6,5 +6,5 @@ export type TLocation = {
     user?: TUser,
     longitude: number;
     latitude: number;
-    timestamp: string
+    timestamp?: string
 }

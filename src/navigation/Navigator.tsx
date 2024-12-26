@@ -29,13 +29,9 @@ import HistoryLocation from '../screens/HistoryLocation';
 import ChatScreen from '../screens/ChatScreen';
 import { useAuth } from '../contexts/auth-context';
 import AddAlbum from '../screens/AddAlbum';
-<<<<<<< HEAD
 import CreateAccInfoScreen from '../screens/CreateAccInfo';
-=======
 import RelationshipRequestScreen from '../screens/RelationshipRequestScreen';
 import LimitedPeopleScreen from '../screens/LimitedPeopleScreen';
->>>>>>> 9e11ca12baad42f050674475a5143f13a6d94cbb
-
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const theme: Theme = {
@@ -87,17 +83,17 @@ const Navigator = () => {
         <Stack.Screen name="MemorablePlaces" component={MemorablePlaceScreen} />
         <Stack.Screen name="NewMemorable" component={NewMemorablePlaceScreen} />
         <Stack.Screen name="AddAlbum" component={AddAlbum} />
-        <Stack.Screen name='CreateAccInfo' component={CreateAccInfoScreen}/>
-        <Stack.Screen name='AddContact' component={AddContactScreen}/>
-        <Stack.Screen name='RelationshipRequest' component={RelationshipRequestScreen} />
-        <Stack.Screen name='LimitedPeople' component={LimitedPeopleScreen} />
+        <Stack.Screen name="CreateAccInfo" component={CreateAccInfoScreen}/>
+        <Stack.Screen name="AddContact" component={AddContactScreen}/>
+        <Stack.Screen name="RelationshipRequest" component={RelationshipRequestScreen} />
+        <Stack.Screen name="LimitedPeople" component={LimitedPeopleScreen} />
           </>
           :
           <>
             <Stack.Screen name="Welcome" component={WelcomeScreen} />
             <Stack.Screen name="LogIn" component={LoginScreen} />
             <Stack.Screen name="Register" component={RegisterScreen} />
-            <Stack.Screen name='CreateAccInfo' component={CreateAccInfoScreen}/>
+            <Stack.Screen name="CreateAccInfo" component={CreateAccInfoScreen}/>
             <Stack.Screen name="ForgetPass" component={ForgetPassScreen} />
             <Stack.Screen name="AddContact" component={AddContactScreen} />
           </>

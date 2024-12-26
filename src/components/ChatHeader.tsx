@@ -1,14 +1,22 @@
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 import Back from '../assets/icons/back.svg';
 import Map from '../assets/icons/map.svg';
-import { TBuddy } from "../types/group.type";
+import { TBuddy, TFamily, TGroup } from '../types/group.type';
 
 interface ChatHeaderProps {
     back: () => void,
-    item: TBuddy
+    item?: TBuddy | TFamily
 }
 
 const ChatHeader = ({ back, item }: ChatHeaderProps) => {
+    const getItemUserData = (item: TBuddy | TFamily) => {
+        if ('userDto' in item) {
+          return { fullName: item.userDto.fullName, avatar: item.userDto.avatar };
+        }
+        return { fullName: item.groupName, avatar: 'https://res.cloudinary.com/daszajz9a/image/upload/v1734540191/project/Family_kva377.png' };
+      };
+
+    const displayedItem = getItemUserData(item);
     return (
         <View className="overflow-hidden pb-5 absolute top-0 right-0 left-0">
             <View className="w-full px-4 py-2 h-[90px] flex flex-row justify-between items-center border-b border-slate-200">
@@ -19,11 +27,11 @@ const ChatHeader = ({ back, item }: ChatHeaderProps) => {
                     <View className="flex flex-row items-center space-x-2">
                         <Image
                             className="h-[55px] w-[55px] rounded-full"
-                            source={{ uri: item.userDto.avatar }}
+                            source={{ uri: displayedItem.avatar }}
                         />
                         <View>
-                            <Text className="font-interBold text-[16px]">{item.userDto.fullName}</Text>
-                            <Text className="font-interLight text-[13px] text-gray-600">Work friends</Text>
+                            <Text className="font-interBold text-[16px]">{displayedItem.fullName}</Text>
+                            <Text className="font-interLight text-[13px] text-gray-600">Group</Text>
                         </View>
                     </View>
                 </View>

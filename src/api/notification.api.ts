@@ -4,7 +4,7 @@ import { TSuccessResponse } from '../types/response.type';
 
 export class NotificationApi {
     static async getAll(): Promise<TSuccessResponse<TNotification[]>> {
-        const response = await http.get(`/notifications`);
+        const response = await http.get('/notifications');
         return response.data;
     }
 

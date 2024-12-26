@@ -17,7 +17,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { PhotoIcon } from 'react-native-heroicons/solid';
 import { OptionStatus } from '../components/OptionStatus';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Modal } from '../components/Modal';
 import Header from '../components/Header';
 import {
@@ -38,6 +38,9 @@ import { TMember } from '../types/member.type';
 import GroupMember from '../components/GroupMember';
 import { toast, ToastOptions } from '@baronha/ting';
 import React from 'react';
+import { UserContext } from '../contexts/user-context';
+import { TLocation } from '../types/location.type';
+import { LocationHistoryApi } from '../api/location-history.api';
 
 const NewPostScreen = ({
   route,
@@ -53,6 +56,8 @@ const NewPostScreen = ({
   const [groupMembers, setGroupMembers] = useState<TMember[]>([]);
   const [limitedBuddyId, setLimitedBuddyId] = useState<number[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [currentLocation, setCurrentLocation] = useState<TLocation>();
+  const { user } = useContext(UserContext);
 
   const {
     value: noteValue,
@@ -63,14 +68,17 @@ const NewPostScreen = ({
     hasError: noteHasError,
   } = useInput({
     defaultValue: '',
-    validationFn: (note) => note !== undefined && note?.length < 30 && note.length > 0,
+    validationFn: (note) => note !== undefined && note.length < 30 && note.length > 0,
   });
 
   useEffect(() => {
     const fetch = async () => {
       try {
         const { data } = await GroupApi.getMembers(groupID);
-        setGroupMembers(data);
+        const { data: location } = await LocationHistoryApi.getMemberLocation(user?.id as number);
+        setCurrentLocation(location);
+        setLimitedBuddyId(data.filter((member) => member.user.id !== user?.id).map((member) => member.user.id));
+        setGroupMembers(data.filter((member) => member.user.id !== user?.id));
       }
       catch (error) {
         console.log('errsss: ', error);
@@ -89,24 +97,38 @@ const NewPostScreen = ({
   };
 
   const pickImages = async () => {
-    const options: ImageLibraryOptions = {
-      mediaType: 'photo',
-      selectionLimit: 1,
-      presentationStyle: 'fullScreen',
-    };
-    const result: ImagePickerResponse = await launchImageLibrary(options);
-    if (!result.errorCode) {
-      if (result.assets) {
-        setImageList(result.assets);
+    try {
+      const options: ImageLibraryOptions = {
+        mediaType: 'photo',
+        selectionLimit: 1,
+        presentationStyle: 'fullScreen',
+      };
+
+      const result: ImagePickerResponse = await launchImageLibrary(options);
+
+      if (result.errorCode) {
+        return;
       }
+
+      if (result.didCancel) {
+        return;
+      }
+
+      if (result.assets && result.assets.length > 0) {
+        setImageList(result.assets);
+        setIsImage(true);
+      } else {
+        console.log('No image selected');
+      }
+    } catch (error) {
+      console.error('Unexpected error while picking image:', error);
     }
-    setIsImage(true);
   };
 
   const HandleEveryone = () => {
     setEveryOne(true);
     setOpenOption(!openOption);
-    setLimitedBuddyId(groupMembers.map((value) => value.user.id));
+    setLimitedBuddyId(groupMembers.filter((member) => member.user.id !== user?.id).map((member) => member.user.id));
   };
 
   const HandleLimitBuddy = () => {
@@ -142,10 +164,12 @@ const NewPostScreen = ({
         groupId: groupID,
         viewerIds: limitedBuddyId,
         location: {
-          latitude: 17.0685,
-          longitude: 106.6925,
+          latitude: currentLocation ? currentLocation.latitude : 10.878383257815283,
+          longitude: currentLocation ? currentLocation.longitude : 106.80658017543242,
         },
       };
+
+      console.log(postData.viewerIds);
       let image;
       if (imageList[0]) {
         image = {
@@ -155,8 +179,31 @@ const NewPostScreen = ({
         };
       }
 
-      const response = await PostApi.createPost(postData, image ? image : undefined);
-      console.log(response);
+      if (!currentLocation) {
+        const options: ToastOptions = {
+          title: 'Location',
+          message: 'Cannot find user location',
+          preset: 'error',
+          backgroundColor: '#e2e8f0',
+        };
+        toast(options);
+        setLoading(false);
+        return;
+      }
+
+      if (noteHasError) {
+        const options: ToastOptions = {
+          title: 'Validation',
+          message: 'Caption is required, less than 30',
+          preset: 'error',
+          backgroundColor: '#e2e8f0',
+        };
+        toast(options);
+        setLoading(false);
+        return;
+      }
+
+      await PostApi.createPost(postData, image ? image : undefined);
 
       const options: ToastOptions = {
         title: 'Post',
@@ -196,12 +243,12 @@ const NewPostScreen = ({
         <View className="flex flex-row space-x-2 px-4 mb-5">
           <View>
             <Image
-              source={require('../assets/images/avatar.jpg')}
+              source={{ uri: user ? user.avatar : 'https://res.cloudinary.com/daszajz9a/image/upload/v1734540193/project/Friend_ucaain.png'}}
               style={{ width: 50, height: 50, borderRadius: 60 / 2 }}
             />
           </View>
           <View className="items-start justify-around">
-            <Text className="font-interBold text-black text-medium">Hoàng Phúc</Text>
+            <Text className="font-interBold text-black text-medium">{user ? user.fullName : 'Hoang Phuc'}</Text>
             <OptionStatus
               isChange={isEveryOne}
               onPress={() => setOpenOption(!openOption)}
@@ -275,7 +322,7 @@ const NewPostScreen = ({
             <FlatList
               data={groupMembers}
               keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => <LimitedItem item={item} press={() => addToLimitList(item.user.id)} />}
+              renderItem={({ item }) => <LimitedItem isActive={limitedBuddyId.some((id) => id === item.user.id)} item={item} press={() => addToLimitList(item.user.id)} />}
               showsHorizontalScrollIndicator={false}
             />
             <TouchableOpacity

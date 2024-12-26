@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { TBuddy } from './group.type';
+import { TBuddy, TFamily, TGroup } from './group.type';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -11,7 +11,7 @@ export type RootStackParamList = {
   NewRelationship: undefined;
   SetNewRelationship: { relationshipType: string, detailRelationship: string };
   LocationBuddy: { userID: number, user?: TBuddy };
-  LocationGroup: { groupID: number, groupType: string };
+  LocationGroup: { groupID: number, groupType: string, group: TFamily };
   NewPost: { groupID: number };
   PostOfGroup: { groupID: number };
   PostDetail: { postID: number };
@@ -24,7 +24,7 @@ export type RootStackParamList = {
   NewGroupScreen: undefined;
   CreateAccInfo: {email: string, password: string};
   AddAlbum: { isEditMode: boolean, albumId?: number };
-  ChatScreen: { groupId: number, user?: TBuddy };
+  ChatScreen: { groupId: number, user?: TBuddy, group?: TFamily };
   RelationshipRequest: { referenceId?: number }
   LimitedPeople: undefined;
   //Declare new screen with needed parameters

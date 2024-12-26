@@ -1,19 +1,17 @@
 import { faCircleMinus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { useState } from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 import { TMember } from '../types/member.type';
 
 interface ILimitedItem {
   press: () => void;
   item: TMember;
+  isActive: boolean;
 }
 
-const LimitedItem = ({ item, press }: ILimitedItem) => {
-  const [active, setActive] = useState<boolean>(false);
+const LimitedItem = ({ item, press, isActive: active }: ILimitedItem) => {
 
   const HandleSelect = () => {
-    setActive(!active);
     press();
   };
 
@@ -22,7 +20,7 @@ const LimitedItem = ({ item, press }: ILimitedItem) => {
       <TouchableOpacity onPress={HandleSelect}>
         <FontAwesomeIcon
           icon={faCircleMinus}
-          color={active ? '#EF4444' : '#125B9A'}
+          color={!active ? '#EF4444' : '#125B9A'}
           size={20}
         />
       </TouchableOpacity>

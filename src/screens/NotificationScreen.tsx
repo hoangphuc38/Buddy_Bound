@@ -2,10 +2,12 @@ import { FlatList, Text, View } from 'react-native';
 import { TabsScreenProps } from '../types/navigator.type';
 import Header from '../components/Header';
 import Bell from '../assets/icons/bell.svg';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { TNotification } from '../types/notification.type';
 import NotificationItem from '../components/NotificationItem';
 import { NotificationApi } from '../api/notification.api';
+import { PostApi } from '../api/post.api';
+import { useFocusEffect } from '@react-navigation/native';
 
 const NotificationScreen = ({ navigation }: TabsScreenProps) => {
   const [items, setItems] = useState<TNotification[]>([]);
@@ -16,19 +18,25 @@ const NotificationScreen = ({ navigation }: TabsScreenProps) => {
       setItems(data);
     }
     catch (err) {
-      console.log("err: ", err)
+      console.log('err: ', err);
     }
-  }
+  };
 
-  useEffect(() => {
-    fetchApi();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchApi();
+    }, [])
+  );
 
   const handleMarkAsRead = async (id: number, type: 'COMMENT' | 'RELATIONSHIP_REQUEST' | 'GROUP_POST' | 'GROUP_INVITATION', referenceId: number, groupType: string) => {
     try {
       await NotificationApi.markAsRead(id);
       switch (type) {
         case 'COMMENT':
+          const { data } = await PostApi.getDetail(referenceId);
+          if (!data.image) {
+            return;
+          }
           navigation.push('PostDetail', { postID: referenceId });
           break;
         case 'GROUP_INVITATION':
@@ -43,9 +51,9 @@ const NotificationScreen = ({ navigation }: TabsScreenProps) => {
       }
     }
     catch (err) {
-      console.log("Err: ", err);
+      console.log('Err: ', err);
     }
-  }
+  };
 
   return (
     <>

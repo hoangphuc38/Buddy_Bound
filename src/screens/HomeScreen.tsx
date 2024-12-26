@@ -1,6 +1,6 @@
 import { ActivityIndicator, FlatList, NativeSyntheticEvent, Text, TextInputChangeEventData, TouchableOpacity, View } from 'react-native';
 import { TabsScreenProps } from '../types/navigator.type';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import BuddyItem from '../components/BuddyItem';
 import { ChevronRightIcon } from 'react-native-heroicons/outline';
 import GroupItem from '../components/GroupItem';
@@ -11,20 +11,17 @@ import SearchBar from 'react-native-dynamic-search-bar';
 import Header from '../components/Header';
 import { TBuddy, TFamily } from '../types/group.type';
 import { GroupApi } from '../api/group.api';
-import { TSetting } from '../types/setting.type';
-import { UserApi } from '../api/user.api';
-import useWebSocketConnection from '../hooks/useWebsocket';
-import { TLocation } from '../types/location.type';
 import { useFocusEffect } from '@react-navigation/native';
+import { UserContext } from '../contexts/user-context';
 
 const HomeScreen = ({ navigation }: TabsScreenProps) => {
-  // const [settings, setSettings] = useState<TSetting>({locationEnabled: true, locationHistoryEnabled: true, contactEnabled: true});
   const [allBuddy, setAllBuddy] = useState<boolean>(false);
   const [allGroup, setAllGroup] = useState<boolean>(false);
   const [buddies, setBuddies] = useState<TBuddy[]>([]);
   const [groups, setGroups] = useState<TFamily[]>([]);
   const [searchText, setSearchText] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const { user } = useContext(UserContext);
 
   const fetch = async () => {
     try {
@@ -65,7 +62,7 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
 
   const onChangeText = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
     setSearchText(e.nativeEvent.text);
-  }
+  };
 
   const filteredBuddies = searchText
     ? buddies.filter((buddy) =>
@@ -81,12 +78,12 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
 
   return (
     <>
-      <Header title="Your buddy" onPrimaryAction={() => { }} />
+      <Header title={`Hello, ${user?.fullName}`} onPrimaryAction={() => { }} />
       <View className="flex flex-1 px-4 mt-2">
         {
           loading ? (
-            <ActivityIndicator style={{ display: 'flex', justifyContent: "center", alignItems: 'center' }}
-              size='small'
+            <ActivityIndicator style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+              size="small"
               color="#2C7CC1"
             />
           ) : (
@@ -118,7 +115,7 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
                       showsHorizontalScrollIndicator={false}
                     />
                   ) : (
-                    <Text className='font-interRegular italic text-[13px]'>No buddies here yet. Time to make some new friends!</Text>
+                    <Text className="font-interRegular italic text-[13px]">No buddies here yet. Time to make some new friends!</Text>
                   )
                 }
 
@@ -143,14 +140,14 @@ const HomeScreen = ({ navigation }: TabsScreenProps) => {
                         <GroupItem
                           item={item}
                           press={() => {
-                            navigation.push('LocationGroup', { groupID: item.id, groupType: item.groupType });
+                            navigation.push('LocationGroup', { groupID: item.id, groupType: item.groupType, group: item });
                           }}
                         />
                       )}
                       showsVerticalScrollIndicator={false}
                     />
                   ) : (
-                    <Text className='font-interRegular italic text-[13px]'>Create new groups to connect with buddies</Text>
+                    <Text className="font-interRegular italic text-[13px]">Create new groups to connect with buddies</Text>
                   )
                 }
 

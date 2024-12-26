@@ -62,33 +62,35 @@ const PostDetailScreen = ({
 
   const [detailPost, setDetailPost] = useState<TPost>(null);
   const [comments, setComments] = useState<TComment[]>([]);
-  const [content, setContent] = useState<string>("");
+  const [content, setContent] = useState<string>('');
 
   useEffect(() => {
     const fecthAPI = async () => {
       try {
         const { data } = await PostApi.getDetail(postID);
         const { data: comment } = await CommentApi.getAllComment(postID);
+        console.log(data.id);
         setComments(comment);
         setDetailPost(data);
       }
       catch (error) {
-        console.log("Err: ", error);
+        console.log('Err: ', error);
+        navigation.pop();
       }
-    }
+    };
 
     fecthAPI();
-  }, [postID])
+  }, [postID]);
 
   const handleOnChange = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
     setContent(e.nativeEvent.text);
-  }
+  };
 
   const handeAddComment = async () => {
     let body: TAddComment = {
       postId: postID,
       content: content,
-    }
+    };
     try {
       const { data } = await CommentApi.commentPost(body);
 
@@ -96,24 +98,24 @@ const PostDetailScreen = ({
 
       setDetailPost(prevPost => ({
         ...prevPost,
-        commentCount: (prevPost.commentCount || 0) + 1
+        commentCount: (prevPost.commentCount || 0) + 1,
       }));
 
-      setContent("");
+      setContent('');
     }
     catch (error) {
-      console.log("err: ", error);
+      console.log('err: ', error);
     }
-  }
+  };
 
   const handleOpenComment = () => {
-    console.log("check: ", sheetRef);
+    console.log('check: ', sheetRef);
     sheetRef.current.open();
-  }
+  };
 
   if (!detailPost) {
     return (
-      <View className='flex flex-1 items-center justify-center'>
+      <View className="flex flex-1 items-center justify-center">
         <ActivityIndicator size="large" color="#2C7CC1" />
       </View>
     );
@@ -180,8 +182,8 @@ const PostDetailScreen = ({
           </TouchableOpacity>
         </TouchableOpacity>
         {
-          detailPost.firstComment && <View className="absolute inset-x-0 bottom-3">
-            <View className="flex">
+          detailPost.firstComment && <View className="absolute inset-x-0 bottom-3 flex items-center">
+            <View className="flex w-[50%]">
               <Text className="font-interBold text-white text-[10px] text-center">
                 {detailPost.firstComment.member.user.fullName}
               </Text>
@@ -207,7 +209,7 @@ const PostDetailScreen = ({
                 showsHorizontalScrollIndicator={false}
               />
             ) : (
-              <Text className='text-center font-interRegular text-placeHolder'>Be the first one to comment this post</Text>
+              <Text className="text-center font-interRegular text-placeHolder">Be the first one to comment this post</Text>
             )
           }
 

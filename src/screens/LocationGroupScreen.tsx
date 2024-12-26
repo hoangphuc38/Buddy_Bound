@@ -61,7 +61,7 @@ const LocationGroupScreen = ({
   route: RouteProp<RootStackParamList, 'LocationGroup'>;
 }) => {
   const { user } = useContext(UserContext);
-  const { groupID, groupType } = route.params;
+  const { groupID, groupType, group } = route.params;
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isSeeAll, setIsSeeAll] = useState<string | null>(null);
   const [groupMembers, setGroupMembers] = useState<TMember[]>([]);
@@ -410,7 +410,7 @@ const LocationGroupScreen = ({
                   right: 12,
                 },
               ]}>
-              <TouchableOpacity onPress={() => navigation.push('ChatScreen', { groupId: groupID })} className="bg-primary w-[40px] h-[40px] rounded-full items-center justify-center">
+              <TouchableOpacity onPress={() => navigation.push('ChatScreen', { groupId: groupID, group: group })} className="bg-primary w-[40px] h-[40px] rounded-full items-center justify-center">
                 <FontAwesomeIcon icon={faMessage} size={17} color="white" />
               </TouchableOpacity>
             </Animated.View>

@@ -202,7 +202,7 @@ const RegisterScreen = ({navigation}: RegisterScreenProps) => {
           <Text className="font-[500] text-[#00000099]">
             Already have an account?
           </Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.push('LogIn')}>
             <Text className="text-[#2C7CC1] font-[700]">Login</Text>
           </TouchableOpacity>
         </View>

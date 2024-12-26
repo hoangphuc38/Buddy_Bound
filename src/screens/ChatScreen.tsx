@@ -13,11 +13,11 @@ import { TCreateImage } from '../types/image.type';
 import useWebSocketConnection from '../hooks/useWebsocket';
 
 const ChatScreen = ({ navigation, route }: ChatScreenProps) => {
-    const { groupId, user } = route.params;
+    const { groupId, user, group } = route.params;
 
     const [messages, setMessages] = useState<TMessage[]>([]);
     const [imageList, setImageList] = useState<Asset[]>([]);
-    const [text, setText] = useState<string>("");
+    const [text, setText] = useState<string>('');
     const [isFocused, setIsFocused] = useState(false);
 
     const {
@@ -50,16 +50,16 @@ const ChatScreen = ({ navigation, route }: ChatScreenProps) => {
         const fetchAPI = async () => {
             try {
                 const { data } = await MessageApi.getAll(0, 20, groupId);
-                console.log("message: ", data);
+                console.log('message: ', data);
                 setMessages(data);
             }
             catch (err) {
-                console.log("MessageErr: ", err);
+                console.log('MessageErr: ', err);
             }
-        }
+        };
 
         fetchAPI();
-    }, [])
+    }, []);
 
     const handleBack = () => {
         navigation.pop();
@@ -74,14 +74,14 @@ const ChatScreen = ({ navigation, route }: ChatScreenProps) => {
     const handleSendMessage = async () => {
         Keyboard.dismiss();
 
-        if ((!messageValue || messageValue.trim() === "") && (!imageList || imageList.length === 0)) {
+        if ((!messageValue || messageValue.trim() === '') && (!imageList || imageList.length === 0)) {
             return;
         }
 
         const stringDto: TSendMessage = {
             groupId: groupId,
-            content: messageValue
-        }
+            content: messageValue,
+        };
 
         const images: TCreateImage[] = imageList ? imageList.map(item => ({
             uri: item.uri,
@@ -89,7 +89,7 @@ const ChatScreen = ({ navigation, route }: ChatScreenProps) => {
             type: item.type,
         })) : [];
 
-        console.log("CheckImage: ", images);
+        console.log('CheckImage: ', images);
 
         try {
             const { data } = await MessageApi.send(stringDto, images);
@@ -100,13 +100,13 @@ const ChatScreen = ({ navigation, route }: ChatScreenProps) => {
             setImageList([]);
         }
         catch (err) {
-            console.log("SendErr: ", err);
+            console.log('SendErr: ', err);
         }
-    }
+    };
 
     return (
         <View className="flex flex-col h-full relative">
-            <ChatHeader back={handleBack} item={user} />
+            <ChatHeader back={handleBack} item={group ? group : user} />
             <FlatList
                 className="top-[90px] px-4 w-full"
                 data={messages}
